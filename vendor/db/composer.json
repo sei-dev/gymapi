@@ -1,0 +1,36 @@
+{
+    "name": "phlib/db",
+    "type": "library",
+    "description": "MySQL PDO DB Adapter. PDO with some extra good stuff specifically for MySQL.",
+    "keywords": ["mysql", "db", "adapter"],
+    "license": "LGPL-3.0",
+    "authors": [
+        {
+            "name": "James Dempster"
+        },
+        {
+            "name": "Luke Richards"
+        },
+        {
+            "name": "Phlib Team & Contributors",
+            "homepage": "https://github.com/phlib/db/contributors"
+        }
+    ],
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Phlib\\Db\\": "src/"
+        }
+    },
+    "autoload-dev": {
+       "psr-4": {
+           "Phlib\\Db\\Tests\\": "tests/"
+       }
+    }
+}

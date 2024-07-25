@@ -1,0 +1,12 @@
+{
+  "name": "INTECH Unified DB API",
+  "version": "1.0.0",
+  "description": "Documentation for Unified DB API",
+  "title": "INTECH API Docs",
+  "url" : "https://uapi.intechopen.com",
+  "sampleUrl" : "https://uapi.intechopen.com",
+  "footer": {
+    "title": "Response Example",
+    "filename": "header.md"
+  }
+}
