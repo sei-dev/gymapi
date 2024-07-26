@@ -28,19 +28,19 @@ try{
 			'dbname' => 'unified'
 	];
 	
-	/*$config1 = [
+	$config1 = [
 	    'host' => 'localhost',
 	    'username' => 'root',
-	    'password' => 'smederevo',
-	    'dbname' => 'trpeza'
-	];*/
-	
-	$config1 = [
-			'host' => 'localhost',
-			'username' => 'wwwlokalnipazzz_app_user',
-			'password' => 'fGpPmvzGVAreT5L',
-			'dbname' => 'wwwlokalnipazzz_app_db'
+	    'password' => '',
+	    'dbname' => 'gym'
 	];
+	
+// 	$config1 = [
+// 			'host' => 'localhost',
+// 			'username' => 'wwwlokalnipazzz_app_user',
+// 			'password' => 'fGpPmvzGVAreT5L',
+// 			'dbname' => 'wwwlokalnipazzz_app_db'
+// 	];
 	
 	$db = new \Phlib\Db\Adapter($config1);
 	

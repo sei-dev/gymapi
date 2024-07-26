@@ -178,7 +178,39 @@ class Sdk extends Api
     }
     
     
-    
+    /**
+     *
+     * @api {post}? login
+     * @apiVersion 1.0.0
+     * @apiSampleRequest http://gymapi
+     * @apiName login
+     * @apiGroup Users
+     * @apiDescription login log user in
+     * @apiParam {String} action=login API Action.
+     * @apiParam {String} email email
+     * @apiParam {String} password password
+     */
+    private function login()
+    {
+        
+        $request = $this->filterParams(['email', 'password']);
+        
+        $user_model = new Users($this->dbAdapter);
+        $user = $user_model->getUserByEmail($request['email']);
+        
+        if (!$user) {
+            return $this->formatResponse(self::STATUS_FAILED, "-1");
+        }
+        
+        
+        if (password_verify($request['password'], $user["password"])) {
+            unset($user["password"]);
+            $user["access_token"] = $this->getAccessToken($user);
+            //$user->image = $this->getDefaultImage();
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
+        }
+        return $this->formatResponse(self::STATUS_FAILED, "-1");
+    }
     
     
     
@@ -194,19 +226,16 @@ class Sdk extends Api
         
         $userModel = new Users($this->dbAdapter);
         
-        $users = $userModel->getUserById($request["id"]);
+        $user = $userModel->getUserById($request["id"]);
         
-        if ($this->isFileExists(self::DIR_USERS, $users["id"])) {
-            $users['image'] = $this->domain."/images/users/".$users["id"].".png?r=" . rand(0,100000);
-        }else{
-            $users['image'] = $this->domain."/images/logo.png";
+        if (!$user) {
+            throw new ApiException("Failed");
         }
         
-        
-        // unset($users['password']);
+        $user = $this->returnUser($user);
         
         // Return success
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
     }
     
 
@@ -285,6 +314,13 @@ class Sdk extends Api
      */
     private function returnUser($userRow)
     {
+        
+        if ($this->isFileExists(self::DIR_USERS, $userRow["id"])) {
+            $userRow['image'] = $this->domain."/images/users/".$userRow["id"].".png?r=" . rand(0,100000);
+        }else{
+            $userRow['image'] = $this->domain."/images/logo.png";
+        }
+        
         unset($userRow['password']);
         $user = (object) $userRow;
         $user->access_token = $this->getAccessToken($userRow);

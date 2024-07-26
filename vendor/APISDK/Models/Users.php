@@ -16,6 +16,7 @@ class Users extends ModelAbstract implements ModelInterface
 		$dbAdapter->setDbTable(self::getTablePrefix()."users");
 		$this->setDbAdapter($dbAdapter);
 	}
+	
 	/**
 	 *
 	 * @param string $email
@@ -27,13 +28,30 @@ class Users extends ModelAbstract implements ModelInterface
 				FROM ".self::getTablePrefix()."users
 				WHERE id = '{$id}'
 				LIMIT 1";
-		$row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-		if (isset($row[0])) {
-		    return $row[0];
+		$row = $this->getDbAdapter()->query($sQuery)->fetch(\PDO::FETCH_ASSOC);
+		if (isset($row)) {
+		    return $row;
 		}
 		return false;
 	}
 	
+	/**
+	 *
+	 * @param string $email
+	 * @throws ApiException
+	 * @return array
+	 */
+	public function getUserByEmail(string $email) {
+	    $sQuery = "SELECT *
+				FROM ".self::getTablePrefix()."users
+				WHERE email = '{$email}'
+				LIMIT 1";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetch(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
 	
 	/**
 	 *
@@ -52,23 +70,6 @@ class Users extends ModelAbstract implements ModelInterface
 	}
 	
 	
-	/**
-	 *
-	 * @param string $email
-	 * @throws ApiException
-	 * @return array
-	 */
-	public function getUserByEmail(string $email) {
-	    $sQuery = "SELECT *
-				FROM ".self::getTablePrefix()."users
-				WHERE email = '{$email}'
-				LIMIT 1";
-	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($row[0])) {
-	        return $row[0];
-	    }
-	    return false;
-	}
 	
 	/**
 	 * 

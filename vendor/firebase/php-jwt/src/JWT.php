@@ -109,13 +109,13 @@ class JWT
 
         // Check the signature
         if (!static::verify("$headb64.$bodyb64", $sig, $key, $header->alg)) {
-            throw new SignatureInvalidException('Signature verification failed');
+            throw new \Exception('Signature verification failed');
         }
 
         // Check if the nbf if it is defined. This is the time that the
         // token can actually be used. If it's not yet that time, abort.
         if (isset($payload->nbf) && $payload->nbf > ($timestamp + static::$leeway)) {
-            throw new BeforeValidException(
+            throw new \Exception(
                 'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
             );
         }
@@ -124,14 +124,14 @@ class JWT
         // using tokens that have been created for later use (and haven't
         // correctly used the nbf claim).
         if (isset($payload->iat) && $payload->iat > ($timestamp + static::$leeway)) {
-            throw new BeforeValidException(
+            throw new \Exception(
                 'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
             );
         }
 
         // Check if this token has expired.
         if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
-            throw new ExpiredException('Expired token');
+            throw new \Exception('Expired token');
         }
 
         return $payload;

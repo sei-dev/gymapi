@@ -5,7 +5,9 @@ use APISDK\ApiException;
 use Firebase\JWT\JWT;
 use APISDK\DbAdapters\CIAdapter;
 use APISDK\DbAdapters\DBAdapter;
-use CodeIgniter\Database\BaseConnection;
+use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\BeforeValidException;
 
 /**
  * Api class
@@ -101,11 +103,7 @@ abstract class Api {
 			
 		
 		//Set proper adapter
-		if ($db instanceof BaseConnection)
-		{
-			$dbAdapter = new CIAdapter($db);
-			$this->dbAdapter = $dbAdapter;
-		}elseif ($db instanceof \Phlib\Db\Adapter)
+		if ($db instanceof \Phlib\Db\Adapter)
 		{
 			$dbAdapter = new DBAdapter($db);
 			$this->dbAdapter = $dbAdapter;
@@ -314,18 +312,21 @@ abstract class Api {
 		
 		try{
 			$decoded = $this->jwt::decode($accessToken, $this->key, array('HS256'));
-		}catch (\Firebase\JWT\BeforeValidException $e)
+		}catch (BeforeValidException $e)
 		{
 			return self::TOKEN_INVALID;
-		}catch (\Firebase\JWT\ExpiredException $e)
+		}catch (ExpiredException $e)
 		{
 			return self::TOKEN_EXPIRED;
-		}catch (\Firebase\JWT\SignatureInvalidException $e)
+		}catch (SignatureInvalidException $e)
+		{
+			return self::TOKEN_INVALID;
+		}catch(\Exception $e)
 		{
 			return self::TOKEN_INVALID;
 		}catch(ApiException $e)
 		{
-			return self::TOKEN_INVALID;
+		    return self::TOKEN_INVALID;
 		}
 		try{
 			//User is valid, proceed with id
