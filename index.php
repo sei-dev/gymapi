@@ -26,7 +26,7 @@ try{
 	$config1 = [
 	    'host' => '64.225.9.163',
 	    'username' => 'xvvfqaxdrz',
-	    'password' => 'xvvfqaxdrz',
+	    'password' => '33KCMGtr95',
 	    'dbname' => 'xvvfqaxdrz'
 	];
 	

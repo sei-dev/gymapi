@@ -30,10 +30,10 @@ try{
 	];
 	
 	$config1 = [
-	    'host' => 'localhost',
-	    'username' => 'root',
-	    'password' => '',
-	    'dbname' => 'gym'
+	    'host' => '64.225.9.163',
+	    'username' => 'xvvfqaxdrz',
+	    'password' => '33KCMGtr95',
+	    'dbname' => 'xvvfqaxdrz'
 	];
 	
 // 	$config1 = [
