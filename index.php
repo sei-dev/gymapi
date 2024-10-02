@@ -24,7 +24,7 @@ try{
 	//Instantiate Api
 	
 	$config1 = [
-	    'host' => 'http://64.225.9.163/',
+	    'host' => '64.225.9.163',
 	    'username' => 'xvvfqaxdrz',
 	    'password' => 'xvvfqaxdrz',
 	    'dbname' => 'xvvfqaxdrz'
