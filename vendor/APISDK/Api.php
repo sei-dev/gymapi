@@ -5,9 +5,7 @@ use APISDK\ApiException;
 use Firebase\JWT\JWT;
 use APISDK\DbAdapters\CIAdapter;
 use APISDK\DbAdapters\DBAdapter;
-use Firebase\JWT\SignatureInvalidException;
-use Firebase\JWT\ExpiredException;
-use Firebase\JWT\BeforeValidException;
+use CodeIgniter\Database\BaseConnection;
 
 /**
  * Api class
@@ -36,12 +34,14 @@ abstract class Api {
 	 * 
 	 * @var string
 	 */
-	protected $domain = "http://gymapi";
+	//protected $domain = "https://api.ekozastita.com/";
+	//protected $domain = "http://gymapi/";
+	protected $domain = "http://10.0.2.2/";
 	/**
 	 * 
 	 * @var string
 	 */
-	private $key = "gympi123";
+	private $key = "eosapi123";
 	
 	/**
 	 * Hashing algorythm
@@ -103,7 +103,11 @@ abstract class Api {
 			
 		
 		//Set proper adapter
-		if ($db instanceof \Phlib\Db\Adapter)
+		if ($db instanceof BaseConnection)
+		{
+			$dbAdapter = new CIAdapter($db);
+			$this->dbAdapter = $dbAdapter;
+		}elseif ($db instanceof \Phlib\Db\Adapter)
 		{
 			$dbAdapter = new DBAdapter($db);
 			$this->dbAdapter = $dbAdapter;
@@ -312,21 +316,18 @@ abstract class Api {
 		
 		try{
 			$decoded = $this->jwt::decode($accessToken, $this->key, array('HS256'));
-		}catch (BeforeValidException $e)
+		}catch (\Firebase\JWT\BeforeValidException $e)
 		{
 			return self::TOKEN_INVALID;
-		}catch (ExpiredException $e)
+		}catch (\Firebase\JWT\ExpiredException $e)
 		{
 			return self::TOKEN_EXPIRED;
-		}catch (SignatureInvalidException $e)
-		{
-			return self::TOKEN_INVALID;
-		}catch(\Exception $e)
+		}catch (\Firebase\JWT\SignatureInvalidException $e)
 		{
 			return self::TOKEN_INVALID;
 		}catch(ApiException $e)
 		{
-		    return self::TOKEN_INVALID;
+			return self::TOKEN_INVALID;
 		}
 		try{
 			//User is valid, proceed with id
