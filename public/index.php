@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 
 //chdir(__DIR__);
 
-require_once('/../vendor/APISDK/loader.php');
+require_once(__DIR__.'/../vendor/APISDK/loader.php');
 
 set_error_handler(function ($severity, $message, $file, $line) {
 	if (!(error_reporting() & $severity)) {
@@ -29,10 +29,10 @@ try{
 	];
 	
 	$config1 = [
-	    'host' => '64.225.9.163',
-	    'username' => 'xvvfqaxdrz',
-	    'password' => '33KCMGtr95',
-	    'dbname' => 'xvvfqaxdrz'
+	    'host' => 'localhost',
+	    'username' => 'root',
+	    'password' => '',
+	    'dbname' => 'gym'
 	];
 	
 // 	$config1 = [
