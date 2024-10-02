@@ -1,6 +1,6 @@
 <?php
 use APISDK\ApiException;
-ini_set('display_errors', 0); 
+ini_set('display_errors', 1); 
 ini_set('display_startup_errors', 1);
 ini_set('max_execution_time', 0);
 set_time_limit(0);
@@ -8,7 +8,8 @@ error_reporting(E_ALL);
 
 //chdir(__DIR__);
 
-require_once(__DIR__.'/../vendor/APISDK/loader.php');
+require_once(__DIR__.'/vendor/APISDK/loader.php');
+require_once(__DIR__.'/vendor/autoload.php');
 
 set_error_handler(function ($severity, $message, $file, $line) {
 	if (!(error_reporting() & $severity)) {
@@ -21,12 +22,6 @@ set_error_handler(function ($severity, $message, $file, $line) {
 
 try{
 	//Instantiate Api
-	$config = [
-			'host' => 'cdb5.us-east-1.intech',
-			'username' => 'arsen',
-			'password' => 'wigM4hCM5iVKG1nX',
-			'dbname' => 'unified'
-	];
 	
 	$config1 = [
 	    'host' => '64.225.9.163',
@@ -35,12 +30,12 @@ try{
 	    'dbname' => 'xvvfqaxdrz'
 	];
 	
-// 	$config1 = [
-// 			'host' => 'localhost',
-// 			'username' => 'wwwlokalnipazzz_app_user',
-// 			'password' => 'fGpPmvzGVAreT5L',
-// 			'dbname' => 'wwwlokalnipazzz_app_db'
-// 	];
+	/* $config1 = [
+			'host' => 'localhost',
+			'username' => 'root',
+			'password' => '',
+			'dbname' => 'gym'
+	]; */
 	
 	$db = new \Phlib\Db\Adapter($config1);
 	
