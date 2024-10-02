@@ -23,19 +23,19 @@ set_error_handler(function ($severity, $message, $file, $line) {
 try{
 	//Instantiate Api
 	
-	/*$config1 = [
-	    'host' => 'localhost',
-	    'username' => 'root',
-	    'password' => '',
-	    'dbname' => 'ekozasti_baza'
-	];*/
-	
 	$config1 = [
+	    'host' => 'http://64.225.9.163/',
+	    'username' => 'xvvfqaxdrz',
+	    'password' => 'xvvfqaxdrz',
+	    'dbname' => 'xvvfqaxdrz'
+	];
+	
+	/* $config1 = [
 			'host' => 'localhost',
 			'username' => 'root',
 			'password' => '',
 			'dbname' => 'gym'
-	];
+	]; */
 	
 	$db = new \Phlib\Db\Adapter($config1);
 	
