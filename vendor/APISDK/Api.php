@@ -36,7 +36,8 @@ abstract class Api {
 	 */
 	//protected $domain = "https://api.ekozastita.com/";
 	//protected $domain = "http://gymapi/";
-	protected $domain = "http://10.0.2.2/";
+	//protected $domain = "http://10.0.2.2/";
+	protected $domain = "https://phpstack-1301327-4919665.cloudwaysapps.com/";
 	/**
 	 * 
 	 * @var string
