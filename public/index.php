@@ -9,6 +9,7 @@ error_reporting(E_ALL);
 //chdir(__DIR__);
 
 require_once(__DIR__.'/../vendor/APISDK/loader.php');
+require_once(__DIR__.'/../vendor/autoload.php');
 
 set_error_handler(function ($severity, $message, $file, $line) {
 	if (!(error_reporting() & $severity)) {
