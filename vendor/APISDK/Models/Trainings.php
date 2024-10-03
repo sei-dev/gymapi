@@ -242,7 +242,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getPriceByTrainingId(string $id) {
-	    $sQuery = "SELECT training_clients.price FROM training_clients WHERE id ={$id};
+	    $sQuery = "SELECT * FROM training_clients WHERE id ={$id};
 				    ";
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($rows)) {
