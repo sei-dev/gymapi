@@ -67,7 +67,8 @@ class Sdk extends Api
             'login',
             'register',
             'forgotPassword',
-            'setTrainingsFinished'
+            'setTrainingsFinished',
+            'getUserById'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
