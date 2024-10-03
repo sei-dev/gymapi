@@ -67,8 +67,7 @@ class Sdk extends Api
             'login',
             'register',
             'forgotPassword',
-            'setTrainingsFinished',
-            'getUserById'
+            'setTrainingsFinished'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -531,9 +530,9 @@ class Sdk extends Api
 
         array_walk($users, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
-                $a['image'] = $this->domain . "/../images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
-                $a['image'] = $this->domain . "/../images/users/logo.png";
+                $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
 
