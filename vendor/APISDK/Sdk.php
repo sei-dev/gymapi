@@ -877,7 +877,6 @@ class Sdk extends Api
         if (curl_errno($ch)) {
             curl_close($ch);
             $response = ['client_secret' => null, 'status' => 'declined', 'error' => curl_error($ch)];
-            return $this->formatResponse(self::STATUS_FAILED, "", "Payment failed.");
         } else {
             curl_close($ch);
             $response = ['status' => 'approved', 'client_secret' => json_decode($result, true)['client_secret']];
