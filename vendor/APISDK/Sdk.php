@@ -835,9 +835,9 @@ class Sdk extends Api
     
     private function initPayment(){
         
-        $request = $this->filterParams([
+        /* $request = $this->filterParams([
             'amount'
-        ]);
+        ]); */
         
         $merchant_key = "TREESRS";
         $authenticity_token = "";
@@ -852,8 +852,8 @@ class Sdk extends Api
             "scenario" => 'charge'
         ];
         
-        $body_as_string = json_encode($data); // use php's standard library equivalent if Json::encode is not available in your code
-        $base_url = 'https://ipgtest.monri.com'; // parametrize this value
+        $body_as_string = json_encode($data);
+        $base_url = 'https://ipgtest.monri.com';
         $ch = curl_init($base_url . '/v2/payment/new');
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
