@@ -843,7 +843,7 @@ class Sdk extends Api
         $authenticity_token = "";
         
         $data = [
-            "amount" => $request['amount'],
+            "amount" => 100,
             // unique order identifier
             "order_number" => 'random'. time(),
             "currency" => "EUR",
