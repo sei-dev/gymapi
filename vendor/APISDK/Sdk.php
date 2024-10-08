@@ -67,7 +67,8 @@ class Sdk extends Api
             'login',
             'register',
             'forgotPassword',
-            'setTrainingsFinished'
+            'setTrainingsFinished',
+            'initPayment'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -314,9 +315,9 @@ class Sdk extends Api
 
         array_walk($users, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
-                $a['image'] = $this->domain . "/../images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
-                $a['image'] = $this->domain . "/../images/users/logo.png";
+                $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
 
@@ -830,6 +831,60 @@ class Sdk extends Api
                 return $this->formatResponse(self::STATUS_FAILED, "Stara lozinka je neispravna.", []);
             }
         }
+    }
+    
+    private function initPayment(){
+        
+        $request = $this->filterParams([
+            'amount'
+        ]);
+        
+        $merchant_key = "TREESRS";
+        $authenticity_token = "";
+        
+        $data = [
+            "amount" => $request['amount'],
+            // unique order identifier
+            "order_number" => 'random'. time(),
+            "currency" => "EUR",
+            "transaction_type" => "purchase",
+            "order_info" => "Create payment session order info",
+            "scenario" => 'charge'
+        ];
+        
+        $body_as_string = json_encode($data); // use php's standard library equivalent if Json::encode is not available in your code
+        $base_url = 'https://ipgtest.monri.com'; // parametrize this value
+        $ch = curl_init($base_url . '/v2/payment/new');
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        
+        $timestamp = time();
+        $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token. $body_as_string);
+        $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
+        
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($body_as_string),
+            'Authorization: '.$authorization
+        )
+            );
+        
+        $result = curl_exec($ch);
+        
+        if (curl_errno($ch)) {
+            curl_close($ch);
+            $response = ['client_secret' => null, 'status' => 'declined', 'error' => curl_error($ch)];
+            return $this->formatResponse(self::STATUS_FAILED, "", "Payment failed.");
+        } else {
+            curl_close($ch);
+            $response = ['status' => 'approved', 'client_secret' => json_decode($result, true)['client_secret']];
+            
+        }
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
     }
 
     private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
