@@ -28,8 +28,8 @@ class Gyms extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getGymsByCityId(string $id){
-	    $sQuery = "SELECT *
-				FROM ".self::getTablePrefix()."gyms WHERE city_id = '{$id}'";
+	    $sQuery = "SELECT gyms.*, cities.city
+				FROM gyms LEFT JOIN cities ON gyms.city_id = cities.id WHERE city_id = '{$id}'";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
 	        return $row;

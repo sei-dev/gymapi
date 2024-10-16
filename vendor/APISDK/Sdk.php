@@ -303,6 +303,7 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
+    
 
     private function getUsersByTrainingId()
     {
