@@ -18,7 +18,7 @@ class Cities extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getCities(){
-	    $sQuery = "SELECT * FROM CITIES
+	    $sQuery = "SELECT * FROM cities
 				";
 	        
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
