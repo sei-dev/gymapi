@@ -216,7 +216,7 @@ class Sdk extends Api
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
 
-        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"]);
+        //$this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -245,7 +245,7 @@ class Sdk extends Api
         $time = date('H:i', strtotime($time));
 
         foreach ($clients as $one) {
-            $this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"]);
+            //$this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"]);
         }
 
         foreach ($params as $one) {
@@ -282,7 +282,7 @@ class Sdk extends Api
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
 
-        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
+        //$this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
 
         foreach ($trainings as $one) {
             $training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
@@ -659,7 +659,7 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
 
-        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"]);
+        //$this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
