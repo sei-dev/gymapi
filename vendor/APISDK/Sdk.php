@@ -338,6 +338,20 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
 
+    private function addFitnessCenter(){
+        $request = $this->filterParams([
+            'user_id',
+            'gym_id'
+        ]);
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        $gyms = $gyms_model->addFitnessCenter($request['user_id'], $request['gym_id']);
+        
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
+    
     private function getUserById()
     {
         $request = $this->filterParams([

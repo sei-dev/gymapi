@@ -50,6 +50,15 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function addFitnessCenter(string $user_id, string $gym_id){
+	    $sQuery = "INSERT INTO `trainer_gyms`(`user_id`, `gym_id`) VALUES ('{$user_id}','{$gym_id}');";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
+	
 	/**
 	 *
 	 * @param array $data
