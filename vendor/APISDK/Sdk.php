@@ -495,7 +495,11 @@ class Sdk extends Api
 
         $trainingModel->setTrainingPaid($request['id']);
         $price = $trainingModel->getPriceByTrainingId($request['id']);
+        
+        var_dump($price);
         $price = $price['price'];
+        
+        var_dump($price);
         $user_model->addProfit($request['trainer_id'], $price);
         $user_model->removeDebt($request['client_id'], $price);
         $trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
