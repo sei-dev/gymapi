@@ -136,7 +136,7 @@ class Users extends ModelAbstract implements ModelInterface
 	
 	public function addProfit(string $id, string $price){
 	    
-	    $sQuery = $sQuery = "UPDATE `users` SET `profit` = `profit` + '{$price}' WHERE id = '{$id}';
+	    $sQuery = "UPDATE `users` SET `profit` = `profit` + '{$price}' WHERE id = '{$id}';
 				    ";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
@@ -146,8 +146,18 @@ class Users extends ModelAbstract implements ModelInterface
 	}
 	
 	public function addTrainingUser(string $user_id){
-	    $sQuery = $sQuery = "UPDATE `users` SET `total_trainings` = `total_trainings` + 1 WHERE id = '{$user_id}';
+	    $sQuery = "UPDATE `users` SET `total_trainings` = `total_trainings` + 1 WHERE id = '{$user_id}';
 				    ";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
+	
+	public function getActiveTrainers(string $user_id){
+	    $sQuery = "SELECT SUM(case when client_id = '1' then 1 else 0 end ) As active_trainers FROM connections;";
+	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
 	        return $row;

@@ -177,7 +177,7 @@ class Trainings extends ModelAbstract implements ModelInterface
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN cities ON cities.id = gyms.city_id
                    LEFT JOIN gyms ON training.gym_id = gyms.id
-				   WHERE id = '{$id}';
+				   WHERE training.id = '{$id}';
 				    ";
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($rows)) {
