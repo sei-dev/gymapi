@@ -156,7 +156,7 @@ class Users extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getActiveTrainers(string $user_id){
-	    $sQuery = "SELECT SUM(case when client_id = '1' then 1 else 0 end ) As active_trainers FROM connections;";
+	    $sQuery = "SELECT SUM(case when client_id = '{$user_id}' then 1 else 0 end ) As active_trainers FROM connections;";
 	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
@@ -165,6 +165,15 @@ class Users extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function getActiveClients(string $user_id){
+	    $sQuery = "SELECT SUM(case when trainer_id = '{$user_id}' then 1 else 0 end ) As active_trainers FROM connections;";
+	    
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
 	
 	public function getUsersByTrainingId(string $training_id){
 	    $sQuery = "SELECT users.*, training_clients.training_id as training_id, training_clients.cancelled as user_cancelled,
