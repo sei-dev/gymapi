@@ -352,6 +352,20 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
     
+    private function removeFitnessCenter(){
+        $request = $this->filterParams([
+            'user_id',
+            'gym_id'
+        ]);
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        $gyms = $gyms_model->removeFitnessCenter($request['user_id'], $request['gym_id']);
+        
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
+    
     private function getUserById()
     {
         $request = $this->filterParams([

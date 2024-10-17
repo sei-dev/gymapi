@@ -59,6 +59,15 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	
+	public function removeFitnessCenter(string $user_id, string $gym_id){
+	    $sQuery = "DELETE FROM `trainer_gyms` WHERE user_id = '{$user_id}' and gym_id = '{$gym_id}';";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
 	/**
 	 *
 	 * @param array $data
