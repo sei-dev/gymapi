@@ -43,12 +43,10 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    $sQuery = "UPDATE `training` SET `finished`='1' WHERE (date = CURRENT_DATE 
                    AND time > (CURRENT_TIME - INTERVAL 45 MINUTE)) AND (finished = 0 AND cancelled = 0);";
 	    
-	    $sQuery = "SELECT * FROM traings WHERE time > (CURRENT_TIME - INTERVAL 30 MINUTE)) AND finished = '1'";
-	    
 	    //proveri ovo
 	    
-	    $this->getDbAdapter()->query($sQuery);
-	    $rows = $this->getDbAdapter()->query($sQuery2)->fetchAll(\PDO::FETCH_ASSOC);
+	    $rows = $this->getDbAdapter()->query($sQuery);
+	    
 	    if (isset($rows)) {
 	        return $rows;
 	    }
