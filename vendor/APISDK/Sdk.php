@@ -27,9 +27,9 @@ use phpFCMv1\Recipient;
 class Sdk extends Api
 {
 
-    const DIR_UPLOADS = __DIR__ . "/../../../images/";
+    const DIR_UPLOADS = __DIR__ . "/../../images/";
 
-    const DIR_USERS = DIR_UPLOADS . "users";
+    const DIR_USERS = "users";
 
     /*
      * const DIR_BAITS = "baits";
