@@ -170,32 +170,6 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
-    public function getTrainingsClient(string $user_id)
-    {
-        $sQuery = "SELECT COUNT(*) As active_trainers FROM connections WHERE accepted = '1' and client_id = '{$user_id}';";
-        
-        $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row)) {
-            return $row[0]["active_trainers"];
-        }
-        return false;
-    }
-    
-    public function getTrainingsTrainer(string $user_id)
-    {
-        $sQuery = "SELECT COUNT(*) As total_trainings FROM connections WHERE accepted = '1' and client_id = '{$user_id}';";
-        
-        $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row)) {
-            return $row[0]["active_trainers"];
-        }
-        return false;
-    }
-
     public function getActiveTrainers(string $user_id)
     {
         $sQuery = "SELECT COUNT(*) As active_trainers FROM connections WHERE accepted = '1' and client_id = '{$user_id}';";

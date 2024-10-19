@@ -135,6 +135,32 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function getTrainingsTrainer(string $user_id)
+	{
+	    $sQuery = "SELECT COUNT(*) As total_trainings FROM training WHERE trainer_id = '{$user_id}' AND cancelled != '1' AND finished ='1';";
+	    
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row[0]["total_trainings"];
+	    }
+	    return false;
+	}
+	
+	public function getTrainingsClient(string $user_id)
+	{
+	    $sQuery = "SELECT COUNT(*) AS total_trainings FROM training_clients LEFT JOIN training ON training.id = training_clients.training_id WHERE training_clients.client_id = '{$user_id}' AND training.finished = 1;";
+	    
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row[0]["total_trainings"];
+	    }
+	    return false;
+	}
+	
 	public function addDebtConnection(string $trainer_id, string $client_id, string $price){
 	    
 	    $sQuery = "UPDATE `connections` SET `debt` = `debt` + '{$price}' WHERE trainer_id = '{$trainer_id}' AND client_id = '{$client_id}';

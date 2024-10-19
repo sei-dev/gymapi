@@ -372,6 +372,8 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
+        
         $users = $users_model->getUserById($request['id']);
 
         if ($this->isFileExists(self::DIR_USERS, $users["id"])) {
@@ -382,7 +384,9 @@ class Sdk extends Api
         
         $users['active_clients'] = $users_model->getActiveClients($request['id']);
         $users['active_trainers'] = $users_model->getActiveTrainers($request['id']);
-
+        $users['total_trainings_trainer'] = $training_model->getTrainingsTrainer($request['id']);
+        $users['total_trainings_client'] = $training_model->getTrainingsClient($request['id']);
+ 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
