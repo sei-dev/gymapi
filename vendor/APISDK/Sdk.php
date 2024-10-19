@@ -216,7 +216,7 @@ class Sdk extends Api
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
 
-        //$this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"]);
+        // $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -245,7 +245,7 @@ class Sdk extends Api
         $time = date('H:i', strtotime($time));
 
         foreach ($clients as $one) {
-            //$this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"]);
+            // $this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"]);
         }
 
         foreach ($params as $one) {
@@ -282,7 +282,7 @@ class Sdk extends Api
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
 
-        //$this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
+        // $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
 
         foreach ($trainings as $one) {
             $training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
@@ -303,7 +303,6 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
-    
 
     private function getUsersByTrainingId()
     {
@@ -324,48 +323,45 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
-    
-    private function getGymsByUserId(){
+
+    private function getGymsByUserId()
+    {
         $request = $this->filterParams([
             'id'
         ]);
-        
+
         $gyms_model = new Gyms($this->dbAdapter);
         $gyms = $gyms_model->getGymsByUserId($request['id']);
-        
-        
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
 
-    private function addFitnessCenter(){
+    private function addFitnessCenter()
+    {
         $request = $this->filterParams([
             'user_id',
             'gym_id'
         ]);
-        
+
         $gyms_model = new Gyms($this->dbAdapter);
         $gyms = $gyms_model->addFitnessCenter($request['user_id'], $request['gym_id']);
-        
-        
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
-    
-    private function removeFitnessCenter(){
+
+    private function removeFitnessCenter()
+    {
         $request = $this->filterParams([
             'user_id',
             'gym_id'
         ]);
-        
+
         $gyms_model = new Gyms($this->dbAdapter);
         $gyms = $gyms_model->removeFitnessCenter($request['user_id'], $request['gym_id']);
-        
-        
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
-    
+
     private function getUserById()
     {
         $request = $this->filterParams([
@@ -380,6 +376,9 @@ class Sdk extends Api
         } else {
             $users['image'] = $this->domain . "/images/users/logo.png";
         }
+        
+        $users['active_clients'] = $users_model->getActiveClients($request['id']);
+        $users['active_trainers'] = $users_model->getActiveTrainers($request['id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -510,7 +509,7 @@ class Sdk extends Api
         $trainingModel->setTrainingPaid($request['id']);
         $price = $trainingModel->getPriceByTrainingId($request['id']);
         $price = $price[0]['price'];
-        
+
         $user_model->addProfit($request['trainer_id'], $price);
         $user_model->removeDebt($request['client_id'], $price);
         $trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
@@ -656,7 +655,7 @@ class Sdk extends Api
 
         $trainer = $users_model->getUserById($request['trainer_id']);
 
-        //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        // $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -674,7 +673,7 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
 
-        //$this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"]);
+        // $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -862,26 +861,28 @@ class Sdk extends Api
             }
         }
     }
-    
-    private function initPayment(){
-        
-        /* $request = $this->filterParams([
-            'amount'
-        ]); */
-        
+
+    private function initPayment()
+    {
+
+        /*
+         * $request = $this->filterParams([
+         * 'amount'
+         * ]);
+         */
         $merchant_key = "TREESRS";
         $authenticity_token = "";
-        
+
         $data = [
             "amount" => 100,
             // unique order identifier
-            "order_number" => 'random'. time(),
+            "order_number" => 'random' . time(),
             "currency" => "EUR",
             "transaction_type" => "purchase",
             "order_info" => "Create payment session order info",
             "scenario" => 'charge'
         ];
-        
+
         $body_as_string = json_encode($data);
         $base_url = 'https://ipgtest.monri.com';
         $ch = curl_init($base_url . '/v2/payment/new');
@@ -890,29 +891,34 @@ class Sdk extends Api
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        
+
         $timestamp = time();
-        $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token. $body_as_string);
+        $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token . $body_as_string);
         $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
-        
+
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Content-Length: ' . strlen($body_as_string),
-            'Authorization: '.$authorization
-        )
-            );
-        
+            'Authorization: ' . $authorization
+        ));
+
         $result = curl_exec($ch);
-        
+
         if (curl_errno($ch)) {
             curl_close($ch);
-            $response = ['client_secret' => null, 'status' => 'declined', 'error' => curl_error($ch)];
+            $response = [
+                'client_secret' => null,
+                'status' => 'declined',
+                'error' => curl_error($ch)
+            ];
         } else {
             curl_close($ch);
-            $response = ['status' => 'approved', 'client_secret' => json_decode($result, true)['client_secret']];
-            
+            $response = [
+                'status' => 'approved',
+                'client_secret' => json_decode($result, true)['client_secret']
+            ];
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
     }
 
