@@ -575,7 +575,7 @@ class Sdk extends Api
             
         });
         
-        foreach ($users as $one){
+        foreach ($users as &$one){
             $one['active_trainers'] = $users_model->getActiveTrainers($request['id']);
             $one['total_trainings_client'] = $training_model->getTrainingsClient($request['id']);
         }
