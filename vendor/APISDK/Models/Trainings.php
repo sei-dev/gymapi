@@ -150,7 +150,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	public function getTrainingsClient(string $user_id)
 	{
-	    $sQuery = "SELECT COUNT(*) AS total_trainings FROM training_clients LEFT JOIN training ON training.id = training_clients.training_id WHERE training_clients.client_id = '{$user_id}' AND training.finished = 1;";
+	    $sQuery = "SELECT COUNT(*) AS total_trainings FROM training_clients LEFT JOIN training ON training.id = training_clients.training_id WHERE training_clients.client_id = '{$user_id}' AND training.finished = 1 AND training_clients.cancelled != 1;";
 	    
 	    $row = $this->getDbAdapter()
 	    ->query($sQuery)
