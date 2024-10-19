@@ -169,6 +169,8 @@ class Users extends ModelAbstract implements ModelInterface
 	    $sQuery = "SELECT COUNT(*) As active_clients FROM connections WHERE accepted = '1' and trainer_id = '{$user_id}';";
 	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    
+	    var_dump($row);
 	    if (isset($row)) {
 	        return $row["active_clients"];
 	    }
