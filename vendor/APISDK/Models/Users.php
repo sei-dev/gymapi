@@ -170,7 +170,7 @@ class Users extends ModelAbstract implements ModelInterface
 	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
-	        return $row;
+	        return $row["active_clients"];
 	    }
 	    return false;
 	}
