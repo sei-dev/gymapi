@@ -160,7 +160,7 @@ class Users extends ModelAbstract implements ModelInterface
 	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
-	        return $row;
+	        return $row[0]["active_trainers"];
 	    }
 	    return false;
 	}
@@ -170,9 +170,8 @@ class Users extends ModelAbstract implements ModelInterface
 	    
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    
-	    var_dump($row);
 	    if (isset($row)) {
-	        return $row["active_clients"];
+	        return $row[0]["active_clients"];
 	    }
 	    return false;
 	}
