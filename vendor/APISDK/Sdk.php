@@ -259,6 +259,9 @@ class Sdk extends Api
     {
         $training_model = new Trainings($this->dbAdapter);
         $training_model->setTrainingsFinished();
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
 
     private function setTrainingCancelledClient()
