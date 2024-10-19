@@ -563,6 +563,7 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
         $users = $users_model->getConnectedUsersByTrainerId($request['id']);
 
         array_walk($users, function (&$a) {
