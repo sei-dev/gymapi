@@ -513,14 +513,20 @@ class Sdk extends Api
         $user_model = new Users($this->dbAdapter);
 
         $trainingModel->setTrainingPaid($request['id']);
-        $price = $trainingModel->getPriceByTrainingId($request['id']);
-        $price = $price[0]['price'];
+        
+        
 
         //$user_model->addProfit($request['trainer_id'], $price);
         //$user_model->removeDebt($request['client_id'], $price);
         //$trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
 
         $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+        
+        foreach ($reports as &$one){
+            $price = $trainingModel->getPriceByTrainingId($request['id']);
+            $price = $price[0]['price'];
+            $one['price'] = $price;
+        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
