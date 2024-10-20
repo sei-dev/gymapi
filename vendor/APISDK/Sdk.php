@@ -203,7 +203,7 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->insertClientToTraining($request['training_id'], $request['client_id'], $request['price']);
-        $training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
+        //$training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
 
         $training_info = $training_model->getTrainingById($request['training_id']);
 
@@ -249,7 +249,7 @@ class Sdk extends Api
         }
 
         foreach ($params as $one) {
-            $training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
+            //$training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
         }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -287,7 +287,7 @@ class Sdk extends Api
         // $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
 
         foreach ($trainings as $one) {
-            $training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
+            //$training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
         }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -516,9 +516,9 @@ class Sdk extends Api
         $price = $trainingModel->getPriceByTrainingId($request['id']);
         $price = $price[0]['price'];
 
-        $user_model->addProfit($request['trainer_id'], $price);
-        $user_model->removeDebt($request['client_id'], $price);
-        $trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
+        //$user_model->addProfit($request['trainer_id'], $price);
+        //$user_model->removeDebt($request['client_id'], $price);
+        //$trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
 
         $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
 

@@ -131,44 +131,6 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
-    public function addDebt(string $id, string $price)
-    {
-        $sQuery = $sQuery = "UPDATE `users` SET `debt` = `debt` + '{$price}' WHERE id = '{$id}';
-				    ";
-        $row = $this->getDbAdapter()
-            ->query($sQuery)
-            ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row)) {
-            return $row;
-        }
-        return false;
-    }
-
-    public function removeDebt(string $id, string $price)
-    {
-        $sQuery = "UPDATE `users` SET `debt` = `debt` - '{$price}' WHERE id = '{$id}';
-				    ";
-        $row = $this->getDbAdapter()
-            ->query($sQuery)
-            ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row)) {
-            return $row;
-        }
-        return false;
-    }
-
-    public function addProfit(string $id, string $price)
-    {
-        $sQuery = "UPDATE `users` SET `profit` = `profit` + '{$price}' WHERE id = '{$id}';
-				    ";
-        $row = $this->getDbAdapter()
-            ->query($sQuery)
-            ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row)) {
-            return $row;
-        }
-        return false;
-    }
     
     public function getProfitProfileTrainer(string $trainer_id){
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
@@ -179,7 +141,7 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["profit"];
         }
         
         return false;
@@ -194,7 +156,7 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["profit"];
         }
         
         return false;
@@ -209,14 +171,14 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["profit"];
         }
         
         return false;
     }
     
     public function getDebtProfileTrainer(string $trainer_id){
-        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+        $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}';";
         
@@ -224,14 +186,14 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["debt"];
         }
         
         return false;
     }
     
     public function getDebtProfileClient(string $client_id){
-        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+        $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '0' AND training_clients.client_id = '{$client_id}'';";
         
@@ -239,14 +201,14 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["debt"];
         }
         
         return false;
     }
     
     public function getDebtConnection(string $trainer_id, string $client_id){
-        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+        $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                     LEFT JOIN training ON training.id = training_clients.training_id
                     WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}';";
         
@@ -254,7 +216,7 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row[0]["debt"];
         }
         
         return false;

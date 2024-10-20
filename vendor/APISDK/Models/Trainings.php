@@ -124,16 +124,6 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function removeDebtConnection(string $trainer_id, string $client_id, string $price){
-	    
-	    $sQuery = "UPDATE `connections` SET `debt` = `debt` - '{$price}' WHERE trainer_id = '{$trainer_id}' AND client_id = '{$client_id}';
-				    ";
-	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($rows)) {
-	        return $rows;
-	    }
-	    return false;
-	}
 	
 	public function getTrainingsTrainer(string $user_id)
 	{
@@ -172,39 +162,6 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    }
 	    return false;
 	
-	}
-	
-	public function addDebtConnection(string $trainer_id, string $client_id, string $price){
-	    
-	    $sQuery = "UPDATE `connections` SET `debt` = `debt` + '{$price}' WHERE trainer_id = '{$trainer_id}' AND client_id = '{$client_id}';
-				    ";
-	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($rows)) {
-	        return $rows;
-	    }
-	    return false;
-	}
-	
-	
-	public function addProfitConnection(string $trainer_id, string $client_id, string $price){
-	    
-	    $sQuery = "UPDATE `connections` SET `profit` = `profit` + '{$price}' WHERE trainer_id = '{$trainer_id}' AND client_id = '{$client_id}';
-				    ";
-	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($rows)) {
-	        return $rows;
-	    }
-	    return false;
-	}
-	
-	public function addTrainingConnection(string $conn_id){
-	    $sQuery = "UPDATE `connections` SET `training_no` = `training_no` + 1 WHERE id = '{$conn_id}';
-				    ";
-	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($rows)) {
-	        return $rows;
-	    }
-	    return false;
 	}
 	
 	
