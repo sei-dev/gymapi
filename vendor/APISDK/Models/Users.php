@@ -135,7 +135,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getProfitProfileTrainer(string $trainer_id){
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
-                   WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}';";
+                   WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
@@ -150,7 +150,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getProfitProfileClient(string $client_id){
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
-                   WHERE training_clients.paid = '1' AND training_clients.client_id = '{$client_id}';";
+                   WHERE training_clients.paid = '1' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
@@ -165,7 +165,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getProfitConnection(string $trainer_id, string $client_id){
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients 
                     LEFT JOIN training ON training.id = training_clients.training_id 
-                    WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}';";
+                    WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
@@ -180,7 +180,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getDebtProfileTrainer(string $trainer_id){
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
-                   WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}';";
+                   WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
@@ -195,7 +195,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getDebtProfileClient(string $client_id){
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
-                   WHERE training_clients.paid = '0' AND training_clients.client_id = '{$client_id}'';";
+                   WHERE training_clients.paid = '0' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
@@ -210,7 +210,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function getDebtConnection(string $trainer_id, string $client_id){
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                     LEFT JOIN training ON training.id = training_clients.training_id
-                    WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}';";
+                    WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
