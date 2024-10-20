@@ -141,6 +141,9 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
+            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
+                $row[0]["profit"]='0';
+            }
             return $row[0]["profit"];
         }
         
@@ -156,6 +159,9 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
+            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
+                $row[0]["profit"]='0';
+            }
             return $row[0]["profit"];
         }
         
@@ -171,6 +177,9 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
+            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
+                $row[0]["profit"]='0';
+            }
             return $row[0]["profit"];
         }
         
@@ -186,6 +195,9 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
+            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
+                $row[0]["debt"]='0';
+            }
             return $row[0]["debt"];
         }
         
@@ -201,6 +213,9 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
+            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
+                $row[0]["debt"]='0';
+            }
             return $row[0]["debt"];
         }
         
@@ -215,7 +230,12 @@ class Users extends ModelAbstract implements ModelInterface
         $row = $this->getDbAdapter()
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
+
+        
         if (isset($row)) {
+            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
+                $row[0]["debt"]='0';
+            }
             return $row[0]["debt"];
         }
         
@@ -229,6 +249,8 @@ class Users extends ModelAbstract implements ModelInterface
         $row = $this->getDbAdapter()
             ->query($sQuery)
             ->fetchAll(\PDO::FETCH_ASSOC);
+        
+            
         if (isset($row)) {
             return $row[0]["active_trainers"];
         }
