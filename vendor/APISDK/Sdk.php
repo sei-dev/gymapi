@@ -714,6 +714,7 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
         $users = $users_model->searchConnectedUsers($request['id'], $request['search_param']);
 
         array_walk($users, function (&$a) {
@@ -723,6 +724,11 @@ class Sdk extends Api
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
+        
+        foreach ($users as &$one) {
+                $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($request['id'], $one['id']);
+        }
+            
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -735,6 +741,7 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
         $users = $users_model->searchConnectedTrainers($request['id'], $request['search_param']);
 
         array_walk($users, function (&$a) {
@@ -744,6 +751,10 @@ class Sdk extends Api
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
+        
+            foreach ($users as &$one) {
+                $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($one['id'], $request['id']);
+            }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
