@@ -169,6 +169,96 @@ class Users extends ModelAbstract implements ModelInterface
         }
         return false;
     }
+    
+    public function getProfitProfileTrainer(string $trainer_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
+    
+    public function getProfitProfileClient(string $client_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   WHERE training_clients.paid = '1' AND training_clients.client_id = '{$client_id}';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
+    
+    public function getProfitConnection(string $trainer_id, string $client_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients 
+                    LEFT JOIN training ON training.id = training_clients.training_id 
+                    WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
+    
+    public function getDebtProfileTrainer(string $trainer_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
+    
+    public function getDebtProfileClient(string $client_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   WHERE training_clients.paid = '0' AND training_clients.client_id = '{$client_id}'';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
+    
+    public function getDebtConnection(string $trainer_id, string $client_id){
+        $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
+                    LEFT JOIN training ON training.id = training_clients.training_id
+                    WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}';";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        
+        return false;
+    }
 
     public function getActiveTrainers(string $user_id)
     {

@@ -185,6 +185,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	
 	public function addProfitConnection(string $trainer_id, string $client_id, string $price){
 	    
 	    $sQuery = "UPDATE `connections` SET `profit` = `profit` + '{$price}' WHERE trainer_id = '{$trainer_id}' AND client_id = '{$client_id}';
