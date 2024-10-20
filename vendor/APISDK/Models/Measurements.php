@@ -56,7 +56,7 @@ class Measurements extends ModelAbstract implements ModelInterface
                   `exercise_one_reps`, `exercise_two_reps`, `exercise_three_reps`, `exercise_one_kg`, `exercise_two_kg`,
                   `exercise_three_kg`) VALUES ('{$trainer_id}','{$client_id}','{$height}','{$weight}',
                   '{$neck}','{$chest}','{$gluteus}','{$quad}','{$leg}','{$waist}','{$biceps}',
-                  '{$date}','{$e1_rep}','{$e2_rep}','{$e2_rep}','{$e1_kg}','{$e2_kg}','{$e3_kg}')";
+                  '{$date}','{$e1_rep}','{$e2_rep}','{$e3_rep}','{$e1_kg}','{$e2_kg}','{$e3_kg}')";
 		
 		$row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 		if (isset($row)) {
