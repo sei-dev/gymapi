@@ -599,7 +599,7 @@ class Sdk extends Api
         });
 
         foreach ($users as &$one) {
-            $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($request['id'], $one['id']);
+            $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($one['id'], $request['id']);
         }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
