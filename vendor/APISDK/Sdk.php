@@ -259,8 +259,7 @@ class Sdk extends Api
     {
         $training_model = new Trainings($this->dbAdapter);
         $training_model->setTrainingsFinished();
-        
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
 
@@ -373,7 +372,7 @@ class Sdk extends Api
 
         $users_model = new Users($this->dbAdapter);
         $training_model = new Trainings($this->dbAdapter);
-        
+
         $users = $users_model->getUserById($request['id']);
 
         if ($this->isFileExists(self::DIR_USERS, $users["id"])) {
@@ -381,12 +380,12 @@ class Sdk extends Api
         } else {
             $users['image'] = $this->domain . "/images/users/logo.png";
         }
-        
+
         $users['active_clients'] = $users_model->getActiveClients($request['id']);
         $users['active_trainers'] = $users_model->getActiveTrainers($request['id']);
         $users['total_trainings_trainer'] = $training_model->getTrainingsTrainer($request['id']);
         $users['total_trainings_client'] = $training_model->getTrainingsClient($request['id']);
- 
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
@@ -572,9 +571,11 @@ class Sdk extends Api
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
-            
         });
-        
+
+        foreach ($users as &$one) {
+            $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($request['id'], $one['id']);
+        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -595,6 +596,10 @@ class Sdk extends Api
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
+
+        foreach ($users as &$one) {
+            $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($request['id'], $one['id']);
+        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
