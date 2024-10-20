@@ -385,6 +385,12 @@ class Sdk extends Api
         $users['active_trainers'] = $users_model->getActiveTrainers($request['id']);
         $users['total_trainings_trainer'] = $training_model->getTrainingsTrainer($request['id']);
         $users['total_trainings_client'] = $training_model->getTrainingsClient($request['id']);
+        if($users['is_trainer'] == '1'){
+            $users['profit'] = $users_model->getProfitProfileTrainer($request['id']);
+        }else{
+            $users['debt'] = $users_model->getDebtProfileClient($request['id']);
+        }
+        
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
