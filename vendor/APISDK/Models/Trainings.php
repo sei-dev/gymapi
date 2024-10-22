@@ -281,6 +281,13 @@ class Trainings extends ModelAbstract implements ModelInterface
 		return $rows;
 	}
 	
+	public function getTrainingDatesMonthlyTrainer(string $compare_string, string $trainer_id) {
+	    $sQuery = "SELECT training.date FROM training WHERE training.date LIKE '{$compare_string}%'
+                   AND training.trainer_id = '{$trainer_id}'";
+	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    
+	    return $rows;
+	}
 	
 	
 	/**

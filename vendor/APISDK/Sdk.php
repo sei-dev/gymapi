@@ -640,6 +640,20 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
+    
+    private function getMonthEventsTrainer()
+    {
+        $request = $this->filterParams([
+            'yearmonth_string',
+            'trainer_id'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $dates = $training_model->getTrainingDatesMonthlyTrainer($request['yearmonth_string'], $request['trainer_id']);
+        
+            
+       return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
+    }
 
     private function getGymsByCityId()
     {
