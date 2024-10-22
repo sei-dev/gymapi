@@ -289,6 +289,18 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return $rows;
 	}
 	
+	public function getTrainingDatesMonthlyClient(string $compare_string, string $client_id) {
+	    $sQuery = "SELECT training.date FROM training
+                   LEFT JOIN training_clients ON training.id = training_clients.training_id
+				   WHERE training_clients.client_id = '{$client_id}'  AND training.date LIKE '{$compare_string}%';
+				    ";
+	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($rows)) {
+	        return $rows;
+	    }
+	    return false;
+	}
+	
 	
 	/**
 	 * 

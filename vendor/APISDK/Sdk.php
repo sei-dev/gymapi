@@ -652,7 +652,21 @@ class Sdk extends Api
         $dates = $training_model->getTrainingDatesMonthlyTrainer($request['yearmonth_string'], $request['trainer_id']);
         
             
-       return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
+    }
+    
+    private function getMonthEventsClient()
+    {
+        $request = $this->filterParams([
+            'yearmonth_string',
+            'client_id'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $dates = $training_model->getTrainingDatesMonthlyClient($request['yearmonth_string'], $request['client_id']);
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
     }
 
     private function getGymsByCityId()
