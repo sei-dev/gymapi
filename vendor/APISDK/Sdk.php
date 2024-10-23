@@ -220,6 +220,62 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
+    
+    private function insertRepeatedTraining(){
+        $request = $this->filterParams([
+            'trainer_id',
+            'gym_id',
+            'start_date',
+            'time',
+            'is_group',
+            'end_date',
+            'mon',
+            'tue',
+            'wed',
+            'thu',
+            'fri',
+            'sat',
+            'sun'
+        ]);
+        
+        $start_date = new \DateTimeImmutable($request['start_date']);
+        $end_date = new \DateTimeImmutable($request['end_date']);
+        $training_model = new Trainings($this->dbAdapter);
+        
+        do{
+            if($start_date->format('N') == 1 && $request['mon'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 2 && $request['tue'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 3 && $request['wed'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 4 && $request['thu'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 5 && $request['fri'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 6 && $request['sat'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+            if($start_date->format('N') == 7 && $request['sun'] == "1"){
+                $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
+                    $request['is_group'], $start_date, $request['time']);
+            }
+                
+            $start_date = $start_date->modify('+1 day');
+        }while($end_date!=$start_date);
+        
+    }
 
     private function setTrainingCancelledTrainer()
     {
