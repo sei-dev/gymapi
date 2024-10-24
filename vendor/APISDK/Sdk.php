@@ -604,7 +604,8 @@ class Sdk extends Api
         $request = $this->filterParams([
             'id',
             'trainer_id',
-            'client_id'
+            'client_id',
+            'date_string'
         ]);
 
         $trainingModel = new Trainings($this->dbAdapter);
@@ -618,7 +619,7 @@ class Sdk extends Api
         //$user_model->removeDebt($request['client_id'], $price);
         //$trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
 
-        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id'], $request['date_string']);
         
         foreach ($reports as &$one){
             $price = $trainingModel->getPriceByTrainingId($request['id']);
