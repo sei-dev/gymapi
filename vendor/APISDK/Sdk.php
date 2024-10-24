@@ -551,6 +551,22 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
+    
+    private function getReportsByIdsAndDate()
+    {
+        $request = $this->filterParams([
+            'trainer_id',
+            'client_id',
+            'date_string'
+        ]);
+        
+        $trainingModel = new Trainings($this->dbAdapter);
+        // $user_model = new Users($this->dbAdapter);
+        
+        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
+    }
 
 
      private function getReportsByTrainerId(){
