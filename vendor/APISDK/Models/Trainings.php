@@ -230,7 +230,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    $sQuery = "SELECT training_clients.*, training_clients.id as topay_id, training.date, training.time, gyms.name AS gym FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    LEFT JOIN gyms ON gyms.id = training.gym_id
-                   training.trainer_id = {$trainer_id} AND training.cancelled = '0' AND training_clients.cancelled = '0';
+                   WHERE training.trainer_id = {$trainer_id} AND training.cancelled = '0' AND training_clients.cancelled = '0';
 				    ";
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($rows)) {
