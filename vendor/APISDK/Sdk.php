@@ -552,22 +552,37 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
 
-    /*
-     * private function getReportsByIds(){
-     *
-     * $request = $this->filterParams(['trainer_id',
-     * 'client_id'
-     * ]);
-     *
-     *
-     * $trainingModel = new Trainings($this->dbAdapter);
-     * //$user_model = new Users($this->dbAdapter);
-     *
-     * $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
-     *
-     * return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
-     * }
-     */
+
+     private function getReportsByTrainerId(){
+     
+     $request = $this->filterParams([
+         'trainer_id'
+     ]);
+    
+     
+     $trainingModel = new Trainings($this->dbAdapter);
+     //$user_model = new Users($this->dbAdapter);
+     
+     $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+     
+     return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
+    }
+
+    private function getReportsByClientId(){
+        
+        $request = $this->filterParams([
+            'client_id'
+        ]);
+        
+        
+        $trainingModel = new Trainings($this->dbAdapter);
+        //$user_model = new Users($this->dbAdapter);
+        
+        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
+    }
+    
     private function setReportPaid()
     {
         $request = $this->filterParams([

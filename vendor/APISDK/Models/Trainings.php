@@ -226,6 +226,34 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function getReportsByTrainerId(string $trainer_id) {
+	    $sQuery = "SELECT training_clients.*, training_clients.id as topay_id, training.date, training.time, gyms.name AS gym FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   LEFT JOIN gyms ON gyms.id = training.gym_id
+                   training.trainer_id = {$trainer_id} AND training.cancelled = '0' AND training_clients.cancelled = '0';
+				    ";
+	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($rows)) {
+	        return $rows;
+	    }
+	    return false;
+	}
+	
+	
+	public function getReportsByClientId(string $client_id) {
+	    $sQuery = "SELECT training_clients.*, training_clients.id as topay_id, training.date, training.time, gyms.name AS gym FROM training_clients
+                   LEFT JOIN training ON training.id = training_clients.training_id
+                   LEFT JOIN gyms ON gyms.id = training.gym_id
+                   WHERE training_clients.client_id = {$client_id} AND training.cancelled = '0' AND training_clients.cancelled = '0';
+				    ";
+	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($rows)) {
+	        return $rows;
+	    }
+	    return false;
+	}
+	
+	
 	public function setTrainingPaid(string $id) {
 	    $sQuery = "UPDATE `training_clients` SET `paid`='1' WHERE id ={$id};
 				    ";
