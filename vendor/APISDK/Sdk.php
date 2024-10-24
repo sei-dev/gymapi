@@ -563,7 +563,7 @@ class Sdk extends Api
         $trainingModel = new Trainings($this->dbAdapter);
         // $user_model = new Users($this->dbAdapter);
         
-        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
+        $reports = $trainingModel->getReportsByIdsAndDate($request['trainer_id'], $request['client_id'], $request['date_string']);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
