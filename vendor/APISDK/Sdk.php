@@ -27,7 +27,7 @@ use phpFCMv1\Recipient;
 class Sdk extends Api
 {
 
-    const DIR_UPLOADS = __DIR__ . "/../images/";
+    const DIR_UPLOADS = __DIR__ . "/../../images/";
 
     const DIR_USERS = "users";
 
@@ -672,9 +672,9 @@ class Sdk extends Api
 
         array_walk($users, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
-                $a['image'] = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
-                $a['image'] = $_SERVER['DOCUMENT_ROOT'] .  "/images/users/logo.png";
+                $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
 
@@ -1147,25 +1147,38 @@ class Sdk extends Api
             'base_64',
             'user_id'
         ]);
-
+        
         $base64_string = $request['base_64'];
         $file_name = $request['user_id'];
-
-        if (! $base64_string) {
+        
+        if (!$base64_string) {
             throw new \Exception("base64_string is empty");
         }
-
-        $base64_string = $this->base64UrlDecode(preg_replace('#^data:image/\w+;base64,#i', '', $base64_string));
-
-        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . 'images/users/';
-        $upload_path = $upload_dir . $file_name . ".png";
-
-        // Create dir if not exists
-        if (! is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
+        
+        // Remove the base64 URL prefix if it exists
+        $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
+        $decoded_data = base64_decode($base64_string);
+        
+        if ($decoded_data === false) {
+            throw new \Exception("Failed to decode base64 string");
         }
-        file_put_contents($upload_path, $base64_string);
-
+        
+        // Define the upload directory
+        $upload_dir = __DIR__ . '/../public_html/images/users/';
+        $upload_path = $upload_dir . $file_name . ".png";
+        
+        // Create directory if it does not exist
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0777, true) && !is_dir($upload_dir)) {
+                throw new \Exception("Failed to create directory: " . $upload_dir);
+            }
+        }
+        
+        // Save the decoded image data to a file
+        if (file_put_contents($upload_path, $decoded_data) === false) {
+            throw new \Exception("Failed to save the image to: " . $upload_path);
+        }
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
     
@@ -1175,14 +1188,9 @@ class Sdk extends Api
             'user_id'
         ]);
         
-        $base64_string = $request['base_64'];
         $file_name = $request['user_id'];
+
         
-        if (! $base64_string) {
-            throw new \Exception("base64_string is empty");
-        }
-        
-        $base64_string = $this->base64UrlDecode(preg_replace('#^data:image/\w+;base64,#i', '', $base64_string));
         
         $upload_dir = self::DIR_UPLOADS . 'users/';
         $upload_path = $upload_dir . $file_name . ".png";
