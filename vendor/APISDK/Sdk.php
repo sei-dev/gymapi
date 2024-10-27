@@ -1192,7 +1192,7 @@ class Sdk extends Api
 
         
         
-        $upload_dir = self::DIR_UPLOADS . 'users/';
+        $upload_dir = $_SERVER['DOCUMENT_ROOT']. "/images/users/";
         $upload_path = $upload_dir . $file_name . ".png";
         
         /*
