@@ -1164,7 +1164,7 @@ class Sdk extends Api
         }
         
         // Define the upload directory
-        $upload_dir = __DIR__ . '/../public_html/images/users/';
+        $upload_dir = $_SERVER['DOCUMENT_ROOT']. "/images/users/";
         $upload_path = $upload_dir . $file_name . ".png";
         
         // Create directory if it does not exist
