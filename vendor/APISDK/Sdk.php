@@ -672,9 +672,9 @@ class Sdk extends Api
 
         array_walk($users, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
-                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
+                $a['image'] = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
-                $a['image'] = $this->domain . "/images/users/logo.png";
+                $a['image'] = $_SERVER['DOCUMENT_ROOT'] .  "/images/users/logo.png";
             }
         });
 
@@ -1159,8 +1159,6 @@ class Sdk extends Api
 
         $upload_dir = $_SERVER['DOCUMENT_ROOT'] . 'images/users/';
         $upload_path = $upload_dir . $file_name . ".png";
-            
-        die(var_dump($upload_path));
 
         // Create dir if not exists
         if (! is_dir($upload_dir)) {
