@@ -27,7 +27,7 @@ use phpFCMv1\Recipient;
 class Sdk extends Api
 {
 
-    const DIR_UPLOADS = __DIR__ . "/../../images/";
+    const DIR_UPLOADS = __DIR__ . "/../images/";
 
     const DIR_USERS = "users";
 
@@ -1157,12 +1157,8 @@ class Sdk extends Api
 
         $base64_string = $this->base64UrlDecode(preg_replace('#^data:image/\w+;base64,#i', '', $base64_string));
 
-        $upload_dir = self::DIR_UPLOADS . 'users/';
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . 'images/users/';
         $upload_path = $upload_dir . $file_name . ".png";
-
-
-         var_dump($upload_dir);
-         die(var_dump($upload_path));
             
 
         // Create dir if not exists
