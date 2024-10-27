@@ -1173,6 +1173,38 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
+    
+    private function removeImage()
+    {
+        $request = $this->filterParams([
+            'user_id'
+        ]);
+        
+        $base64_string = $request['base_64'];
+        $file_name = $request['user_id'];
+        
+        if (! $base64_string) {
+            throw new \Exception("base64_string is empty");
+        }
+        
+        $base64_string = $this->base64UrlDecode(preg_replace('#^data:image/\w+;base64,#i', '', $base64_string));
+        
+        $upload_dir = self::DIR_UPLOADS . 'users/';
+        $upload_path = $upload_dir . $file_name . ".png";
+        
+        /*
+         * var_dump($upload_dir);
+         * die(var_dump($upload_path));
+         */
+        
+        // Create dir if not exists
+        if (! is_dir($upload_dir)) {
+            $this->formatResponse(self::STATUS_SUCCESS, "", []);
+        }
+        unlink($upload_path);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
 
     protected static function base64UrlDecode($input)
     {
