@@ -1160,10 +1160,10 @@ class Sdk extends Api
         $upload_dir = self::DIR_UPLOADS . 'users/';
         $upload_path = $upload_dir . $file_name . ".png";
 
-        /*
-         * var_dump($upload_dir);
-         * die(var_dump($upload_path));
-         */
+
+         var_dump($upload_dir);
+         die(var_dump($upload_path));
+            
 
         // Create dir if not exists
         if (! is_dir($upload_dir)) {
@@ -1201,6 +1201,7 @@ class Sdk extends Api
         if (! is_dir($upload_dir)) {
             $this->formatResponse(self::STATUS_SUCCESS, "", []);
         }
+        
         unlink($upload_path);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
