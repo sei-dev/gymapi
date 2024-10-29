@@ -309,7 +309,7 @@ class Users extends ModelAbstract implements ModelInterface
     public function searchConnectedTrainers(string $client_id, string $param)
     {
         $sQuery = "SELECT users.id, connections.id as connection_id, users.first_name, users.last_name, users.phone, users.email,
-                    cities.city as location, connections.training_no, connections.debt, connections.price, connections.connected_since
+                    cities.city as location, connections.training_no, connections.price, connections.connected_since
                     FROM connections LEFT JOIN users ON users.id = connections.trainer_id
                     LEFT JOIN cities ON users.city_id = cities.id
                     WHERE connections.accepted = '1' AND connections.client_id = '{$client_id}' AND users.first_name LIKE '{$param}%'
