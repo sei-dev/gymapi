@@ -312,8 +312,8 @@ class Users extends ModelAbstract implements ModelInterface
                     cities.city as location, connections.training_no, connections.price, connections.connected_since
                     FROM connections LEFT JOIN users ON users.id = connections.trainer_id
                     LEFT JOIN cities ON users.city_id = cities.id
-                    WHERE connections.accepted = '1' AND connections.client_id = '{$client_id}' AND users.first_name LIKE '{$param}%'
-                    OR users.last_name LIKE '{$param}%';
+                    WHERE connections.accepted = '1' AND connections.client_id = '{$client_id}' AND (users.first_name LIKE '{$param}%' 
+                    OR users.last_name LIKE '{$param}%');
                 ";
         $row = $this->getDbAdapter()
             ->query($sQuery)
