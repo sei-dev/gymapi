@@ -808,7 +808,7 @@ class Sdk extends Api
 
         $trainer = $users_model->getUserById($request['trainer_id']);
 
-        $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
