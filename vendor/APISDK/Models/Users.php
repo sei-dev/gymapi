@@ -541,6 +541,27 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
+    
+    public function register(String $name, String $surname, String $age, String $phone, String $password,
+        String $email, String $deadline, String $is_male, String $city_id, String $en, String $rs, 
+        String $ru, String $is_trainer)
+    {
+        $sQuery = "INSERT INTO `users`(`first_name`, `last_name`, `email`, `password`, `phone`, `deadline`, 
+                    `is_trainer`, `is_male`, `age`,`city_id`,
+                    `language_english`, `language_serbian`, 
+                    `language_russian`,) VALUES ('{$name}','{$surname}','{$email}','{$password}',
+                    '{$phone}','{$deadline}','{$is_trainer}','{$is_male}','{$age}','{$city_id}',
+                    '{$en}','{$rs}','{$ru}');
+				";
+        
+        $sQuery2 = "SELECT * FROM `users` WHERE first_name = '{$name}' AND last_name = '{$surname}' AND email = '{$email}';";
+        
+        $this->getDbAdapter()->query($sQuery);
+        
+        return $this->getDbAdapter()
+        ->query($sQuery2)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+    }
 
     public function forgotPassword(String $id, String $hash)
     {
@@ -552,15 +573,6 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
 
-    public function register(String $email, String $contact_name, String $contact_lastname, String $contact_phone, String $password)
-    {
-        $sQuery = "INSERT INTO " . self::getTablePrefix() . "users
-                   SET `email`='{$email}',
-                  `contact_name`='{$contact_name}',
-                  `contact_lastname`='{$contact_lastname}',`contact_phone`='{$contact_phone}', `password`='{$password}'";
-
-        return $this->getDbAdapter()->query($sQuery);
-    }
 
     // bcrypt, then compare hash with password
     public function login(string $email)

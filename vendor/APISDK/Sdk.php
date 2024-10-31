@@ -68,7 +68,8 @@ class Sdk extends Api
             'register',
             'forgotPassword',
             'setTrainingsFinished',
-            'initPayment'
+            'initPayment',
+            'register'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -840,6 +841,43 @@ class Sdk extends Api
         $users_model = new Users($this->dbAdapter);
         $users = $users_model->removeConnection($request['id']);
 
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+    }
+    
+    private function register()
+    {
+        $request = $this->filterParams([
+            'name',
+            'surname',
+            'email',
+            'phone',
+            'deadline',
+            'age',
+            'city_id',
+            'gender',
+            'password',
+            'en',
+            'rs',
+            'ru',
+            'is_trainer'
+        ]);
+        
+        $users_model = new Users($this->dbAdapter);
+        
+        $user = $users_model->getUserByEmail($request['email']);
+        
+        if ($user) {
+            return $this->formatResponse(self::STATUS_FAILED, "-1");
+        }
+        
+        $password = password_hash($request['password'], PASSWORD_BCRYPT);
+        
+        
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'],
+            $request['phone'], $password, $request['email'], $request['deadline'],
+            $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'],
+            $request['is_trainer']);
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
