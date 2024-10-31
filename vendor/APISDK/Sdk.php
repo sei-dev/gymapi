@@ -69,7 +69,12 @@ class Sdk extends Api
             'forgotPassword',
             'setTrainingsFinished',
             'initPayment',
-            'register'
+            'register',
+            'getCities',
+            'getGymsByCityId',
+            'addFitnessCenter',
+            'removeFitnessCenter',
+            'saveServicesTrainer'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
