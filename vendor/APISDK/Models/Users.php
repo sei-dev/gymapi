@@ -549,7 +549,7 @@ class Users extends ModelAbstract implements ModelInterface
         $sQuery = "INSERT INTO `users`(`first_name`, `last_name`, `email`, `password`, `phone`, `deadline`, 
                     `is_trainer`, `is_male`, `age`,`city_id`,
                     `language_english`, `language_serbian`, 
-                    `language_russian`,) VALUES ('{$name}','{$surname}','{$email}','{$password}',
+                    `language_russian`) VALUES ('{$name}','{$surname}','{$email}','{$password}',
                     '{$phone}','{$deadline}','{$is_trainer}','{$is_male}','{$age}','{$city_id}',
                     '{$en}','{$rs}','{$ru}');
 				";
