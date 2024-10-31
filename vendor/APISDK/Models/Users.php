@@ -562,6 +562,13 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery2)
         ->fetchAll(\PDO::FETCH_ASSOC);
     }
+    
+    public function removeInactive(){
+        $sQuery = "DELETE FROM table_name WHERE active_profile = '0';";
+        
+        return $this->getDbAdapter()
+        ->query($sQuery);
+    }
 
     public function forgotPassword(String $id, String $hash)
     {
