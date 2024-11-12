@@ -16,6 +16,10 @@ use APISDK\Models\Gyms;
 use phpFCMv1\Client;
 use phpFCMv1\Notification;
 use phpFCMv1\Recipient;
+use Exchange\Client\Client as ExchangeClient;
+use Exchange\Client\Data\Customer;
+use Exchange\Client\Transaction\Debit;
+use Exchange\Client\Transaction\Result;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -30,6 +34,7 @@ class Sdk extends Api
     const DIR_UPLOADS = __DIR__ . "/../../images/";
 
     const DIR_USERS = "users";
+    
 
     /*
      * const DIR_BAITS = "baits";
@@ -74,7 +79,8 @@ class Sdk extends Api
             'getGymsByCityId',
             'addFitnessCenter',
             'removeFitnessCenter',
-            'saveServicesTrainer'
+            'saveServicesTrainer',
+            'removeInactive'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -327,6 +333,14 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         $training_model->setTrainingsFinished();
 
+        return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
+    }
+    
+    private function removeInactive()
+    {
+        $user_model = new Users($this->dbAdapter);
+        $user_model->removeInactive();
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
 
@@ -625,7 +639,7 @@ class Sdk extends Api
         //$user_model->removeDebt($request['client_id'], $price);
         //$trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
 
-        $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id'], $request['date_string']);
+        $reports = $trainingModel->getReportsByIdsAndDate($request['trainer_id'], $request['client_id'], $request['date_string']);
         
         foreach ($reports as &$one){
             $price = $trainingModel->getPriceByTrainingId($request['id']);
@@ -1074,60 +1088,13 @@ class Sdk extends Api
 
     private function initPayment()
     {
+        
+        $api_user = "genericmerchant-api-1";
+        $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
+        $connector_api_key = "genericmerchant-simulator-1";
+        $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
+        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
 
-        /*
-         * $request = $this->filterParams([
-         * 'amount'
-         * ]);
-         */
-        $merchant_key = "TREESRS";
-        $authenticity_token = "";
-
-        $data = [
-            "amount" => 100,
-            // unique order identifier
-            "order_number" => 'random' . time(),
-            "currency" => "EUR",
-            "transaction_type" => "purchase",
-            "order_info" => "Create payment session order info",
-            "scenario" => 'charge'
-        ];
-
-        $body_as_string = json_encode($data);
-        $base_url = 'https://ipgtest.monri.com';
-        $ch = curl_init($base_url . '/v2/payment/new');
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-
-        $timestamp = time();
-        $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token . $body_as_string);
-        $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Content-Type: application/json',
-            'Content-Length: ' . strlen($body_as_string),
-            'Authorization: ' . $authorization
-        ));
-
-        $result = curl_exec($ch);
-
-        if (curl_errno($ch)) {
-            curl_close($ch);
-            $response = [
-                'client_secret' => null,
-                'status' => 'declined',
-                'error' => curl_error($ch)
-            ];
-        } else {
-            curl_close($ch);
-            $response = [
-                'status' => 'approved',
-                'client_secret' => json_decode($result, true)['client_secret']
-            ];
-        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
     }
@@ -1393,4 +1360,53 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
+    
+    /* $merchant_key = "TREESRS";
+     $authenticity_token = "";
+     
+     $data = [
+     "amount" => 100,
+     // unique order identifier
+     "order_number" => 'random' . time(),
+     "currency" => "EUR",
+     "transaction_type" => "purchase",
+     "order_info" => "Create payment session order info",
+     "scenario" => 'charge'
+     ];
+     
+     $body_as_string = json_encode($data);
+     $base_url = 'https://ipgtest.monri.com';
+     $ch = curl_init($base_url . '/v2/payment/new');
+     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+     curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
+     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+     
+     $timestamp = time();
+     $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token . $body_as_string);
+     $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
+     
+     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+     'Content-Type: application/json',
+     'Content-Length: ' . strlen($body_as_string),
+     'Authorization: ' . $authorization
+     ));
+     
+     $result = curl_exec($ch);
+     
+     if (curl_errno($ch)) {
+     curl_close($ch);
+     $response = [
+     'client_secret' => null,
+     'status' => 'declined',
+     'error' => curl_error($ch)
+     ];
+     } else {
+     curl_close($ch);
+     $response = [
+     'status' => 'approved',
+     'client_secret' => json_decode($result, true)['client_secret']
+     ];
+     } */
 }
