@@ -1172,6 +1172,29 @@ class Sdk extends Api
             $result->getAdapterCode();
             
         }
+        
+        $statusRequestData = new StatusRequestData();
+        
+        // use either the UUID or your merchantTransactionId but not both
+        //$statusRequestData->setTransactionUuid($transactionUuid);
+        $statusRequestData->setMerchantTransactionId($merchantTransactionId);
+        
+        $statusResult = $client->sendStatusRequest($statusRequestData);
+        
+        // dump all data
+        var_dump($statusResult);
+        
+        // dump card data
+        $cardData = $statusResult->getreturnData();
+        var_dump($cardData);
+        
+        // dump & echo error data
+        $errorData = $statusResult->getFirstError();
+        
+        echo $errorData->getMessage();
+        echo $errorData->getCode();
+        echo $errorData->getAdapterCode();
+        echo $errorData->getAdapterMessage();
 
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
