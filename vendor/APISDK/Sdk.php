@@ -1175,26 +1175,16 @@ class Sdk extends Api
         
         $statusRequestData = new StatusRequestData();
         
+        $transactionUuid = $gatewayReferenceId; // the gatewayReferenceId you get by Result->getReferenceId();
+        //$merchantTransactionId = 'your_transaction_id';
+        
         // use either the UUID or your merchantTransactionId but not both
-        //$statusRequestData->setTransactionUuid($transactionUuid);
-        $statusRequestData->setMerchantTransactionId($merchantTransactionId);
+        $statusRequestData->setTransactionUuid($transactionUuid);
+        //$statusRequestData->setMerchantTransactionId($merchantTransactionId);
         
         $statusResult = $client->sendStatusRequest($statusRequestData);
         
-        // dump all data
         var_dump($statusResult);
-        
-        // dump card data
-        $cardData = $statusResult->getreturnData();
-        var_dump($cardData);
-        
-        // dump & echo error data
-        $errorData = $statusResult->getFirstError();
-        
-        echo $errorData->getMessage();
-        echo $errorData->getCode();
-        echo $errorData->getAdapterCode();
-        echo $errorData->getAdapterMessage();
 
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
