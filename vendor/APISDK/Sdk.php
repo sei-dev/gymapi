@@ -1143,6 +1143,7 @@ class Sdk extends Api
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 //error handling
                 $errors = $result->getErrors();
+                var_dump($errors);
                 // handle the error
                 //cancelCart();
                 
@@ -1165,10 +1166,10 @@ class Sdk extends Api
         } else{
             
             // handle error
-            // $result->getErrorMessage()
-            // $result->getErrorCode()
-            // $result->getAdapterMessage()
-            // $result->getAdapterCode()
+            $result->getErrorMessage();
+            $result->getErrorCode();
+            $result->getAdapterMessage();
+            $result->getAdapterCode();
             
         }
 
