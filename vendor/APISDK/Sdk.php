@@ -20,6 +20,7 @@ use Exchange\Client\Client as ExchangeClient;
 use Exchange\Client\Data\Customer;
 use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
+use Exchange\Client\StatusApi\StatusRequestData;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
