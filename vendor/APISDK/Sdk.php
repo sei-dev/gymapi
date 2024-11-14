@@ -1174,7 +1174,7 @@ class Sdk extends Api
         }
 
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $gatewayReferenceId);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
