@@ -40,7 +40,8 @@ class XmlGenerator {
     /**
      * @var string
      */
-    protected $namespaceRoot = 'http://asxgw.com';
+    //protected $namespaceRoot = 'http://asxgw.com';
+    protected $namespaceRoot = 'https://asxgw.paymentsandbox.cloud/';
 
     /**
      * @param string $namespaceRoot

@@ -51,8 +51,8 @@ class Client
     /**
      * The default url points to the Exchange Gateway
      */
-    const DEFAULT_EXCHANGE_URL = 'https://asxgw.com/';
-    // const DEFAULT_EXCHANGE_URL = 'https://asxgw.paymentsandbox.cloud/'; // TEST server URL
+    //const DEFAULT_EXCHANGE_URL = 'https://asxgw.com/';
+    const DEFAULT_EXCHANGE_URL = 'https://asxgw.paymentsandbox.cloud/'; // TEST server URL
     /** @deprecated for xml only */
     const TRANSACTION_ROUTE = 'transaction';
     /** @deprecated for xml only */
@@ -105,7 +105,8 @@ class Client
     /**
      * @var string
      */
-    protected static $gatewayUrl = 'https://asxgw.com/';
+    //protected static $gatewayUrl = 'https://asxgw.com/';
+    protected static $gatewayUrl = 'https://asxgw.paymentsandbox.cloud/'; 
 
     /**
      * the api key given by the Exchange gateway
