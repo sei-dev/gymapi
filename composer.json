@@ -1,5 +1,6 @@
 {
     "require": {
-        "lkaybob/php-fcm-v1": "^1.0"
+        "lkaybob/php-fcm-v1": "^1.0",
+        "allsecure-pay/php-exchange": "^3.9"
     }
 }

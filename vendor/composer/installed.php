@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => '__root__',
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
-        'reference' => '30e4a6331e11e5f9fc4baab4dc21bf533bd5d7aa',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => '0ad9aa7682e24d59426f7bbbdd00806bef2fdd67',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,11 +11,20 @@
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
-            'reference' => '30e4a6331e11e5f9fc4baab4dc21bf533bd5d7aa',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '0ad9aa7682e24d59426f7bbbdd00806bef2fdd67',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'allsecure-pay/php-exchange' => array(
+            'pretty_version' => 'v3.9.0',
+            'version' => '3.9.0.0',
+            'reference' => '50f4cd61854f6c31c2016fad34d1a85b23364d20',
+            'type' => 'project',
+            'install_path' => __DIR__ . '/../allsecure-pay/php-exchange',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -78,6 +87,15 @@
             'provided' => array(
                 0 => '1.0',
             ),
+        ),
+        'psr/log' => array(
+            'pretty_version' => '1.1.4',
+            'version' => '1.1.4.0',
+            'reference' => 'd49695b909c3b7628b6289db5479a1c204601f11',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../psr/log',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'ralouphie/getallheaders' => array(
             'pretty_version' => '3.0.3',

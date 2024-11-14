@@ -27,6 +27,7 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         ),
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
         ),
         'G' => 
@@ -38,6 +39,10 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         'F' => 
         array (
             'Firebase\\JWT\\' => 13,
+        ),
+        'E' => 
+        array (
+            'Exchange\\Client\\' => 16,
         ),
     );
 
@@ -53,6 +58,10 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         'Symfony\\Polyfill\\Intl\\Idn\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
+        ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -73,6 +82,10 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         'Firebase\\JWT\\' => 
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
+        'Exchange\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/allsecure-pay/php-exchange/src',
         ),
     );
 
