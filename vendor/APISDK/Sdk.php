@@ -185,6 +185,27 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
+    private function getClientTrainingsByDate()
+    {
+        $request = $this->filterParams([
+            'id',
+            'date'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
+        
+        array_walk($trainings, function (&$a) {
+            if ($this->isFileExists(self::DIR_USERS, $a["trainer_id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["trainer_id"] . ".png?r=" . rand(0, 100000);
+            } else {
+                $a['image'] = $this->domain . "/images/users/logo.png";
+            }
+        });
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+    }
+    
     private function checkIfConnected()
     {
         $request = $this->filterParams([
@@ -377,19 +398,6 @@ class Sdk extends Api
 
         // $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
 
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-    }
-
-    private function getClientTrainingsByDate()
-    {
-        $request = $this->filterParams([
-            'id',
-            'date'
-        ]);
-
-        $training_model = new Trainings($this->dbAdapter);
-        $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
