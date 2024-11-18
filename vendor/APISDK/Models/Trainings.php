@@ -54,11 +54,13 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getTrainingsByDate(string $id, string $date) {
-	    $sQuery = "SELECT training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
+	    $sQuery = "SELECT client.first_name as client_first_name, client.last_name as client_last_name training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
                    gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN gyms ON training.gym_id = gyms.id
                    LEFT JOIN cities ON cities.id = gyms.city_id
+                   LEFT JOIN training_clients ON training_clients.training_id = training.id
+                   LEFT JOIN users client ON training_clients.client_id = client.id
 				   WHERE trainer_id = '{$id}'  AND training.date = '{$date}';
 				    ";
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
