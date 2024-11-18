@@ -148,6 +148,14 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getTodayTrainingsByTrainerId($request['trainer_id']);
+        
+        array_walk($trainings, function (&$a) {
+            if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            } else {
+                $a['image'] = $this->domain . "/images/users/logo.png";
+            }
+        });
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
