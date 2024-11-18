@@ -174,13 +174,13 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getTrainingsByDate($request['id'], $request['date']);
         
-//         array_walk($trainings, function (&$a) {
-//             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
-//                 $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
-//             } else {
-//                 $a['image'] = $this->domain . "/images/users/logo.png";
-//             }
-//         });
+        array_walk($trainings, function (&$a) {
+             if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+          } else {
+              $a['image'] = $this->domain . "/images/users/logo.png";
+             }
+        });
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -377,9 +377,6 @@ class Sdk extends Api
 
         // $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
 
-        foreach ($trainings as $one) {
-            //$training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
-        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -531,7 +528,6 @@ class Sdk extends Api
         ]);
 
         $mes_model = new Measurements($this->dbAdapter);
-        // $user_model = new Users($this->dbAdapter);
 
         $measurements = $mes_model->addMeasurement($request['trainer_id'], $request['client_id'], $request['height'], $request['weight'], $request['neck'], $request['chest'], $request['gluteus'], $request['quad'], $request['leg'], $request['waist'], $request['biceps'], $request['date'], $request['e1_rep'], $request['e2_rep'], $request['e3_rep'], $request['e1_kg'], $request['e2_kg'], $request['e3_kg']);
 
@@ -546,7 +542,7 @@ class Sdk extends Api
         ]);
 
         $mes_model = new Measurements($this->dbAdapter);
-        // $user_model = new Users($this->dbAdapter);
+
 
         $measurements = $mes_model->getMeasurementsByIds($request['trainer_id'], $request['client_id']);
 
@@ -560,7 +556,6 @@ class Sdk extends Api
         ]);
 
         $mes_model = new Measurements($this->dbAdapter);
-        // $user_model = new Users($this->dbAdapter);
 
         $measurements = $mes_model->getMeasurementsByClientId($request['client_id']);
 
@@ -575,7 +570,6 @@ class Sdk extends Api
         ]);
 
         $trainingModel = new Trainings($this->dbAdapter);
-        // $user_model = new Users($this->dbAdapter);
 
         $reports = $trainingModel->getReportsByIds($request['trainer_id'], $request['client_id']);
 
@@ -642,12 +636,7 @@ class Sdk extends Api
         $user_model = new Users($this->dbAdapter);
 
         $trainingModel->setTrainingPaid($request['id']);
-        
-        
-
-        //$user_model->addProfit($request['trainer_id'], $price);
-        //$user_model->removeDebt($request['client_id'], $price);
-        //$trainingModel->addProfitConnection($request['trainer_id'], $request['client_id'], $price);
+              
 
         $reports = $trainingModel->getReportsByIdsAndDate($request['trainer_id'], $request['client_id'], $request['date_string']);
         

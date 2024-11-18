@@ -54,7 +54,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getTrainingsByDate(string $id, string $date) {
-	    $sQuery = "SELECT client.first_name as client_first_name, client.last_name as client_last_name, training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
+	    $sQuery = "SELECT client.id as client_id, client.first_name as client_first_name, client.last_name as client_last_name, training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
                    gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN gyms ON training.gym_id = gyms.id
