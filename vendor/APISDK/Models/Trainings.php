@@ -42,7 +42,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	public function setTrainingsFinished(){
 	    $sQuery = "UPDATE `training` SET `finished`='1' WHERE (date = CURRENT_DATE 
-                   AND time > (CURRENT_TIME - INTERVAL 45 MINUTE)) AND (finished = 0 AND cancelled = 0);";
+                   AND time < (CURRENT_TIME - INTERVAL 45 MINUTE)) AND (finished = 0 AND cancelled = 0);";
 	    
 	    //proveri ovo
 	    
