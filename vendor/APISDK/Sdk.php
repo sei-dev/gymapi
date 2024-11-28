@@ -1174,7 +1174,10 @@ class Sdk extends Api
                 //setCartToPending();
                 
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
-                //payment is finished, update your cart/payment transaction
+                var_dump($result->getReturnType());
+                var_dump($result);
+                
+                die();
                 
                 //finishCart();
             }
