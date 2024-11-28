@@ -1046,6 +1046,8 @@ class Sdk extends Api
             // $user->image = $this->getDefaultImage();
             return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
         }
+        
+        
         return $this->formatResponse(self::STATUS_FAILED, "-1");
     }
 
@@ -1130,7 +1132,7 @@ class Sdk extends Api
         ->setAmount(9.99)
         ->setCurrency('EUR')
         ->setCallbackUrl('https://myhost.com/path/to/my/callbackHandler')
-        ->setSuccessUrl('https://myhost.com/checkout/successPage')
+        ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
         ->setErrorUrl('https://myhost.com/checkout/errorPage')
         ->setDescription('One pair of shoes')
         ->setCustomer($customer);
