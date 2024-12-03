@@ -1164,6 +1164,8 @@ class Sdk extends Api
                 
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 //redirect the user
+                
+                echo "REDIRECT";
                 header('Location: '.$result->getRedirectUrl());
                 
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
