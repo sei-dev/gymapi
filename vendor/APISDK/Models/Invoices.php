@@ -28,14 +28,26 @@ class Invoices extends ModelAbstract implements ModelInterface
 	    $sQuery = "SELECT * FROM invoice_items WHERE id = '1';
 				";
 	    
-	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetch(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
 	}
 	
 	public function getYearlyItem(){
 	    $sQuery = "SELECT * FROM invoice_items WHERE id = '2';
 				";
 	    
-	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetch(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
 	}
 	
 	
