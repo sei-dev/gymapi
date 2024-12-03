@@ -1149,6 +1149,7 @@ class Sdk extends Api
         
         $result = $client->debit($debit);
         
+        var_dump($result);
         // handle the result
         if ($result->isSuccess()) {
             
