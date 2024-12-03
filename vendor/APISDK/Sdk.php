@@ -1143,13 +1143,13 @@ class Sdk extends Api
         }
         
         //for recurring transactions
-        if ($isRecurringTransaction) {
+        /* if ($isRecurringTransaction) {
             $debit->setReferenceTransactionId($referenceIdFromFirstTransaction);
-        }
+        } */
         
         $result = $client->debit($debit);
         
-        var_dump($result);
+        //var_dump($result);
         // handle the result
         if ($result->isSuccess()) {
             
@@ -1190,19 +1190,6 @@ class Sdk extends Api
             $result->getAdapterCode();
             
         }
-        
-        /* $statusRequestData = new StatusRequestData();
-        
-        $transactionUuid = $gatewayReferenceId; // the gatewayReferenceId you get by Result->getReferenceId();
-        //$merchantTransactionId = 'your_transaction_id';
-        
-        // use either the UUID or your merchantTransactionId but not both
-        $statusRequestData->setTransactionUuid($transactionUuid);
-        //$statusRequestData->setMerchantTransactionId($merchantTransactionId);
-        
-        $statusResult = $client->sendStatusRequest($statusRequestData);
-        
-        var_dump($statusResult); */
 
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
