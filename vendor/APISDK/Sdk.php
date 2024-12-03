@@ -1103,6 +1103,14 @@ class Sdk extends Api
 
     private function initPayment()
     {
+        $request = $this->filterParams([
+            'id',
+            'token',
+            'name',
+            'surname',
+            'email',
+            'isMonthly'
+        ]);
         
         $api_user = "genericmerchant-api-1";
         $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
@@ -1114,10 +1122,9 @@ class Sdk extends Api
         // define relevant objects
         $customer = new Customer();
         $customer
-        ->setFirstName('John')
-        ->setLastName('Smith')
-        ->setEmail('john@smith.com')
-        ->setIpAddress('123.123.123.123');
+        ->setFirstName($request['name'])
+        ->setLastName($request['surname'])
+        ->setEmail($request['email']);
         //add further customer details if necessary
         
         // define your transaction ID
@@ -1128,7 +1135,7 @@ class Sdk extends Api
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
         ->setAmount(9.99)
-        ->setCurrency('EUR')
+        ->setCurrency('RSD')
         ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback')
         ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
         ->setErrorUrl('https://myhost.com/checkout/errorPage')
