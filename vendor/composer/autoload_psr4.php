@@ -16,4 +16,5 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Exchange\\Client\\' => array($vendorDir . '/allsecure-pay/php-exchange/src'),
+    'App\\' => array($baseDir . '/src'),
 );

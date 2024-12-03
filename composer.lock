@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f38fe076b3d95e73cb4916762b3e221e",
+    "content-hash": "9d6cb0fe8ac50a2b915d5144d3ff0c2b",
     "packages": [
         {
             "name": "allsecure-pay/php-exchange",

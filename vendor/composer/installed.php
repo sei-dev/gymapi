@@ -1,24 +1,15 @@
 <?php return array(
     'root' => array(
-        'name' => '__root__',
+        'name' => 'sei/gym-api',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '0ad9aa7682e24d59426f7bbbdd00806bef2fdd67',
-        'type' => 'library',
+        'reference' => '06585d2e6978368e499dfba124458298103ce348',
+        'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
     ),
     'versions' => array(
-        '__root__' => array(
-            'pretty_version' => 'dev-main',
-            'version' => 'dev-main',
-            'reference' => '0ad9aa7682e24d59426f7bbbdd00806bef2fdd67',
-            'type' => 'library',
-            'install_path' => __DIR__ . '/../../',
-            'aliases' => array(),
-            'dev_requirement' => false,
-        ),
         'allsecure-pay/php-exchange' => array(
             'pretty_version' => 'v3.9.0',
             'version' => '3.9.0.0',
@@ -103,6 +94,15 @@
             'reference' => '120b605dfeb996808c31b6477290a714d356e822',
             'type' => 'library',
             'install_path' => __DIR__ . '/../ralouphie/getallheaders',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'sei/gym-api' => array(
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => '06585d2e6978368e499dfba124458298103ce348',
+            'type' => 'project',
+            'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
