@@ -1136,12 +1136,12 @@ class Sdk extends Api
         
         // define transaction relevant object
         
-        if($request['isMonthly'] == "1"){
+        if($request['is_monthly'] == "1"){
             $invoice_model = new Invoices($this->dbAdapter);
             $invoice_item = $invoice_model->getMonthlyItem();
             
             $price = $invoice_item['price'];
-        }else if($request['isMonthly'] == "0"){
+        }else if($request['is_monthly'] == "0"){
             $invoice_model = new Invoices($this->dbAdapter);
             $invoice_item = $invoice_model->getYearlyItem();
             
