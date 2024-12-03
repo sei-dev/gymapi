@@ -1,25 +1,21 @@
 {
-    "name": "sei/gym-api",
-    "description": "Gym API project using PHP with FCM and Exchange client.",
-    "type": "project",
-    "require": {
-        "lkaybob/php-fcm-v1": "^1.0",
-        "allsecure-pay/php-exchange": "^3.9"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "src/"
-        }
-    },
-    "config": {
-        "optimize-autoloader": true
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "composer dump-autoload"
-        ],
-        "post-update-cmd": [
-            "composer dump-autoload"
-        ]
-    }
+	"name" : "sei/gym-api",
+	"description" : "Gym API project using PHP with FCM and Exchange client.",
+	"type" : "project",
+	"require" : {
+		"lkaybob/php-fcm-v1" : "^1.0",
+		"allsecure-pay/php-exchange" : "^3.9"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"App\\" : "src/"
+		}
+	},
+	"config" : {
+		"optimize-autoloader" : true
+	},
+	"scripts" : {
+		"post-install-cmd" : "composer dump-autoload",
+		"post-update-cmd" : "composer dump-autoload"
+	}
 }
