@@ -80,7 +80,7 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'initPayment',
-            'capturePayment'
+            'callback'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
