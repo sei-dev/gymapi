@@ -1153,6 +1153,7 @@ class Sdk extends Api
             
             // store the uuid you receive from the gateway for future references
             $gatewayReferenceId = $result->getUuid();
+            var_dump($gatewayReferenceId);
             
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
@@ -1193,7 +1194,7 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
     
-    private function capturePayment(){
+    /* private function capturePayment(){
         $api_user = "genericmerchant-api-1";
         $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
         $connector_api_key = "genericmerchant-simulator-1";
@@ -1242,7 +1243,7 @@ class Sdk extends Api
             die;
             //finishCart();
         }   
-    }
+    } */
 
     private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
     {
