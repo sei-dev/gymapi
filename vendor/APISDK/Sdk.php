@@ -1174,10 +1174,8 @@ class Sdk extends Api
                 //setCartToPending();
                 
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
-                var_dump($result->getReturnType());
-                var_dump($result);
-                
-                die();
+                 
+                //ovde sam stao nesto
                 
                 //finishCart();
             }
