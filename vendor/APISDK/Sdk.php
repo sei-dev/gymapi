@@ -1215,8 +1215,6 @@ class Sdk extends Api
         
         $gatewayReferenceId = $result->getReferenceId(); //store it in your database
         
-        var_dump($result);
-        die();
         
         if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
             //error handling example
