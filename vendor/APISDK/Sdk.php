@@ -5,10 +5,6 @@ use APISDK\ApiException;
 use Firebase\JWT\JWT;
 use Exception;
 use APISDK\Models\Users;
-use APISDK\Models\Clients;
-use APISDK\Models\ClientObjects;
-use APISDK\Models\AppReports;
-use APISDK\Models\Baits;
 use APISDK\Models\Trainings;
 use APISDK\Models\Cities;
 use APISDK\Models\Measurements;
@@ -21,6 +17,7 @@ use Exchange\Client\Data\Customer;
 use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
 use Exchange\Client\StatusApi\StatusRequestData;
+use Exchange\Client\StatusApi\Capture;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -1193,6 +1190,59 @@ class Sdk extends Api
 
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+    }
+    
+    private function capturePayment(){
+        $api_user = "genericmerchant-api-1";
+        $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
+        $connector_api_key = "genericmerchant-simulator-1";
+        $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
+        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        
+        // define your transaction ID: e.g. 'myId-'.date('Y-m-d').'-'.uniqid()
+        $merchantTransactionId = 'capture-'.date('Y-m-d').'-'.uniqid(); // must be unique
+        
+        $capture = new Capture();
+        $capture
+        ->setTransactionId($merchantTransactionId)
+        ->setAmount(4.99)
+        ->setCurrency('EUR')
+        ->setReferenceTransactionId('UUID_of_Preauthorize_Transaction');
+        
+        $result = $client->capture($capture);
+        
+        
+        $gatewayReferenceId = $result->getReferenceId(); //store it in your database
+        
+        var_dump($result);
+        die();
+        
+        if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
+            //error handling example
+            $error = $result->getFirstError();
+            $outError = array();
+            $outError ["message"] = $error->getMessage();
+            $outError ["code"] = $error->getCode();
+            $outError ["adapterCode"] = $error->getAdapterCode();
+            $outError ["adapterMessage"] = $error->getAdapterMessage();
+            header("Location: https://YourDomain/PaymentNOK.php?" . http_build_query($outError));
+            die;
+        } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
+            //redirect the user
+            header('Location: '.$result->getRedirectUrl());
+            die;
+        } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
+            //payment is pending, wait for callback to complete
+            
+            //setCartToPending();
+            
+        } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
+            //payment is finished, update your cart/payment transaction
+            
+            header("Location: https://YourDomain/PaymentOK.php?" . http_build_query($result->toArray()));
+            die;
+            //finishCart();
+        }   
     }
 
     private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
