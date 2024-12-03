@@ -1149,7 +1149,7 @@ class Sdk extends Api
         }
         
         if(!$price){
-            echo "No price";
+            var_dump($price);
             die();
         }
         
