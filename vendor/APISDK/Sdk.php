@@ -1223,62 +1223,67 @@ class Sdk extends Api
     }
     
     private function callback(){
-        $api_user = "genericmerchant-api-1";
-        $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
-        $connector_api_key = "genericmerchant-simulator-1";
-        $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
-        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        $logFile = __DIR__ . '/callback_error_log.txt';
         
-        $valid = $client->validateCallbackWithGlobals();
+        function logError($message, $logFile) {
+            $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+            $logEntry = "[{$timestamp}] ERROR: {$message}\n";
+            file_put_contents($logFile, $logEntry, FILE_APPEND);
+        }
         
-        //$logFile = __DIR__ . '/callback_log.txt';
-        
-        if ($valid) {
-            $callbackResult = $client->readCallback(file_get_contents('php://input'));
+        try {
+            $api_user = "genericmerchant-api-1";
+            $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
+            $connector_api_key = "genericmerchant-simulator-1";
+            $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
+            $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+            
+            $valid = $client->validateCallbackWithGlobals();
+            
+            if (!$valid) {
+                logError("Callback validation failed.", $logFile);
+                die;
+            }
+            
+            $callbackInput = file_get_contents('php://input');
+            if (!$callbackInput) {
+                logError("Empty callback input received.", $logFile);
+                die;
+            }
+            
+            $callbackResult = $client->readCallback($callbackInput);
             $customer = $callbackResult->getCustomer();
             $customer_id = $customer->getIdentification();
             $is_monthly = $customer->getExtraData();
             
-        } else {
-            die;
-        }
-        
-        
-        
-        if ($callbackResult->getResult() === Result::RESULT_OK) {
-            
-            $user_model = new Users($this->dbAdapter);
-            
-            $current_sub_date = $user_model->getSubLength($customer_id);
-            
-            $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
-            
-
-            $current_date = new \DateTimeImmutable();
-            
-
-            $period_to_add = $is_monthly ? '+1 month' : '+1 year';
-            
-
-            if ($date < $current_date || !$date) {
-
-                $new_date = $current_date->modify($period_to_add)->format('Y-m-d');
-            } else {
-
-                $new_date = $date->modify($period_to_add)->format('Y-m-d');
+            if ($callbackResult->getResult() === Result::RESULT_OK) {
+                $user_model = new Users($this->dbAdapter);
+                $current_sub_date = $user_model->getSubLength($customer_id);
+                $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
+                
+                $current_date = new \DateTimeImmutable();
+                $period_to_add = $is_monthly ? '+1 month' : '+1 year';
+                
+                if ($date < $current_date || !$date) {
+                    $new_date = $current_date->modify($period_to_add)->format('Y-m-d');
+                } else {
+                    $new_date = $date->modify($period_to_add)->format('Y-m-d');
+                }
+                
+                $user_model->updateSub($customer_id, $new_date);
+                
+            } elseif ($callbackResult->getResult() === Result::RESULT_ERROR) {
+                $errorMessage = $callbackResult->getErrorMessage();
+                $errorCode = $callbackResult->getErrorCode();
+                $adapterMessage = $callbackResult->getAdapterMessage();
+                $adapterCode = $callbackResult->getAdapterCode();
+                
+                $errorDetails = "Payment failed. ErrorMessage: {$errorMessage}, ErrorCode: {$errorCode}, AdapterMessage: {$adapterMessage}, AdapterCode: {$adapterCode}";
+                logError($errorDetails, $logFile);
             }
             
-            $user_model->updateSub($customer_id, $new_date);
-            
-            
-        } elseif ($callbackResult->getResult() === Result::RESULT_ERROR) {
-            
-            //payment failed, handle errors
-            // $callbackResult->getErrorMessage();
-            // $callbackResult->getErrorCode();
-            // $callbackResult->getAdapterMessage();
-            // $callbackResult->getAdapterCode();
-            
+        } catch (Exception $e) {
+            logError("Exception caught: " . $e->getMessage(), $logFile);
         }
         
         echo "OK";
