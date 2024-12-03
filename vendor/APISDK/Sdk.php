@@ -1259,7 +1259,7 @@ class Sdk extends Api
             $customer_id = $customer->getIdentification();
             $is_monthly = $customer->getPaymentData();
             
-            if ($callbackResult->getResult() === Result::RESULT_OK) {
+            if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
                 $current_sub_date = $user_model->getSubLength($customer_id);
                 $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
@@ -1275,7 +1275,7 @@ class Sdk extends Api
                 
                 $user_model->updateSub($customer_id, $new_date);
                 
-            } elseif ($callbackResult->getResult() === Result::RESULT_ERROR) {
+            } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorMessage = $callbackResult->getErrorMessage();
                 $errorCode = $callbackResult->getErrorCode();
                 $adapterMessage = $callbackResult->getAdapterMessage();
