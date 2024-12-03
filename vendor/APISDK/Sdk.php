@@ -1148,6 +1148,10 @@ class Sdk extends Api
             $price = $invoice_item['price'];
         }
         
+        if(!$price){
+            echo "No price";
+            die();
+        }
         
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
@@ -1167,7 +1171,6 @@ class Sdk extends Api
         
         $result = $client->debit($debit);
         
-        var_dump($result);
         // handle the result
         if ($result->isSuccess()) {
             
