@@ -1126,10 +1126,10 @@ class Sdk extends Api
         ->setFirstName($request['name'])
         ->setLastName($request['surname'])
         ->setEmail($request['email'])
-        ->setIdentification($request['trainer_id'])
+        ->setIdentification($request['id'])
         ->setPaymentData($request['is_monthly']);
         //add further customer details if necessary
-        
+        t
         // define your transaction ID
         // must be unique! e.g.
         $merchantTransactionId = $merchantTransactionId = uniqid('myId', true) . '-' . date('YmdHis');
