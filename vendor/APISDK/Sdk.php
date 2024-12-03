@@ -1191,7 +1191,7 @@ class Sdk extends Api
             
         }
         
-        $statusRequestData = new StatusRequestData();
+        /* $statusRequestData = new StatusRequestData();
         
         $transactionUuid = $gatewayReferenceId; // the gatewayReferenceId you get by Result->getReferenceId();
         //$merchantTransactionId = 'your_transaction_id';
@@ -1202,7 +1202,7 @@ class Sdk extends Api
         
         $statusResult = $client->sendStatusRequest($statusRequestData);
         
-        var_dump($statusResult);
+        var_dump($statusResult); */
 
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
