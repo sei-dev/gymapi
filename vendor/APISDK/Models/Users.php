@@ -531,6 +531,30 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
+    
+    public function updateSub(String $id, String $date)
+    {
+        $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `sub_paid`='1',`sub_until`='{$date}'
+                  WHERE id = '{$id}'
+                  LIMIT 1";
+        
+        return $this->getDbAdapter()->query($sQuery);
+    }
+    
+    public function getSubLength(String $id)
+    {
+        $sQuery = "SELECT sub_until FROM users
+                  WHERE id = '{$id}'
+                  LIMIT 1";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row[0]["sub_until"])) {
+            return $row[0]["sub_until"];
+        }
+        return false;
+    }
 
     public function changePassword(String $id, String $hash_pass)
     {

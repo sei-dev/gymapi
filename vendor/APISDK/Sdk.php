@@ -18,6 +18,7 @@ use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
 use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
+use APISDK\Models\Invoices;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -79,7 +80,6 @@ class Sdk extends Api
             'removeFitnessCenter',
             'saveServicesTrainer',
             'removeInactive',
-            'initPayment',
             'callback'
         ])) {
             $at = null;
@@ -1109,7 +1109,7 @@ class Sdk extends Api
             'name',
             'surname',
             'email',
-            'isMonthly'
+            'is_monthly'
         ]);
         
         $api_user = "genericmerchant-api-1";
@@ -1118,13 +1118,16 @@ class Sdk extends Api
         $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
         
+        $price = "0";
         
         // define relevant objects
         $customer = new Customer();
         $customer
         ->setFirstName($request['name'])
         ->setLastName($request['surname'])
-        ->setEmail($request['email']);
+        ->setEmail($request['email'])
+        ->setIdentification($request['trainer_id'])
+        ->setExtraData($request['is_monthly']);
         //add further customer details if necessary
         
         // define your transaction ID
@@ -1132,25 +1135,35 @@ class Sdk extends Api
         $merchantTransactionId = $merchantTransactionId = uniqid('myId', true) . '-' . date('YmdHis');
         
         // define transaction relevant object
+        
+        if($request['isMonthly'] == "1"){
+            $invoice_model = new Invoices($this->dbAdapter);
+            $invoice_item = $invoice_model->getMonthlyItem();
+            
+            $price = $invoice_item['price'];
+        }else if($request['isMonthly'] == "0"){
+            $invoice_model = new Invoices($this->dbAdapter);
+            $invoice_item = $invoice_model->getYearlyItem();
+            
+            $price = $invoice_item['price'];
+        }
+        
+        
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
-        ->setAmount(9.99)
+        ->setAmount($price)
         ->setCurrency('RSD')
         ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback')
         ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
         ->setErrorUrl('https://myhost.com/checkout/errorPage')
-        ->setDescription('One pair of shoes')
+        ->setDescription('Subscription')
         ->setCustomer($customer);
         
         //if token acquired via payment.js
-        if (isset($token)) {
-            $debit->setTransactionToken($token);
-        }
-        
-        //for recurring transactions
-        /* if ($isRecurringTransaction) {
-            $debit->setReferenceTransactionId($referenceIdFromFirstTransaction);
+        /* if (isset($request['token'])) {
+            $debit->setTransactionToken($request['token']);
         } */
+        
         
         $result = $client->debit($debit);
         
@@ -1189,7 +1202,8 @@ class Sdk extends Api
                  
                 //ovde sam stao nesto
                 
-                echo "FINISHED";
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+                die();
                 
                 //finishCart();
             }
@@ -1217,15 +1231,57 @@ class Sdk extends Api
         
         $valid = $client->validateCallbackWithGlobals();
         
-        $logFile = __DIR__ . '/callback_log.txt';
+        //$logFile = __DIR__ . '/callback_log.txt';
         
         if ($valid) {
             $callbackResult = $client->readCallback(file_get_contents('php://input'));
-            file_put_contents($logFile, print_r($callbackResult, true), FILE_APPEND);
+            $customer = $callbackResult->getCustomer();
+            $customer_id = $customer->getIdentification();
+            $is_monthly = $customer->getExtraData();
+            
         } else {
-            file_put_contents($logFile, "Invalid callback\n", FILE_APPEND);
+            die;
         }
         
+        
+        
+        if ($callbackResult->getResult() === Result::RESULT_OK) {
+            
+            $user_model = new Users($this->dbAdapter);
+            
+            $current_sub_date = $user_model->getSubLength($customer_id);
+            
+            $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
+            
+
+            $current_date = new \DateTimeImmutable();
+            
+
+            $period_to_add = $is_monthly ? '+1 month' : '+1 year';
+            
+
+            if ($date < $current_date || !$date) {
+
+                $new_date = $current_date->modify($period_to_add)->format('Y-m-d');
+            } else {
+
+                $new_date = $date->modify($period_to_add)->format('Y-m-d');
+            }
+            
+            $user_model->updateSub($customer_id, $new_date);
+            
+            
+        } elseif ($callbackResult->getResult() === Result::RESULT_ERROR) {
+            
+            //payment failed, handle errors
+            // $callbackResult->getErrorMessage();
+            // $callbackResult->getErrorCode();
+            // $callbackResult->getAdapterMessage();
+            // $callbackResult->getAdapterCode();
+            
+        }
+        
+        echo "OK";
         die();
         
     }
