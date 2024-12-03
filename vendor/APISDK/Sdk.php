@@ -79,7 +79,8 @@ class Sdk extends Api
             'removeFitnessCenter',
             'saveServicesTrainer',
             'removeInactive',
-            'initPayment'
+            'initPayment',
+            'capturePayment'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
