@@ -1166,8 +1166,9 @@ class Sdk extends Api
                 //redirect the user
                 
                 echo "REDIRECT";
-                echo 'Location: '.$result->getRedirectUrl();
                 header('Location: '.$result->getRedirectUrl());
+                
+                exit;
                 
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
                 //payment is pending, wait for callback to complete
@@ -1196,6 +1197,8 @@ class Sdk extends Api
             
         }
 
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
     
     private function callback(){
