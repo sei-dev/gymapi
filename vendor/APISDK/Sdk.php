@@ -17,7 +17,7 @@ use Exchange\Client\Data\Customer;
 use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
 use Exchange\Client\StatusApi\StatusRequestData;
-use Exchange\Client\Transaction\Capture;
+use Exchange\Client\Callback\Result as CallbackResult;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -1210,20 +1210,16 @@ class Sdk extends Api
         
         $valid = $client->validateCallbackWithGlobals();
         
+        $logFile = __DIR__ . '/callback_log.txt';
         
-        if($valid){
-            
-            // read callback data
+        if ($valid) {
             $callbackResult = $client->readCallback(file_get_contents('php://input'));
-            var_dump($callbackResult);
-            die();
-            
-        } else{
-            
-            echo "NOT VALID";
-            die();
-            
+            file_put_contents($logFile, print_r($callbackResult, true), FILE_APPEND);
+        } else {
+            file_put_contents($logFile, "Invalid callback\n", FILE_APPEND);
         }
+        
+        die();
         
     }
 
