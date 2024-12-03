@@ -1127,7 +1127,7 @@ class Sdk extends Api
         ->setLastName($request['surname'])
         ->setEmail($request['email'])
         ->setIdentification($request['trainer_id'])
-        ->setExtraData($request['is_monthly']);
+        ->setPaymentData($request['is_monthly']);
         //add further customer details if necessary
         
         // define your transaction ID
@@ -1257,7 +1257,7 @@ class Sdk extends Api
             $callbackResult = $client->readCallback($callbackInput);
             $customer = $callbackResult->getCustomer();
             $customer_id = $customer->getIdentification();
-            $is_monthly = $customer->getExtraData();
+            $is_monthly = $customer->getPaymentData();
             
             if ($callbackResult->getResult() === Result::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
