@@ -545,7 +545,7 @@ class Users extends ModelAbstract implements ModelInterface
     {
         $sQuery = "SELECT sub_until FROM users
                   WHERE id = '{$id}'
-                  LIMIT 1";
+                  LIMIT 1;";
         
         $row = $this->getDbAdapter()
         ->query($sQuery)
