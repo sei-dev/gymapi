@@ -1129,15 +1129,12 @@ class Sdk extends Api
         ->setIdentification($request['id'])
         ->setPaymentData($request['is_monthly']);
         //add further customer details if necessary
-        t
+        
         // define your transaction ID
         // must be unique! e.g.
         $merchantTransactionId = $merchantTransactionId = uniqid('myId', true) . '-' . date('YmdHis');
         
         // define transaction relevant object
-        
-        var_dump($customer);
-        die();
         
         if($request['is_monthly'] == "1"){
             $invoice_model = new Invoices($this->dbAdapter);
