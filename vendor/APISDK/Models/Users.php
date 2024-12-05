@@ -541,6 +541,17 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
     
+    public function changeSub(String $id)
+    {
+        $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `is_monthly_subscription`= CASE 
+                     WHEN is_monthly_subscription = 0 THEN 1
+                     ELSE 0
+                  WHERE id = '{$id}'
+                  LIMIT 1";
+        
+        return $this->getDbAdapter()->query($sQuery);
+    }
+    
     public function getSubLength(String $id)
     {
         $sQuery = "SELECT sub_until FROM users

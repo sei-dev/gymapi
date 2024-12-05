@@ -1100,6 +1100,19 @@ class Sdk extends Api
             }
         }
     }
+    
+    private function changeSubType(){
+        
+        $request = $this->filterParams([
+            'id'
+        ]);
+        
+        $user_model = new Users($this->dbAdapter);
+        
+        $user_model->changeSub($request['id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
 
     private function initPayment()
     {
