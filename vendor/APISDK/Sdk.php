@@ -1104,12 +1104,13 @@ class Sdk extends Api
     private function changeSubType(){
         
         $request = $this->filterParams([
-            'id'
+            'id',
+            'is_monthly'
         ]);
         
         $user_model = new Users($this->dbAdapter);
         
-        $user_model->changeSub($request['id']);
+        $user_model->changeSub($request['id'], $request['is_monthly']);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }

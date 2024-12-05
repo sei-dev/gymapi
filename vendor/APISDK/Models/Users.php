@@ -541,11 +541,9 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
     
-    public function changeSub(String $id)
+    public function changeSub(String $id, String $is_monthly)
     {
-        $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `is_monthly_subscription`= CASE 
-                     WHEN is_monthly_subscription = 0 THEN 1
-                     ELSE 0
+        $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `is_monthly_subscription`= '{$is_monthly}'
                   WHERE id = '{$id}'
                   LIMIT 1";
         
