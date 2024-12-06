@@ -1006,7 +1006,7 @@ class Sdk extends Api
     private function getInvoiceItems()
     {
         $invoice_model = new Invoices($this->dbAdapter);
-        $invoice_items = $invoice_model->getCities();
+        $invoice_items = $invoice_model->getInvoiceItems();
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $invoice_items);
     }
