@@ -157,6 +157,8 @@ class Customer extends Data {
      * @var PaymentData
      */
     protected $paymentData;
+    
+    protected $isMonthly;
 
     /**
      * @return string
@@ -659,5 +661,17 @@ class Customer extends Data {
     {
         $this->paymentData = $paymentData;
         return $this;
+    }
+    
+    public function setIsMonthly($isMonthly)
+    {
+        $this->isMonthly = $isMonthly;
+        return $this;
+    }
+    
+    public function getIsMonthly()
+    {
+        return $this->isMonthly;
+
     }
 }

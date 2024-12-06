@@ -1139,8 +1139,7 @@ class Sdk extends Api
             ->setLastName($request['surname'])
             ->setEmail($request['email'])
             ->setIdentification($request['id'])
-            ->setPaymentData($request['is_monthly'])
-            ->setExtraData($extraData);
+            ->setIsMonthly($request['is_monthly']);
         // add further customer details if necessary
 
         // define your transaction ID
