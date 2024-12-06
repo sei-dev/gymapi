@@ -1268,7 +1268,9 @@ class Sdk extends Api
             $callbackResult = $client->readCallback($callbackInput);
             $customer = $callbackResult->getCustomer();
             $customer_id = $customer->getIdentification();
-            $is_monthly = $customer->getIsMonthly();
+            $user_model = new Users($this->dbAdapter);
+            $user = $user_model->getUserById($customer_id);
+            $is_monthly = $user['is_monthly_subscription'];
             
             var_dump($customer);
             die();
