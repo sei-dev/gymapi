@@ -1102,13 +1102,13 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
-    
-    private function cronSubCheck(){
-        
+
+    private function cronSubCheck()
+    {
         $user_model = new Users($this->dbAdapter);
-        
+
         $user_model->checkIfSubPassed();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
@@ -1160,7 +1160,6 @@ class Sdk extends Api
             $price = $invoice_item['price'];
         }
 
-
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
@@ -1177,11 +1176,8 @@ class Sdk extends Api
          * $debit->setTransactionToken($request['token']);
          * }
          */
-            
-        
 
         $result = $client->debit($debit);
-        
 
         // handle the result
         if ($result->isSuccess()) {
@@ -1208,7 +1204,7 @@ class Sdk extends Api
                 // payment is pending, wait for callback to complete
 
                 echo "PENDING";
-                
+
                 die();
 
                 // handle pending
@@ -1271,21 +1267,21 @@ class Sdk extends Api
             $user_model = new Users($this->dbAdapter);
             $user = $user_model->getUserById($customer_id);
             $is_monthly = $user['is_monthly_subscription'];
-            
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
                 $current_sub_date = $user_model->getSubLength($customer_id);
-                $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
+
+                $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
 
                 $current_date = new \DateTimeImmutable();
                 $period_to_add = $is_monthly ? '+1 month' : '+1 year';
 
-                if ($date < $current_date || ! $date) {
-                    $new_date = $current_date->modify($period_to_add)->format('Y-m-d');
-                } else {
-                    $new_date = $date->modify($period_to_add)->format('Y-m-d');
+                if (! $date || $date < $current_date) {
+                    $date = $current_date;
                 }
+
+                $new_date = $date->modify($period_to_add)->format('Y-m-d');
 
                 $user_model->updateSub($customer_id, $new_date);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
