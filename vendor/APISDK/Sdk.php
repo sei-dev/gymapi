@@ -1130,6 +1130,8 @@ class Sdk extends Api
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
 
         $price = "0";
+        $extraData = array();
+        array_push($extraData, $request['is_monthly']);
 
         // define relevant objects
         $customer = new Customer();
@@ -1137,7 +1139,8 @@ class Sdk extends Api
             ->setLastName($request['surname'])
             ->setEmail($request['email'])
             ->setIdentification($request['id'])
-            ->setPaymentData($request['is_monthly']);
+            ->setPaymentData($request['is_monthly'])
+            ->setExtraData($extraData);
         // add further customer details if necessary
 
         // define your transaction ID
@@ -1158,8 +1161,6 @@ class Sdk extends Api
             $price = $invoice_item['price'];
         }
 
-        var_dump($customer);
-        die();
 
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
@@ -1177,8 +1178,12 @@ class Sdk extends Api
          * $debit->setTransactionToken($request['token']);
          * }
          */
+            
+        
 
         $result = $client->debit($debit);
+        
+        var_dump($customer);
 
         // handle the result
         if ($result->isSuccess()) {
@@ -1191,6 +1196,7 @@ class Sdk extends Api
                 // error handling
                 $errors = $result->getErrors();
                 var_dump($errors);
+                die();
                 // handle the error
                 // cancelCart();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
@@ -1204,6 +1210,8 @@ class Sdk extends Api
                 // payment is pending, wait for callback to complete
 
                 echo "PENDING";
+                
+                die();
 
                 // handle pending
                 // setCartToPending();
