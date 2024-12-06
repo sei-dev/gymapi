@@ -1158,10 +1158,8 @@ class Sdk extends Api
             $price = $invoice_item['price'];
         }
 
-        if (! $price) {
-            var_dump($price);
-            die();
-        }
+        var_dump($customer);
+        die();
 
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
