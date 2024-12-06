@@ -33,7 +33,6 @@ class Sdk extends Api
     const DIR_UPLOADS = __DIR__ . "/../../images/";
 
     const DIR_USERS = "users";
-    
 
     /*
      * const DIR_BAITS = "baits";
@@ -146,7 +145,7 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getTodayTrainingsByTrainerId($request['trainer_id']);
-        
+
         array_walk($trainings, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
@@ -179,13 +178,13 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getTrainingsByDate($request['id'], $request['date']);
-        
+
         array_walk($trainings, function (&$a) {
-             if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
+            if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
-          } else {
-              $a['image'] = $this->domain . "/images/users/logo.png";
-             }
+            } else {
+                $a['image'] = $this->domain . "/images/users/logo.png";
+            }
         });
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -197,10 +196,10 @@ class Sdk extends Api
             'id',
             'date'
         ]);
-        
+
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
-        
+
         array_walk($trainings, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["trainer_id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["trainer_id"] . ".png?r=" . rand(0, 100000);
@@ -208,10 +207,10 @@ class Sdk extends Api
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
         });
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
-    
+
     private function checkIfConnected()
     {
         $request = $this->filterParams([
@@ -252,7 +251,7 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->insertClientToTraining($request['training_id'], $request['client_id'], $request['price']);
-        //$training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
+        // $training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
 
         $training_info = $training_model->getTrainingById($request['training_id']);
 
@@ -269,8 +268,9 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
-    
-    private function insertRepeatedTraining(){
+
+    private function insertRepeatedTraining()
+    {
         $request = $this->filterParams([
             'trainer_id',
             'gym_id',
@@ -286,48 +286,41 @@ class Sdk extends Api
             'sat',
             'sun'
         ]);
-        
+
         $start_date = new \DateTimeImmutable($request['start_date']);
         $end_date = new \DateTimeImmutable($request['end_date']);
         $training_model = new Trainings($this->dbAdapter);
-        
+
         $trainings = [];
-        
+
         $i = 0;
-        do{
-            if($start_date->format('N') == 1 && $request['mon'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+        do {
+            if ($start_date->format('N') == 1 && $request['mon'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 2 && $request['tue'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 2 && $request['tue'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 3 && $request['wed'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 3 && $request['wed'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 4 && $request['thu'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 4 && $request['thu'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 5 && $request['fri'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 5 && $request['fri'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 6 && $request['sat'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 6 && $request['sat'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-            if($start_date->format('N') == 7 && $request['sun'] == "1"){
-                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'],
-                    $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
+            if ($start_date->format('N') == 7 && $request['sun'] == "1") {
+                $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time']));
             }
-                
-            $i++;
+
+            $i ++;
             $start_date = $start_date->modify('+1 day');
-        }while($end_date!=$start_date);
-        
+        } while ($end_date != $start_date);
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
@@ -359,7 +352,7 @@ class Sdk extends Api
         }
 
         foreach ($params as $one) {
-            //$training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
+            // $training_model->removeDebtConnection($request['trainer_id'], $one['client_id'], $one['price']);
         }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -372,12 +365,12 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
-    
+
     private function removeInactive()
     {
         $user_model = new Users($this->dbAdapter);
         $user_model->removeInactive();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
 
@@ -403,7 +396,6 @@ class Sdk extends Api
         $time = date('H:i', strtotime($time));
 
         // $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
-
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -487,12 +479,11 @@ class Sdk extends Api
         $users['active_trainers'] = $users_model->getActiveTrainers($request['id']);
         $users['total_trainings_trainer'] = $training_model->getTrainingsTrainer($request['id']);
         $users['total_trainings_client'] = $training_model->getTrainingsClient($request['id']);
-        if($users['is_trainer'] == '1'){
+        if ($users['is_trainer'] == '1') {
             $users['profit'] = $users_model->getProfitProfileTrainer($request['id']);
-        }else{
+        } else {
             $users['debt'] = $users_model->getDebtProfileClient($request['id']);
         }
-        
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -557,7 +548,6 @@ class Sdk extends Api
 
         $mes_model = new Measurements($this->dbAdapter);
 
-
         $measurements = $mes_model->getMeasurementsByIds($request['trainer_id'], $request['client_id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
@@ -589,7 +579,7 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
-    
+
     private function getReportsByIdsAndDate()
     {
         $request = $this->filterParams([
@@ -597,46 +587,43 @@ class Sdk extends Api
             'client_id',
             'date_string'
         ]);
-        
+
         $trainingModel = new Trainings($this->dbAdapter);
         // $user_model = new Users($this->dbAdapter);
-        
+
         $reports = $trainingModel->getReportsByIdsAndDate($request['trainer_id'], $request['client_id'], $request['date_string']);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
 
+    private function getReportsByTrainerId()
+    {
+        $request = $this->filterParams([
+            'trainer_id'
+        ]);
 
-     private function getReportsByTrainerId(){
-     
-     $request = $this->filterParams([
-         'trainer_id'
-     ]);
-    
-     
-     $trainingModel = new Trainings($this->dbAdapter);
-     //$user_model = new Users($this->dbAdapter);
-     
-     $reports = $trainingModel->getReportsByTrainerId($request['trainer_id']);
-     
-     return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
+        $trainingModel = new Trainings($this->dbAdapter);
+        // $user_model = new Users($this->dbAdapter);
+
+        $reports = $trainingModel->getReportsByTrainerId($request['trainer_id']);
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
 
-    private function getReportsByClientId(){
-        
+    private function getReportsByClientId()
+    {
         $request = $this->filterParams([
             'client_id'
         ]);
-        
-        
+
         $trainingModel = new Trainings($this->dbAdapter);
-        //$user_model = new Users($this->dbAdapter);
-        
+        // $user_model = new Users($this->dbAdapter);
+
         $reports = $trainingModel->getReportsByClientId($request['client_id']);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $reports);
     }
-    
+
     private function setReportPaid()
     {
         $request = $this->filterParams([
@@ -650,11 +637,10 @@ class Sdk extends Api
         $user_model = new Users($this->dbAdapter);
 
         $trainingModel->setTrainingPaid($request['id']);
-              
 
         $reports = $trainingModel->getReportsByIdsAndDate($request['trainer_id'], $request['client_id'], $request['date_string']);
-        
-        foreach ($reports as &$one){
+
+        foreach ($reports as &$one) {
             $price = $trainingModel->getPriceByTrainingId($request['id']);
             $price = $price[0]['price'];
             $one['price'] = $price;
@@ -766,32 +752,30 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
-    
+
     private function getMonthEventsTrainer()
     {
         $request = $this->filterParams([
             'yearmonth_string',
             'trainer_id'
         ]);
-        
+
         $training_model = new Trainings($this->dbAdapter);
         $dates = $training_model->getTrainingDatesMonthlyTrainer($request['yearmonth_string'], $request['trainer_id']);
-        
-            
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
     }
-    
+
     private function getMonthEventsClient()
     {
         $request = $this->filterParams([
             'yearmonth_string',
             'client_id'
         ]);
-        
+
         $training_model = new Trainings($this->dbAdapter);
         $dates = $training_model->getTrainingDatesMonthlyClient($request['yearmonth_string'], $request['client_id']);
-        
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $dates);
     }
 
@@ -841,7 +825,7 @@ class Sdk extends Api
 
         $trainer = $users_model->getUserById($request['trainer_id']);
 
-        //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        // $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -875,7 +859,7 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
-    
+
     private function register()
     {
         $request = $this->filterParams([
@@ -893,23 +877,19 @@ class Sdk extends Api
             'ru',
             'is_trainer'
         ]);
-        
+
         $users_model = new Users($this->dbAdapter);
-        
+
         $user = $users_model->getUserByEmail($request['email']);
-        
+
         if ($user) {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
-        
+
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
-        
-        
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'],
-            $request['phone'], $password, $request['email'], $request['deadline'],
-            $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'],
-            $request['is_trainer']);
-        
+
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer']);
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
@@ -1023,6 +1003,14 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $cities);
     }
 
+    private function getInvoiceItems()
+    {
+        $invoice_model = new Invoices($this->dbAdapter);
+        $invoice_items = $invoice_model->getCities();
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $invoice_items);
+    }
+
     private function login()
     {
         $request = $this->filterParams([
@@ -1044,8 +1032,7 @@ class Sdk extends Api
             // $user->image = $this->getDefaultImage();
             return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
         }
-        
-        
+
         return $this->formatResponse(self::STATUS_FAILED, "-1");
     }
 
@@ -1100,18 +1087,18 @@ class Sdk extends Api
             }
         }
     }
-    
-    private function changeSubType(){
-        
+
+    private function changeSubType()
+    {
         $request = $this->filterParams([
             'id',
             'is_monthly'
         ]);
-        
+
         $user_model = new Users($this->dbAdapter);
-        
+
         $user_model->changeSub($request['id'], $request['is_monthly']);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
@@ -1125,187 +1112,180 @@ class Sdk extends Api
             'email',
             'is_monthly'
         ]);
-        
+
         $api_user = "genericmerchant-api-1";
         $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
         $connector_api_key = "genericmerchant-simulator-1";
         $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        
+
         $price = "0";
-        
+
         // define relevant objects
         $customer = new Customer();
-        $customer
-        ->setFirstName($request['name'])
-        ->setLastName($request['surname'])
-        ->setEmail($request['email'])
-        ->setIdentification($request['id'])
-        ->setPaymentData($request['is_monthly']);
-        //add further customer details if necessary
-        
+        $customer->setFirstName($request['name'])
+            ->setLastName($request['surname'])
+            ->setEmail($request['email'])
+            ->setIdentification($request['id'])
+            ->setPaymentData($request['is_monthly']);
+        // add further customer details if necessary
+
         // define your transaction ID
         // must be unique! e.g.
         $merchantTransactionId = $merchantTransactionId = uniqid('myId', true) . '-' . date('YmdHis');
-        
+
         // define transaction relevant object
-        
-        if($request['is_monthly'] == "1"){
+
+        if ($request['is_monthly'] == "1") {
             $invoice_model = new Invoices($this->dbAdapter);
             $invoice_item = $invoice_model->getMonthlyItem();
-            
+
             $price = $invoice_item['price'];
-        }else if($request['is_monthly'] == "0"){
+        } else if ($request['is_monthly'] == "0") {
             $invoice_model = new Invoices($this->dbAdapter);
             $invoice_item = $invoice_model->getYearlyItem();
-            
+
             $price = $invoice_item['price'];
         }
-        
-        if(!$price){
+
+        if (! $price) {
             var_dump($price);
             die();
         }
-        
+
         $debit = new Debit();
         $debit->setMerchantTransactionId($merchantTransactionId)
-        ->setAmount($price)
-        ->setCurrency('RSD')
-        ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback')
-        ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
-        ->setErrorUrl('https://myhost.com/checkout/errorPage')
-        ->setDescription('Subscription')
-        ->setCustomer($customer);
-        
-        //if token acquired via payment.js
-        /* if (isset($request['token'])) {
-            $debit->setTransactionToken($request['token']);
-        } */
-        
-        
+            ->setAmount($price)
+            ->setCurrency('RSD')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback')
+            ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
+            ->setErrorUrl('https://myhost.com/checkout/errorPage')
+            ->setDescription('Subscription')
+            ->setCustomer($customer);
+
+        // if token acquired via payment.js
+        /*
+         * if (isset($request['token'])) {
+         * $debit->setTransactionToken($request['token']);
+         * }
+         */
+
         $result = $client->debit($debit);
-        
+
         // handle the result
         if ($result->isSuccess()) {
-            
+
             // store the uuid you receive from the gateway for future references
             $gatewayReferenceId = $result->getUuid();
-            
+
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
-                //error handling
+                // error handling
                 $errors = $result->getErrors();
                 var_dump($errors);
                 // handle the error
-                //cancelCart();
-                
+                // cancelCart();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
-                //redirect the user
-                
+                // redirect the user
+
                 echo "REDIRECT";
-                header('Location: '.$result->getRedirectUrl());
-                
-                exit;
-                
+                header('Location: ' . $result->getRedirectUrl());
+
+                exit();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
-                //payment is pending, wait for callback to complete
-                
+                // payment is pending, wait for callback to complete
+
                 echo "PENDING";
-                
+
                 // handle pending
-                //setCartToPending();
-                
+                // setCartToPending();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
-                 
-                //ovde sam stao nesto
-                
+
+                // ovde sam stao nesto
+
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
                 die();
-                
-                //finishCart();
+
+                // finishCart();
             }
-            
-        } else{
-            
+        } else {
+
             // handle error
             $result->getErrorMessage();
             $result->getErrorCode();
             $result->getAdapterMessage();
             $result->getAdapterCode();
-            
         }
-
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
-    
-    private function callback(){
+
+    private function callback()
+    {
         $logFile = __DIR__ . '/callback_error_log.txt';
-        
-        function logError($message, $logFile) {
+
+        function logError($message, $logFile)
+        {
             $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
             $logEntry = "[{$timestamp}] ERROR: {$message}\n";
             file_put_contents($logFile, $logEntry, FILE_APPEND);
         }
-        
+
         try {
             $api_user = "genericmerchant-api-1";
             $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
             $connector_api_key = "genericmerchant-simulator-1";
             $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
             $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-            
+
             $valid = $client->validateCallbackWithGlobals();
-            
-            if (!$valid) {
+
+            if (! $valid) {
                 logError("Callback validation failed.", $logFile);
-                die;
+                die();
             }
-            
+
             $callbackInput = file_get_contents('php://input');
-            if (!$callbackInput) {
+            if (! $callbackInput) {
                 logError("Empty callback input received.", $logFile);
-                die;
+                die();
             }
-            
+
             $callbackResult = $client->readCallback($callbackInput);
             $customer = $callbackResult->getCustomer();
             $customer_id = $customer->getIdentification();
             $is_monthly = $customer->getPaymentData();
-            
+
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
                 $current_sub_date = $user_model->getSubLength($customer_id);
                 $date = \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date);
-                
+
                 $current_date = new \DateTimeImmutable();
                 $period_to_add = $is_monthly ? '+1 month' : '+1 year';
-                
-                if ($date < $current_date || !$date) {
+
+                if ($date < $current_date || ! $date) {
                     $new_date = $current_date->modify($period_to_add)->format('Y-m-d');
                 } else {
                     $new_date = $date->modify($period_to_add)->format('Y-m-d');
                 }
-                
+
                 $user_model->updateSub($customer_id, $new_date);
-                
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorMessage = $callbackResult->getErrorMessage();
                 $errorCode = $callbackResult->getErrorCode();
                 $adapterMessage = $callbackResult->getAdapterMessage();
                 $adapterCode = $callbackResult->getAdapterCode();
-                
+
                 $errorDetails = "Payment failed. ErrorMessage: {$errorMessage}, ErrorCode: {$errorCode}, AdapterMessage: {$adapterMessage}, AdapterCode: {$adapterCode}";
                 logError($errorDetails, $logFile);
             }
-            
         } catch (Exception $e) {
             logError("Exception caught: " . $e->getMessage(), $logFile);
         }
-        
+
         echo "OK";
         die();
-        
     }
 
     private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
@@ -1370,66 +1350,64 @@ class Sdk extends Api
             'base_64',
             'user_id'
         ]);
-        
+
         $base64_string = $request['base_64'];
         $file_name = $request['user_id'];
-        
-        if (!$base64_string) {
+
+        if (! $base64_string) {
             throw new \Exception("base64_string is empty");
         }
-        
+
         // Remove the base64 URL prefix if it exists
         $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
         $decoded_data = base64_decode($base64_string);
-        
+
         if ($decoded_data === false) {
             throw new \Exception("Failed to decode base64 string");
         }
-        
+
         // Define the upload directory
-        $upload_dir = $_SERVER['DOCUMENT_ROOT']. "/images/users/";
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . "/images/users/";
         $upload_path = $upload_dir . $file_name . ".png";
-        
+
         // Create directory if it does not exist
-        if (!is_dir($upload_dir)) {
-            if (!mkdir($upload_dir, 0777, true) && !is_dir($upload_dir)) {
+        if (! is_dir($upload_dir)) {
+            if (! mkdir($upload_dir, 0777, true) && ! is_dir($upload_dir)) {
                 throw new \Exception("Failed to create directory: " . $upload_dir);
             }
         }
-        
+
         // Save the decoded image data to a file
         if (file_put_contents($upload_path, $decoded_data) === false) {
             throw new \Exception("Failed to save the image to: " . $upload_path);
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
-    
+
     private function removeImage()
     {
         $request = $this->filterParams([
             'user_id'
         ]);
-        
+
         $file_name = $request['user_id'];
 
-        
-        
-        $upload_dir = $_SERVER['DOCUMENT_ROOT']. "/images/users/";
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . "/images/users/";
         $upload_path = $upload_dir . $file_name . ".png";
-        
+
         /*
          * var_dump($upload_dir);
          * die(var_dump($upload_path));
          */
-        
+
         // Create dir if not exists
         if (! is_dir($upload_dir)) {
             $this->formatResponse(self::STATUS_SUCCESS, "", []);
         }
-        
+
         unlink($upload_path);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
@@ -1485,7 +1463,7 @@ class Sdk extends Api
     {
         $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json');
         $jsonContent = base64_decode($base64Content);
-        
+
         $client = new Client($jsonContent);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
         $recipient = new Recipient();
@@ -1569,53 +1547,55 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
-    
-    /* $merchant_key = "TREESRS";
-     $authenticity_token = "";
-     
-     $data = [
-     "amount" => 100,
-     // unique order identifier
-     "order_number" => 'random' . time(),
-     "currency" => "EUR",
-     "transaction_type" => "purchase",
-     "order_info" => "Create payment session order info",
-     "scenario" => 'charge'
-     ];
-     
-     $body_as_string = json_encode($data);
-     $base_url = 'https://ipgtest.monri.com';
-     $ch = curl_init($base_url . '/v2/payment/new');
-     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-     curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
-     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-     
-     $timestamp = time();
-     $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token . $body_as_string);
-     $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
-     
-     curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-     'Content-Type: application/json',
-     'Content-Length: ' . strlen($body_as_string),
-     'Authorization: ' . $authorization
-     ));
-     
-     $result = curl_exec($ch);
-     
-     if (curl_errno($ch)) {
-     curl_close($ch);
-     $response = [
-     'client_secret' => null,
-     'status' => 'declined',
-     'error' => curl_error($ch)
-     ];
-     } else {
-     curl_close($ch);
-     $response = [
-     'status' => 'approved',
-     'client_secret' => json_decode($result, true)['client_secret']
-     ];
-     } */
+
+    /*
+     * $merchant_key = "TREESRS";
+     * $authenticity_token = "";
+     *
+     * $data = [
+     * "amount" => 100,
+     * // unique order identifier
+     * "order_number" => 'random' . time(),
+     * "currency" => "EUR",
+     * "transaction_type" => "purchase",
+     * "order_info" => "Create payment session order info",
+     * "scenario" => 'charge'
+     * ];
+     *
+     * $body_as_string = json_encode($data);
+     * $base_url = 'https://ipgtest.monri.com';
+     * $ch = curl_init($base_url . '/v2/payment/new');
+     * curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+     * curl_setopt($ch, CURLOPT_POSTFIELDS, $body_as_string);
+     * curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+     * curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+     * curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+     *
+     * $timestamp = time();
+     * $digest = hash('sha512', $merchant_key . $timestamp . $authenticity_token . $body_as_string);
+     * $authorization = "WP3-v2 $authenticity_token $timestamp $digest";
+     *
+     * curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+     * 'Content-Type: application/json',
+     * 'Content-Length: ' . strlen($body_as_string),
+     * 'Authorization: ' . $authorization
+     * ));
+     *
+     * $result = curl_exec($ch);
+     *
+     * if (curl_errno($ch)) {
+     * curl_close($ch);
+     * $response = [
+     * 'client_secret' => null,
+     * 'status' => 'declined',
+     * 'error' => curl_error($ch)
+     * ];
+     * } else {
+     * curl_close($ch);
+     * $response = [
+     * 'status' => 'approved',
+     * 'client_secret' => json_decode($result, true)['client_secret']
+     * ];
+     * }
+     */
 }
