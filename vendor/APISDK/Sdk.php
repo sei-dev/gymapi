@@ -1272,8 +1272,6 @@ class Sdk extends Api
             $user = $user_model->getUserById($customer_id);
             $is_monthly = $user['is_monthly_subscription'];
             
-            var_dump($customer);
-            die();
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
