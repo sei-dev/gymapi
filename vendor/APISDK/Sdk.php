@@ -1101,6 +1101,15 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
+    
+    private function cronSubCheck(){
+        
+        $user_model = new Users($this->dbAdapter);
+        
+        $user_model->checkIfSubPassed();
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
 
     private function initPayment()
     {

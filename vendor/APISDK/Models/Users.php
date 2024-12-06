@@ -118,6 +118,21 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
+    public function checkIfSubPassed()
+    {
+        $sQuery = "UPDATE users
+                    SET sub_paid = 0
+                    WHERE sub_until < CURRENT_DATE;
+                ";
+        $row = $this->getDbAdapter()
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        return false;
+    }
+
     public function removeConnection(string $id)
     {
         $sQuery = "DELETE FROM `connections` WHERE id = {$id}
@@ -131,114 +146,118 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
-    
-    public function getProfitProfileTrainer(string $trainer_id){
+    public function getProfitProfileTrainer(string $trainer_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
-                $row[0]["profit"]='0';
+            if ($row[0]["profit"] == NULL || $row[0]["profit"] == "null") {
+                $row[0]["profit"] = '0';
             }
             return $row[0]["profit"];
         }
-        
+
         return false;
     }
-    
-    public function getProfitProfileClient(string $client_id){
+
+    public function getProfitProfileClient(string $client_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '1' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
-                $row[0]["profit"]='0';
+            if ($row[0]["profit"] == NULL || $row[0]["profit"] == "null") {
+                $row[0]["profit"] = '0';
             }
             return $row[0]["profit"];
         }
-        
+
         return false;
     }
-    
-    public function getProfitConnection(string $trainer_id, string $client_id){
+
+    public function getProfitConnection(string $trainer_id, string $client_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS profit FROM training_clients 
                     LEFT JOIN training ON training.id = training_clients.training_id 
                     WHERE training_clients.paid = '1' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            if($row[0]["profit"]==NULL||$row[0]["profit"]=="null"){
-                $row[0]["profit"]='0';
+            if ($row[0]["profit"] == NULL || $row[0]["profit"] == "null") {
+                $row[0]["profit"] = '0';
             }
             return $row[0]["profit"];
         }
-        
+
         return false;
     }
-    
-    public function getDebtProfileTrainer(string $trainer_id){
+
+    public function getDebtProfileTrainer(string $trainer_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
-                $row[0]["debt"]='0';
+            if ($row[0]["debt"] == NULL || $row[0]["debt"] == "null") {
+                $row[0]["debt"] = '0';
             }
             return $row[0]["debt"];
         }
-        
+
         return false;
     }
-    
-    public function getDebtProfileClient(string $client_id){
+
+    public function getDebtProfileClient(string $client_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                    LEFT JOIN training ON training.id = training_clients.training_id
                    WHERE training_clients.paid = '0' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
-                $row[0]["debt"]='0';
+            if ($row[0]["debt"] == NULL || $row[0]["debt"] == "null") {
+                $row[0]["debt"] = '0';
             }
             return $row[0]["debt"];
         }
-        
+
         return false;
     }
-    
-    public function getDebtConnection(string $trainer_id, string $client_id){
+
+    public function getDebtConnection(string $trainer_id, string $client_id)
+    {
         $sQuery = "SELECT SUM(training_clients.price) AS debt FROM training_clients
                     LEFT JOIN training ON training.id = training_clients.training_id
                     WHERE training_clients.paid = '0' AND training.trainer_id = '{$trainer_id}' AND training_clients.client_id = '{$client_id}' AND training.cancelled = '0' AND training_clients.cancelled = '0';";
-        
-        $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
 
-        
+        $row = $this->getDbAdapter()
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
+
         if (isset($row)) {
-            if($row[0]["debt"]==NULL||$row[0]["debt"]=="null"){
-                $row[0]["debt"]='0';
+            if ($row[0]["debt"] == NULL || $row[0]["debt"] == "null") {
+                $row[0]["debt"] = '0';
             }
             return $row[0]["debt"];
         }
-        
+
         return false;
     }
 
@@ -249,8 +268,7 @@ class Users extends ModelAbstract implements ModelInterface
         $row = $this->getDbAdapter()
             ->query($sQuery)
             ->fetchAll(\PDO::FETCH_ASSOC);
-        
-            
+
         if (isset($row)) {
             return $row[0]["active_trainers"];
         }
@@ -531,34 +549,34 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
-    
+
     public function updateSub(String $id, String $date)
     {
         $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `sub_paid`='1',`sub_until`='{$date}'
                   WHERE id = '{$id}'
                   LIMIT 1";
-        
+
         return $this->getDbAdapter()->query($sQuery);
     }
-    
+
     public function changeSub(String $id, String $is_monthly)
     {
         $sQuery = "UPDATE" . self::getTablePrefix() . " `users` SET `is_monthly_subscription`= '{$is_monthly}'
                   WHERE id = '{$id}'
                   LIMIT 1";
-        
+
         return $this->getDbAdapter()->query($sQuery);
     }
-    
+
     public function getSubLength(String $id)
     {
         $sQuery = "SELECT sub_until FROM users
                   WHERE id = '{$id}'
                   LIMIT 1;";
-        
+
         $row = $this->getDbAdapter()
-        ->query($sQuery)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery)
+            ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row[0]["sub_until"])) {
             return $row[0]["sub_until"];
         }
@@ -574,10 +592,8 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
-    
-    public function register(String $name, String $surname, String $age, String $phone, String $password,
-        String $email, String $deadline, String $is_male, String $city_id, String $en, String $rs, 
-        String $ru, String $is_trainer)
+
+    public function register(String $name, String $surname, String $age, String $phone, String $password, String $email, String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $is_trainer)
     {
         $sQuery = "INSERT INTO `users`(`first_name`, `last_name`, `email`, `password`, `phone`, `deadline`, 
                     `is_trainer`, `is_male`, `age`,`city_id`,
@@ -586,21 +602,21 @@ class Users extends ModelAbstract implements ModelInterface
                     '{$phone}','{$deadline}','{$is_trainer}','{$is_male}','{$age}','{$city_id}',
                     '{$en}','{$rs}','{$ru}');
 				";
-        
+
         $sQuery2 = "SELECT * FROM `users` WHERE first_name = '{$name}' AND last_name = '{$surname}' AND email = '{$email}';";
-        
+
         $this->getDbAdapter()->query($sQuery);
-        
+
         return $this->getDbAdapter()
-        ->query($sQuery2)
-        ->fetchAll(\PDO::FETCH_ASSOC);
+            ->query($sQuery2)
+            ->fetchAll(\PDO::FETCH_ASSOC);
     }
-    
-    public function removeInactive(){
+
+    public function removeInactive()
+    {
         $sQuery = "DELETE FROM table_name WHERE active_profile = '0';";
-        
-        return $this->getDbAdapter()
-        ->query($sQuery);
+
+        return $this->getDbAdapter()->query($sQuery);
     }
 
     public function forgotPassword(String $id, String $hash)
@@ -612,7 +628,6 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
-
 
     // bcrypt, then compare hash with password
     public function login(string $email)
