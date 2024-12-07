@@ -1130,8 +1130,6 @@ class Sdk extends Api
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
 
         $price = "0";
-        $extraData = array();
-        array_push($extraData, $request['is_monthly']);
 
         // define relevant objects
         $customer = new Customer();
@@ -1188,24 +1186,28 @@ class Sdk extends Api
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
-                $errors = $result->getErrors();
-                var_dump($errors);
+                $response['status'] = "error";
+                
+                return $this->formatResponse(self::STATUS_FAILED, "", $result);
+                
                 die();
-                // handle the error
-                // cancelCart();
+
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
-                echo "REDIRECT";
-                header('Location: ' . $result->getRedirectUrl());
+                $response['status'] = "redirect";
+                $response['redirectUrl'] = $result->getRedirectUrl();
                 
-                //namesti
-
-                exit();
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+                
+                die();
+                
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
                 // payment is pending, wait for callback to complete
 
-                echo "PENDING";
+                $response['status'] = "pending";
+                
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
 
                 die();
 
@@ -1214,11 +1216,12 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
 
                 // ovde sam stao nesto
+                
+                $response['status'] = "success";
 
-                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 die();
 
-                // finishCart();
             }
         } else {
 
@@ -1229,7 +1232,7 @@ class Sdk extends Api
             $result->getAdapterCode();
         }
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+        return $this->formatResponse(self::STATUS_FAILED, "", $result);
     }
 
     private function callback()
