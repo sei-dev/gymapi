@@ -1188,7 +1188,7 @@ class Sdk extends Api
                 // error handling
                 $response['status'] = "error";
                 
-                return $this->formatResponse(self::STATUS_FAILED, "", $result);
+                return $this->formatResponse(self::STATUS_FAILED, "", $response);
                 
                 die();
 
@@ -1198,7 +1198,7 @@ class Sdk extends Api
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 
-                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 
                 die();
                 
@@ -1207,7 +1207,7 @@ class Sdk extends Api
 
                 $response['status'] = "pending";
                 
-                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
                 die();
 
