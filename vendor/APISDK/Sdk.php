@@ -1198,6 +1198,8 @@ class Sdk extends Api
 
                 echo "REDIRECT";
                 header('Location: ' . $result->getRedirectUrl());
+                
+                //namesti
 
                 exit();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
