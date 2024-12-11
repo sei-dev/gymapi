@@ -1275,6 +1275,9 @@ class Sdk extends Api
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
+                $invoice_model = new Invoices($this->dbAdapter);
+                
+                
                 $current_sub_date = $user_model->getSubLength($customer_id);
 
                 $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
@@ -1289,6 +1292,11 @@ class Sdk extends Api
                 $new_date = $date->modify($period_to_add)->format('Y-m-d');
 
                 $user_model->updateSub($customer_id, $new_date);
+                if($is_monthly == "0"){
+                    $invoice_model->addInvoiceYearly($customer_id, $new_date);
+                } else {
+                    $invoice_model->addInvoiceMonthly($customer, $new_date);
+                }
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorMessage = $callbackResult->getErrorMessage();
                 $errorCode = $callbackResult->getErrorCode();
