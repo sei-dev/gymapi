@@ -53,15 +53,15 @@ class Invoices extends ModelAbstract implements ModelInterface
 	
 	public function addInvoiceMonthly(string $trainer_id, string $valid_until){
 	    $sQuery = "INSERT INTO invoices (trainer_id, item_id, valid_until)
-	    VALUES ({'$trainer_id'}, 1, DATE_ADD(NOW(), '$valid_until'}));
+	    VALUES ({'$trainer_id'}, 1, '$valid_until'}));
 				";
 	    
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
-	public function addInvoiceYearly(string $trainer_id){
+	public function addInvoiceYearly(string $trainer_id, string $valid_until){
 	    $sQuery = "INSERT INTO invoices (trainer_id, item_id, valid_until)
-	    VALUES ({'$trainer_id'}, 1, DATE_ADD(NOW(), INTERVAL 1 YEAR));
+	    VALUES ({'$trainer_id'}, 1, '$valid_until'));
 				";
 	    
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);

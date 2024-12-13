@@ -1162,7 +1162,7 @@ class Sdk extends Api
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
             ->setCurrency('RSD')
-            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id='. $request['id'] .'&is_monthly='. $request['is_monthly'] .'')
             ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
             ->setErrorUrl('https://myhost.com/checkout/errorPage')
             ->setDescription('Subscription')
@@ -1238,6 +1238,15 @@ class Sdk extends Api
     private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
+        $api_user = "genericmerchant-api-1";
+        $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
+        $connector_api_key = "genericmerchant-simulator-1";
+        $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
+        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        $request = $this->filterParams([
+            'id',
+            'is_monthly'
+        ]);
 
         function logError($message, $logFile)
         {
@@ -1247,11 +1256,7 @@ class Sdk extends Api
         }
 
         try {
-            $api_user = "genericmerchant-api-1";
-            $api_password = "8EKTChok0pbSQoOflb8hLFU$6wK=8";
-            $connector_api_key = "genericmerchant-simulator-1";
-            $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
-            $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+            
 
             $valid = $client->validateCallbackWithGlobals();
 
@@ -1267,11 +1272,8 @@ class Sdk extends Api
             }
 
             $callbackResult = $client->readCallback($callbackInput);
-            $customer = $callbackResult->getCustomer();
-            $customer_id = $customer->getIdentification();
-            $user_model = new Users($this->dbAdapter);
-            $user = $user_model->getUserById($customer_id);
-            $is_monthly = $user['is_monthly_subscription'];
+            $customer_id = $request['id'];
+            $is_monthly = $request['is_monthly'];;
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
@@ -1295,7 +1297,7 @@ class Sdk extends Api
                 if($is_monthly == "0"){
                     $invoice_model->addInvoiceYearly($customer_id, $new_date);
                 } else {
-                    $invoice_model->addInvoiceMonthly($customer, $new_date);
+                    $invoice_model->addInvoiceMonthly($customer_id, $new_date);
                 }
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorMessage = $callbackResult->getErrorMessage();
