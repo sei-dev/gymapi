@@ -19,6 +19,7 @@ use Exchange\Client\Transaction\Result;
 use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
+use APISDK\Models\Countries;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -999,10 +1000,22 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
+    private function getCountries()
+    {
+        $country_model = new Countries($this->dbAdapter);
+        $countries = $country_model->getCountries();
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $countries);
+    }
+    
+    
     private function getCities()
     {
+        $request = $this->filterParams([
+            'id'
+        ]);
         $city_model = new Cities($this->dbAdapter);
-        $cities = $city_model->getCities();
+        $cities = $city_model->getCitiesByCountryId($request['id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $cities);
     }

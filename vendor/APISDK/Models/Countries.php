@@ -4,7 +4,7 @@ use APISDK\Models\ModelAbstract;
 use APISDK\ApiException;
 use APISDK\DbAdapters\DbAdapterInterface;
 
-class Cities extends ModelAbstract implements ModelInterface
+class Countries extends ModelAbstract implements ModelInterface
 {
 	
 	/**
@@ -17,17 +17,10 @@ class Cities extends ModelAbstract implements ModelInterface
 		$this->setDbAdapter($dbAdapter);
 	}
 	
-	public function getCities(){
-	    $sQuery = "SELECT * FROM cities
+	public function getCountries(){
+	    $sQuery = "SELECT * FROM countries
 				";
 	        
-	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	}
-	
-	public function getCitiesByCountryId(string $id){
-	    $sQuery = "SELECT * FROM cities WHERE country_id={$id}
-				";
-	    
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
