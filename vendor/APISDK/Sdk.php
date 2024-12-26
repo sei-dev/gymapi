@@ -1008,8 +1008,16 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $countries);
     }
     
-    
     private function getCities()
+    {
+
+        $city_model = new Cities($this->dbAdapter);
+        $cities = $city_model->getCities();
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $cities);
+    }
+    
+    private function getCitiesByCountryId()
     {
         $request = $this->filterParams([
             'id'
