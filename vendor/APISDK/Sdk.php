@@ -75,6 +75,8 @@ class Sdk extends Api
             'initPayment',
             'register',
             'getCities',
+            'getCitiesByCountryId',
+            'getCountries',
             'getGymsByCityId',
             'addFitnessCenter',
             'removeFitnessCenter',
