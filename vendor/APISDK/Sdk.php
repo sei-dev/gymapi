@@ -882,7 +882,9 @@ class Sdk extends Api
             'en',
             'rs',
             'ru',
-            'is_trainer'
+            'is_trainer',
+            'nationality',
+            'country_id'
         ]);
 
         $users_model = new Users($this->dbAdapter);
@@ -895,7 +897,9 @@ class Sdk extends Api
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
 
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer']);
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'],
+            $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'],
+            $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }

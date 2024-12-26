@@ -593,7 +593,8 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
 
-    public function register(String $name, String $surname, String $age, String $phone, String $password, String $email, String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $is_trainer)
+    public function register(String $name, String $surname, String $age, String $phone, String $password, String $email,
+        String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $is_trainer, String $country_id, String $nationality)
     {
         $sQuery = "INSERT INTO `users`(`first_name`, `last_name`, `email`, `password`, `phone`, `deadline`, 
                     `is_trainer`, `is_male`, `age`,`city_id`,
