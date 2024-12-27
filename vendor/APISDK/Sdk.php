@@ -83,7 +83,8 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'callback',
-            'cronSubCheck'
+            'cronSubCheck',
+            'test'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1506,20 +1507,16 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
-    /*
-     * private function test(){
-     * $request = $this->filterParams([
-     * 'device_token',
-     * 'title',
-     * 'body'
-     * ]);
-     *
-     *
-     * $this->sendNotification($request['title'], $request['body'], $request['device_token']);
-     *
-     * return $this->formatResponse(self::STATUS_SUCCESS, []);
-     * }
-     */
+
+     private function test(){
+     
+     $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
+     
+     $this->sendNotification("Test", "Test Test", $device_token);
+    
+     return $this->formatResponse(self::STATUS_SUCCESS, []);
+     }
+
     private function sendNotification(string $title, string $body, string $device_token)
     {
         
