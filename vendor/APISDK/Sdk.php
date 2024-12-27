@@ -3,7 +3,6 @@ namespace APISDK;
 
 use APISDK\ApiException;
 use Firebase\JWT\JWT;
-use DirectoryIterator;
 use Exception;
 use APISDK\Models\Users;
 use APISDK\Models\Trainings;
@@ -84,8 +83,7 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'callback',
-            'cronSubCheck',
-            'files'
+            'cronSubCheck'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1531,6 +1529,11 @@ class Sdk extends Api
         if (!file_exists($filePath)) {
             die("File not found: $filePath");
         }
+        
+        // Read and decode the file content
+        $base64Content = file_get_contents($filePath);
+        $jsonContent = json_decode($base64Content);
+
         $client = new Client($jsonContent);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
         $recipient = new Recipient();
@@ -1542,7 +1545,6 @@ class Sdk extends Api
         $client->fire();
     }
 
-    
     /*
      * private function sendAndroidPush($user, $msg, $request = null)
      * {
@@ -1615,9 +1617,6 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
-    
-    
-    
 
     /*
      * $merchant_key = "TREESRS";
