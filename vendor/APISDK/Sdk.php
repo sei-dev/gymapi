@@ -836,6 +836,8 @@ class Sdk extends Api
         $trainer = $users_model->getUserById($request['trainer_id']);
         
         $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
+        var_dump($filePath);
+        die();
         
         if (!file_exists($filePath)) {
             error_log("File not found: $filePath");
