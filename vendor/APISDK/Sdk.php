@@ -1534,7 +1534,7 @@ class Sdk extends Api
         $base64Content = file_get_contents($filePath);
         $jsonContent = json_decode($base64Content);
 
-        $client = new Client($jsonContent);
+        $client = new Client($filePath);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
         $recipient = new Recipient();
         $notification = new Notification();
