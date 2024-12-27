@@ -1522,8 +1522,24 @@ class Sdk extends Api
      */
     private function sendNotification(string $title, string $body, string $device_token)
     {
+        
         $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json');
         $jsonContent = base64_decode($base64Content);
+        
+        $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
+        
+        if (!file_exists($filePath)) {
+            error_log("File not found: $filePath");
+            return;
+        }
+        
+        try {
+            $base64Content = file_get_contents($filePath);
+            $jsonContent = base64_decode($base64Content);
+        } catch (Exception $e) {
+            error_log("Error reading or decoding the file: " . $e->getMessage());
+            return;
+        }
 
         $client = new Client($jsonContent);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
