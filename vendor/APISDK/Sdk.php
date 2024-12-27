@@ -83,7 +83,8 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'callback',
-            'cronSubCheck'
+            'cronSubCheck',
+            'files'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -829,32 +830,13 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
-        //$users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
+        $users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
 
         // Send notification
 
         $trainer = $users_model->getUserById($request['trainer_id']);
-        
-        $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
-        var_dump($filePath);
-        die();
-        
-        if (!file_exists($filePath)) {
-            error_log("File not found: $filePath");
-            var_dump($filePath);
-            die();
-        }
-        
-        try {
-            $base64Content = file_get_contents($filePath);
-            $jsonContent = base64_decode($base64Content);
-        } catch (Exception $e) {
-            error_log("Error reading or decoding the file: " . $e->getMessage());
-            var_dump($e->getMessage(), $values);
-            die();
-        }
 
-        //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -1542,25 +1524,13 @@ class Sdk extends Api
     private function sendNotification(string $title, string $body, string $device_token)
     {
         
-        /* $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json');
-        $jsonContent = base64_decode($base64Content); */
+        $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
-        $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
-        
+        // Check if the file exists to avoid runtime errors
         if (!file_exists($filePath)) {
-            error_log("File not found: $filePath");
-            return;
+            die("File not found: $filePath");
         }
-        
-        try {
-            $base64Content = file_get_contents($filePath);
-            $jsonContent = base64_decode($base64Content);
-        } catch (Exception $e) {
-            error_log("Error reading or decoding the file: " . $e->getMessage());
-            return;
-        }
-
-        /* $client = new Client($jsonContent);
+        $client = new Client($jsonContent);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
         $recipient = new Recipient();
         $notification = new Notification();
@@ -1568,7 +1538,7 @@ class Sdk extends Api
         $recipient->setSingleRecipient($device_token);
         $notification->setNotification($title, $body);
         $client->build($recipient, $notification);
-        $client->fire(); */
+        $client->fire();
     }
 
     /*
@@ -1643,6 +1613,32 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
+    
+    private function files()
+    {
+        $directoryPath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK';
+        $files = listFilesUsingIterator($directoryPath);
+        
+        if (!is_dir($directoryPath)) {
+            die("The directory does not exist: $directoryPath");
+        }
+        
+        $files = [];
+        $iterator = new DirectoryIterator($directoryPath);
+        
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isFile()) {
+                $files[] = $fileInfo->getFilename();
+            }
+        }
+        
+        foreach ($files as $file) {
+            echo $file . "<br>";
+        }
+        
+        die();
+    }
+    
 
     /*
      * $merchant_key = "TREESRS";
