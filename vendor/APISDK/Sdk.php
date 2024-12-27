@@ -1523,8 +1523,8 @@ class Sdk extends Api
     private function sendNotification(string $title, string $body, string $device_token)
     {
         
-        $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json');
-        $jsonContent = base64_decode($base64Content);
+        /* $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json');
+        $jsonContent = base64_decode($base64Content); */
         
         $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
@@ -1541,7 +1541,7 @@ class Sdk extends Api
             return;
         }
 
-        $client = new Client($jsonContent);
+        /* $client = new Client($jsonContent);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
         $recipient = new Recipient();
         $notification = new Notification();
@@ -1549,7 +1549,7 @@ class Sdk extends Api
         $recipient->setSingleRecipient($device_token);
         $notification->setNotification($title, $body);
         $client->build($recipient, $notification);
-        $client->fire();
+        $client->fire(); */
     }
 
     /*
