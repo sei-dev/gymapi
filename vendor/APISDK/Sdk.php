@@ -839,7 +839,8 @@ class Sdk extends Api
         
         if (!file_exists($filePath)) {
             error_log("File not found: $filePath");
-            return;
+            var_dump($filePath);
+            die();
         }
         
         try {
@@ -847,12 +848,13 @@ class Sdk extends Api
             $jsonContent = base64_decode($base64Content);
         } catch (Exception $e) {
             error_log("Error reading or decoding the file: " . $e->getMessage());
-            return;
+            var_dump($e->getMessage(), $values);
+            die();
         }
 
         //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
-        //return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
     private function acceptConnectionTrainer()
