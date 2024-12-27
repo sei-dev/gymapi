@@ -1522,7 +1522,7 @@ class Sdk extends Api
      */
     private function sendNotification(string $title, string $body, string $device_token)
     {
-        $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json');
+        $base64Content = file_get_contents(__DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json');
         $jsonContent = base64_decode($base64Content);
 
         $client = new Client($jsonContent);
