@@ -829,13 +829,28 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
-        $users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
+        //$users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
 
         // Send notification
 
         $trainer = $users_model->getUserById($request['trainer_id']);
+        
+        $filePath = __DIR__ . '/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
+        
+        if (!file_exists($filePath)) {
+            error_log("File not found: $filePath");
+            return;
+        }
+        
+        try {
+            $base64Content = file_get_contents($filePath);
+            $jsonContent = base64_decode($base64Content);
+        } catch (Exception $e) {
+            error_log("Error reading or decoding the file: " . $e->getMessage());
+            return;
+        }
 
-        $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
