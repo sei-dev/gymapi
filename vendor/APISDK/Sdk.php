@@ -1526,13 +1526,11 @@ class Sdk extends Api
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
         // Check if the file exists to avoid runtime errors
-        if (!file_exists($filePath)) {
-            die("File not found: $filePath");
-        }
+//         if (!file_exists($filePath)) {
+//             die("File not found: $filePath");
+//         }
         
         // Read and decode the file content
-        $base64Content = file_get_contents($filePath);
-        $jsonContent = json_decode($base64Content);
 
         $client = new Client($filePath);
         // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
