@@ -1542,29 +1542,7 @@ class Sdk extends Api
         $client->fire();
     }
 
-    private function files()
-    {
-        $directoryPath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK';
-        
-        if (!is_dir($directoryPath)) {
-            die("The directory does not exist: $directoryPath");
-        }
-        
-        $files = [];
-        $iterator = new DirectoryIterator($directoryPath);
-        
-        foreach ($iterator as $fileInfo) {
-            if ($fileInfo->isFile()) {
-                $files[] = $fileInfo->getFilename();
-            }
-        }
-        
-        foreach ($files as $file) {
-            echo $file . "<br>";
-        }
-        
-        die();
-    }
+    
     /*
      * private function sendAndroidPush($user, $msg, $request = null)
      * {
