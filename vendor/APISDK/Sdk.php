@@ -1545,7 +1545,6 @@ class Sdk extends Api
     private function files()
     {
         $directoryPath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK';
-        $files = listFilesUsingIterator($directoryPath);
         
         if (!is_dir($directoryPath)) {
             die("The directory does not exist: $directoryPath");
