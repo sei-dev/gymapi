@@ -3,6 +3,7 @@ namespace APISDK;
 
 use APISDK\ApiException;
 use Firebase\JWT\JWT;
+use DirectoryIterator;
 use Exception;
 use APISDK\Models\Users;
 use APISDK\Models\Trainings;
@@ -1541,6 +1542,30 @@ class Sdk extends Api
         $client->fire();
     }
 
+    private function files()
+    {
+        $directoryPath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK';
+        $files = listFilesUsingIterator($directoryPath);
+        
+        if (!is_dir($directoryPath)) {
+            die("The directory does not exist: $directoryPath");
+        }
+        
+        $files = [];
+        $iterator = new DirectoryIterator($directoryPath);
+        
+        foreach ($iterator as $fileInfo) {
+            if ($fileInfo->isFile()) {
+                $files[] = $fileInfo->getFilename();
+            }
+        }
+        
+        foreach ($files as $file) {
+            echo $file . "<br>";
+        }
+        
+        die();
+    }
     /*
      * private function sendAndroidPush($user, $msg, $request = null)
      * {
@@ -1614,30 +1639,7 @@ class Sdk extends Api
         return $user;
     }
     
-    private function files()
-    {
-        $directoryPath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK';
-        $files = listFilesUsingIterator($directoryPath);
-        
-        if (!is_dir($directoryPath)) {
-            die("The directory does not exist: $directoryPath");
-        }
-        
-        $files = [];
-        $iterator = new DirectoryIterator($directoryPath);
-        
-        foreach ($iterator as $fileInfo) {
-            if ($fileInfo->isFile()) {
-                $files[] = $fileInfo->getFilename();
-            }
-        }
-        
-        foreach ($files as $file) {
-            echo $file . "<br>";
-        }
-        
-        die();
-    }
+    
     
 
     /*
