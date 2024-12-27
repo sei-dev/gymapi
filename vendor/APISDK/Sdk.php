@@ -852,7 +852,7 @@ class Sdk extends Api
 
         //$this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        //return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
     private function acceptConnectionTrainer()
