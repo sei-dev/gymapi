@@ -1507,14 +1507,14 @@ class Sdk extends Api
     }
 
 
-     private function test(){
+//      private function test(){
      
-     $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
+//      $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
      
-     $this->sendNotification("Test", "Test Test", $device_token);
+//      $this->sendNotification("Test", "Test Test", $device_token);
     
-     return $this->formatResponse(self::STATUS_SUCCESS, []);
-     }
+//      return $this->formatResponse(self::STATUS_SUCCESS, []);
+//      }
 
     private function sendNotification(string $title, string $body, string $device_token)
     {
