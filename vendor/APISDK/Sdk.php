@@ -360,9 +360,16 @@ class Sdk extends Api
         $date = date_format($date, "d/m/Y H:i:s");
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
+        
+        $dataPayload = [
+            'type' => 'training_canceled_trainer',
+            'date' => $date,
+            'time' => $time,
+            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+        ];
 
         foreach ($clients as $one) {
-            $this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"]);
+            $this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"], $dataPayload);
         }
 
         foreach ($params as $one) {
@@ -408,8 +415,15 @@ class Sdk extends Api
         $date = date_format($date, "d/m/Y H:i:s");
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
+        
+        $dataPayload = [
+            'type' => 'training_canceled_client',
+            'date' => $date,
+            'time' => $time,
+            'user' => $client['first_name'] . " " . $client['last_name']
+        ];
 
-        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"]);
+        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -839,10 +853,18 @@ class Sdk extends Api
         $users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
 
         // Send notification
-
         $trainer = $users_model->getUserById($request['trainer_id']);
 
-        $this->sendNotification("Novi zahtev", $trainer["first_name"] . " " . $trainer["last_name"], $trainer["device_token"]);
+        $client = $users_model->getUserById($request['client_id']);
+        
+        $dataPayload = [
+            'type' => 'new_request',
+            'date' => "",
+            'time' => "",
+            'user' => $client['first_name'] . " " . $client['last_name']
+        ];
+
+        $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -859,8 +881,17 @@ class Sdk extends Api
         // Send notification
 
         $client = $users_model->getClientByConnectionId($request['id']);
+        $trainer = $users_model->getTrainerByConnectionId($request['id']);
+        
+        $dataPayload = [
+            'type' => 'accepted_request',
+            'date' => "",
+            'time' => "",
+            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+        ];
+        
 
-        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"]);
+        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
