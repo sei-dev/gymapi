@@ -269,8 +269,15 @@ class Sdk extends Api
         $date = date_format($date, "d/m/Y H:i:s");
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
+        
+        $dataPayload = [
+            'type' => 'new_training',
+            'date' => $date,
+            'time' => $time,
+            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+        ];
 
-        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"]);
+        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -1516,25 +1523,23 @@ class Sdk extends Api
 //      return $this->formatResponse(self::STATUS_SUCCESS, []);
 //      }
 
-    private function sendNotification(string $title, string $body, string $device_token)
+    private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [])
     {
-        
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
-        // Check if the file exists to avoid runtime errors
-//         if (!file_exists($filePath)) {
-//             die("File not found: $filePath");
-//         }
-        
-        // Read and decode the file content
-
         $client = new Client($filePath);
-        // personalni-trener-440e6-firebase-adminsdk-vjod3-61b9d09dcc.json
+        
         $recipient = new Recipient();
         $notification = new Notification();
-
+        
         $recipient->setSingleRecipient($device_token);
+        
         $notification->setNotification($title, $body);
+        
+        if (!empty($dataPayload)) {
+            $notification->setDataPayload($dataPayload);
+        }
+        
         $client->build($recipient, $notification);
         $client->fire();
     }
