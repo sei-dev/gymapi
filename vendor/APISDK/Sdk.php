@@ -266,7 +266,8 @@ class Sdk extends Api
         $trainer = $user_model->getUserById($request['trainer_id']);
 
         $date = $training_info['date'];
-        $date = date_format($date, "d/m/Y H:i:s");
+        $date = date('d/m/Y', strtotime($date));
+        
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
         
@@ -277,7 +278,6 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
         
-        die(var_dump($training_info));
 
         $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
 
@@ -359,9 +359,11 @@ class Sdk extends Api
         $params = $training_model->setCancelledClientsByTrainingId($request['id']);
 
         $date = $training_info['date'];
-        $date = date_format($date, "d/m/Y H:i:s");
+        $date = date('d/m/Y', strtotime($date));
+        
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
+        
         
         $dataPayload = [
             'type' => 'training_canceled_trainer',
@@ -414,9 +416,11 @@ class Sdk extends Api
         $trainer = $user_model->getUserById($request['trainer_id']);
 
         $date = $training_info['date'];
-        $date = date_format($date, "d/m/Y H:i:s");
+        $date = date('d/m/Y', strtotime($date));
+        
         $time = $training_info['time'];
         $time = date('H:i', strtotime($time));
+        
         
         $dataPayload = [
             'type' => 'training_canceled_client',
