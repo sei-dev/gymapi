@@ -278,11 +278,7 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
         
-        var_dump($date);
-        var_dump($time);
-        var_dump($training_info);
-        die();
-
+        
         $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
