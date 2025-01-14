@@ -280,7 +280,7 @@ class Sdk extends Api
         
         var_dump($date);
         var_dump($time);
-        var_dumo($training_info);
+        var_dump($training_info);
         die();
 
         $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
