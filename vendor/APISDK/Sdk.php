@@ -266,7 +266,7 @@ class Sdk extends Api
         $trainer = $user_model->getUserById($request['trainer_id']);
 
         $date = $training_info[0]['date'];
-        $date = date('d/m/Y', strtotime($date));
+        $date = date('d.m.Y', strtotime($date));
         
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
@@ -359,7 +359,7 @@ class Sdk extends Api
         $params = $training_model->setCancelledClientsByTrainingId($request['id']);
 
         $date = $training_info[0]['date'];
-        $date = date('d/m/Y', strtotime($date));
+        $date = date('d.m.Y', strtotime($date));
         
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
@@ -416,7 +416,7 @@ class Sdk extends Api
         $trainer = $user_model->getUserById($request['trainer_id']);
 
         $date = $training_info[0]['date'];
-        $date = date('d/m/Y', strtotime($date));
+        $date = date('d.m.Y', strtotime($date));
         
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
