@@ -116,7 +116,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    
 	    die(var_dump($result));
 	    
-	    if ($result && $result['total_clients'] == $result['cancelled_clients']) {
+	    if ($result && $result[0]['total_clients'] == $result[0]['cancelled_clients']) {
 	        $updateTrainingQuery = "UPDATE `training`
                                 SET cancelled = '1'
                                 WHERE id = '{$training_id}'";
