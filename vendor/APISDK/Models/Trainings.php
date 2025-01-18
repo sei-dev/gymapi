@@ -103,28 +103,23 @@ class Trainings extends ModelAbstract implements ModelInterface
 
 	    $updateClientQuery = "UPDATE `training_clients`
                           SET cancelled = '1'
-                          WHERE training_id = :training_id AND client_id = :client_id";
+                          WHERE training_id = '{$training_id}' AND client_id = '{$client_id}'";
 	    
-	    $this->getDbAdapter()->prepare($updateClientQuery)->execute([
-	        ':training_id' => $training_id,
-	        ':client_id' => $client_id
-	    ]);
+	    $this->getDbAdapter()->query($updateClientQuery);
 	    
 	    $checkAllCancelledQuery = "SELECT COUNT(*) AS total_clients,
                                       SUM(cancelled) AS cancelled_clients
                                FROM `training_clients`
-                               WHERE training_id = :training_id";
+                               WHERE training_id = '{$training_id}'";
 	    
-	    $stmt = $this->getDbAdapter()->prepare($checkAllCancelledQuery);
-	    $stmt->execute([':training_id' => $training_id]);
-	    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+	    $result = $this->getDbAdapter()->query($checkAllCancelledQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    
 	    if ($result && $result['total_clients'] == $result['cancelled_clients']) {
 	        $updateTrainingQuery = "UPDATE `trainings`
                                 SET cancelled = '1'
-                                WHERE id = :training_id";
+                                WHERE id = '{$training_id}'";
 	        
-	        $this->getDbAdapter()->prepare($updateTrainingQuery)->execute([':training_id' => $training_id]);
+	        $this->getDbAdapter()->query($updateTrainingQuery);
 	    }
 	    
 // 	    $this->getDbAdapter()->query($sQuery);
