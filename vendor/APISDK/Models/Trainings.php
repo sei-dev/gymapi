@@ -95,13 +95,39 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function setCancelledClientsByClientId(string $training_id, string $client_id){
-	    $sQuery = "UPDATE `training_clients` SET cancelled = '1' WHERE training_id = '{$training_id}' AND client_id ='{$client_id}';
-				    ";
+// 	    $sQuery = "UPDATE `training_clients` SET cancelled = '1' WHERE training_id = '{$training_id}' AND client_id ='{$client_id}';
+// 				    ";
 	    
 	    $sQuery2 = "SELECT * FROM `training_clients` WHERE training_id = '{$training_id}' AND client_id = '{$client_id}' AND cancelled = '1';
                     ";
+
+	    $updateClientQuery = "UPDATE `training_clients`
+                          SET cancelled = '1'
+                          WHERE training_id = :training_id AND client_id = :client_id";
 	    
-	    $this->getDbAdapter()->query($sQuery);
+	    $this->getDbAdapter()->prepare($updateClientQuery)->execute([
+	        ':training_id' => $training_id,
+	        ':client_id' => $client_id
+	    ]);
+	    
+	    $checkAllCancelledQuery = "SELECT COUNT(*) AS total_clients,
+                                      SUM(cancelled) AS cancelled_clients
+                               FROM `training_clients`
+                               WHERE training_id = :training_id";
+	    
+	    $stmt = $this->getDbAdapter()->prepare($checkAllCancelledQuery);
+	    $stmt->execute([':training_id' => $training_id]);
+	    $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+	    
+	    if ($result && $result['total_clients'] == $result['cancelled_clients']) {
+	        $updateTrainingQuery = "UPDATE `trainings`
+                                SET cancelled = '1'
+                                WHERE id = :training_id";
+	        
+	        $this->getDbAdapter()->prepare($updateTrainingQuery)->execute([':training_id' => $training_id]);
+	    }
+	    
+// 	    $this->getDbAdapter()->query($sQuery);
 	    $rows = $this->getDbAdapter()->query($sQuery2)->fetchAll(\PDO::FETCH_ASSOC);
 	    
 	    if (isset($rows)) {
