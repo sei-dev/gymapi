@@ -115,7 +115,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    $result = $this->getDbAdapter()->query($checkAllCancelledQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    
 	    if ($result && $result['total_clients'] == $result['cancelled_clients']) {
-	        $updateTrainingQuery = "UPDATE `trainings`
+	        $updateTrainingQuery = "UPDATE `training`
                                 SET cancelled = '1'
                                 WHERE id = '{$training_id}'";
 	        
