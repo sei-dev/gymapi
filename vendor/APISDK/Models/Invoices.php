@@ -66,6 +66,21 @@ class Invoices extends ModelAbstract implements ModelInterface
 	    
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	}
+	
+	public function getByTrainerId(string $trainer_id){
+	    
+	    
+	    $sQuery = "SELECT * FROM invoices WHERE trainer_id = '{$trainer_id}';
+                ";
+	    
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
 	/**
 	 *
 	 * @param array $data
