@@ -241,8 +241,7 @@ class Sdk extends Api
         ]);
 
         $training_model = new Trainings($this->dbAdapter);
-        $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'],
-                                                    $request['date'], $request['time'], $request['training_plan']);
+        $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -268,18 +267,17 @@ class Sdk extends Api
 
         $date = $training_info[0]['date'];
         $date = date('d.m.Y', strtotime($date));
-        
+
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
-        
+
         $dataPayload = [
             'type' => 'new_training',
             'date' => $date,
             'time' => $time,
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
-        
-        
+
         $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -361,11 +359,10 @@ class Sdk extends Api
 
         $date = $training_info[0]['date'];
         $date = date('d.m.Y', strtotime($date));
-        
+
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
-        
-        
+
         $dataPayload = [
             'type' => 'training_canceled_trainer',
             'date' => $date,
@@ -418,11 +415,10 @@ class Sdk extends Api
 
         $date = $training_info[0]['date'];
         $date = date('d.m.Y', strtotime($date));
-        
+
         $time = $training_info[0]['time'];
         $time = date('H:i', strtotime($time));
-        
-        
+
         $dataPayload = [
             'type' => 'training_canceled_client',
             'date' => $date,
@@ -710,9 +706,7 @@ class Sdk extends Api
             $users_model->changePassword($request['id'], $newPassHash);
         }
 
-        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'],
-            $request['phone'], $request['email'], $request['deadline'], $request['gender'],
-            $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['country_id']);
+        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'], $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['country_id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -863,7 +857,7 @@ class Sdk extends Api
         $trainer = $users_model->getUserById($request['trainer_id']);
 
         $client = $users_model->getUserById($request['client_id']);
-        
+
         $dataPayload = [
             'type' => 'new_request',
             'date' => "",
@@ -889,14 +883,13 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
         $trainer = $users_model->getTrainerByConnectionId($request['id']);
-        
+
         $dataPayload = [
             'type' => 'accepted_request',
             'date' => "",
             'time' => "",
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
-        
 
         $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"], $dataPayload);
 
@@ -945,9 +938,7 @@ class Sdk extends Api
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
 
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'],
-            $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'],
-            $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
@@ -1058,19 +1049,18 @@ class Sdk extends Api
     {
         $country_model = new Countries($this->dbAdapter);
         $countries = $country_model->getCountries();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $countries);
     }
-    
+
     private function getCities()
     {
-
         $city_model = new Cities($this->dbAdapter);
         $cities = $city_model->getCities();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $cities);
     }
-    
+
     private function getCitiesByCountryId()
     {
         $request = $this->filterParams([
@@ -1089,14 +1079,14 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $invoice_items);
     }
-    
+
     private function getInvoicesByTrainerId()
     {
         $id = $this->user_id;
-        
+
         $invoice_model = new Invoices($this->dbAdapter);
         $invoices = $invoice_model->getByTrainerId($id);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $invoices);
     }
 
@@ -1216,8 +1206,10 @@ class Sdk extends Api
         $connector_api_key = "genericmerchant-simulator-1";
         $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        /* $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
-EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w" */
+        /*
+         * $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
+         * EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w"
+         */
 
         $price = "0";
 
@@ -1252,16 +1244,16 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
             ->setCurrency('RSD')
-            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id='. $request['id'] .'&is_monthly='. $request['is_monthly'] .'')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly'] . '')
             ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
             ->setErrorUrl('https://myhost.com/checkout/errorPage')
             ->setDescription('Subscription')
             ->setCustomer($customer);
 
         // if token acquired via payment.js
-        
+
         if (isset($request['token'])) {
-         $debit->setTransactionToken($request['token']);
+            $debit->setTransactionToken($request['token']);
         }
 
         $result = $client->debit($debit);
@@ -1276,26 +1268,24 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
                 $response['status'] = "error";
-                
-                return $this->formatResponse(self::STATUS_FAILED, "", $response);
-                
-                die();
 
+                return $this->formatResponse(self::STATUS_FAILED, "", $response);
+
+                die();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
-                
+
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
-                
+
                 die();
-                
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
                 // payment is pending, wait for callback to complete
 
                 $response['status'] = "pending";
-                
+
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
                 die();
@@ -1305,12 +1295,11 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
 
                 // ovde sam stao nesto
-                
+
                 $response['status'] = "success";
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 die();
-
             }
         } else {
 
@@ -1345,7 +1334,6 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
         }
 
         try {
-            
 
             $valid = $client->validateCallbackWithGlobals();
 
@@ -1362,13 +1350,13 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
 
             $callbackResult = $client->readCallback($callbackInput);
             $customer_id = $request['id'];
-            $is_monthly = $request['is_monthly'];;
+            $is_monthly = $request['is_monthly'];
+            ;
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
                 $invoice_model = new Invoices($this->dbAdapter);
-                
-                
+
                 $current_sub_date = $user_model->getSubLength($customer_id);
 
                 $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
@@ -1383,7 +1371,7 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
                 $new_date = $date->modify($period_to_add)->format('Y-m-d');
 
                 $user_model->updateSub($customer_id, $new_date);
-                if($is_monthly == "0"){
+                if ($is_monthly == "0") {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date);
                 } else {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date);
@@ -1562,33 +1550,31 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
+    // private function test(){
 
-//      private function test(){
-     
-//      $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
-     
-//      $this->sendNotification("Test", "Test Test", $device_token);
-    
-//      return $this->formatResponse(self::STATUS_SUCCESS, []);
-//      }
+    // $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
 
+    // $this->sendNotification("Test", "Test Test", $device_token);
+
+    // return $this->formatResponse(self::STATUS_SUCCESS, []);
+    // }
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [])
     {
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
-        
+
         $client = new Client($filePath);
-        
+
         $recipient = new Recipient();
         $notification = new Notification();
-        
+
         $recipient->setSingleRecipient($device_token);
-        
+
         $notification->setNotification($title, $body);
-        
-        if (!empty($dataPayload)) {
+
+        if (! empty($dataPayload)) {
             $notification->setDataPayload($dataPayload);
         }
-        
+
         $client->build($recipient, $notification);
         $client->fire();
     }
@@ -1658,16 +1644,17 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
         return substr($user['device_token'], 4);
     }
 
-    private function testMail(){
+    private function testMail()
+    {
         $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
-        
-        if (!$success) {
+
+        if (! $success) {
             $errorMessage = error_get_last()['message'];
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $err);
     }
-    
+
     private function returnUser($userRow)
     {
         unset($userRow['password']);
