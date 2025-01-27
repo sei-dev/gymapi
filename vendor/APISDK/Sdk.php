@@ -1088,6 +1088,16 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $invoice_items);
     }
+    
+    private function getInvoicesByTrainerId()
+    {
+        $id = $this->user_id;
+        
+        $invoice_model = new Invoices($this->dbAdapter);
+        $invoices = $invoice_model->getByTrainerId($id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $invoices);
+    }
 
     private function login()
     {
