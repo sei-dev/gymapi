@@ -1656,6 +1656,12 @@ class Sdk extends Api
         return substr($user['device_token'], 4);
     }
 
+    private function testMail(){
+        mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
+    
     private function returnUser($userRow)
     {
         unset($userRow['password']);
