@@ -1658,9 +1658,13 @@ class Sdk extends Api
     }
 
     private function testMail(){
-        mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
+        $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+        if (!$success) {
+            $errorMessage = error_get_last()['message'];
+        }
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $errorMessage);
     }
     
     private function returnUser($userRow)
