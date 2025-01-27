@@ -1260,13 +1260,11 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
 
         // if token acquired via payment.js
         
-//          if (isset($request['token'])) {
-//          $debit->setTransactionToken($request['token']);
-//          }
-         
-        if (isset($token)) {
-           $debit->setTransactionToken($token);
+        if (isset($request['token'])) {
+        $debit->setTransactionToken($request['token']);
         }
+         
+       
 
         $result = $client->debit($debit);
 
