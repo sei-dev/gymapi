@@ -1216,8 +1216,8 @@ class Sdk extends Api
         $connector_api_key = "genericmerchant-simulator-1";
         $connector_shared_secret = "hGa9LECHy2nP7LvHcJI5xbsHtUIIqv";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
-EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w";
+        /* $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
+EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w" */
 
         $price = "0";
 
@@ -1261,10 +1261,8 @@ EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6Inyx
         // if token acquired via payment.js
         
         if (isset($request['token'])) {
-        $debit->setTransactionToken($request['token']);
+         $debit->setTransactionToken($request['token']);
         }
-         
-       
 
         $result = $client->debit($debit);
 
