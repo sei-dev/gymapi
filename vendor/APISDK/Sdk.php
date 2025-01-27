@@ -83,7 +83,8 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'callback',
-            'cronSubCheck'
+            'cronSubCheck',
+            'testMail'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
