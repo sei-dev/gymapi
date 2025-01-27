@@ -1304,13 +1304,10 @@ class Sdk extends Api
         } else {
 
             // handle error
-            $result->getErrorMessage();
-            $result->getErrorCode();
-            $result->getAdapterMessage();
-            $result->getAdapterCode();
+            $errors = $result->getErrors();
         }
 
-        return $this->formatResponse(self::STATUS_FAILED, "", $result);
+        return $this->formatResponse(self::STATUS_FAILED, "", $errors);
     }
 
     private function callback()
