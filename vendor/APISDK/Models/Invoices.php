@@ -70,7 +70,8 @@ class Invoices extends ModelAbstract implements ModelInterface
 	public function getByTrainerId(string $trainer_id){
 	    
 	    
-	    $sQuery = "SELECT * FROM invoices WHERE trainer_id = '{$trainer_id}';
+	    $sQuery = "SELECT invoices.*, invoice_items.price FROM invoices LEFT JOIN invoice_items ON invoice_items.id = invoices.item_id
+                   WHERE trainer_id = '{$trainer_id}';
                 ";
 	    
 	    $row = $this->getDbAdapter()
