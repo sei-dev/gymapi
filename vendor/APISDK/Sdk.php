@@ -1336,7 +1336,7 @@ class Sdk extends Api
         function logVarDump($message, $logFile)
         {
             $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-            $logEntry = $timestamp . " Object: {$message}\n";
+            $logEntry = "[{$timestamp}] Object: {$message}\n";
             file_put_contents($logFile, $logEntry, FILE_APPEND);
         }
 
@@ -1362,6 +1362,8 @@ class Sdk extends Api
             
             logVarDump($client, $var_dumpFile);
             logVarDump($callbackResult, $var_dumpFile);
+            logError($callbackResult, $logFile);
+            logError($client, $logFile);
             die();
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
