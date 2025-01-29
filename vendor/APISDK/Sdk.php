@@ -1360,6 +1360,9 @@ class Sdk extends Api
             $is_monthly = $request['is_monthly'];
             
             
+            file_put_contents($var_dumpFile, print_r($callbackResult, true), FILE_APPEND);
+            file_put_contents($var_dumpFile, print_r($client, true), FILE_APPEND);
+            
             /* logVarDump($client, $var_dumpFile);
             logVarDump($callbackResult, $var_dumpFile);
             logError($callbackResult, $logFile);
