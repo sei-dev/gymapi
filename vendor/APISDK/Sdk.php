@@ -1315,6 +1315,7 @@ class Sdk extends Api
     private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
+        $var_dumpFile= __DIR__ . '/var_dump_log.txt';
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
         $connector_api_key = "personal-simulator";
@@ -1329,6 +1330,13 @@ class Sdk extends Api
         {
             $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
             $logEntry = "[{$timestamp}] ERROR: {$message}\n";
+            file_put_contents($logFile, $logEntry, FILE_APPEND);
+        }
+        
+        function logVarDump($message, $logFile)
+        {
+            $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+            $logEntry = $timestamp . " Object: {$message}\n";
             file_put_contents($logFile, $logEntry, FILE_APPEND);
         }
 
@@ -1351,8 +1359,10 @@ class Sdk extends Api
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
             
-            var_dump($client);
-            die(var_dump($callbackResult));
+            
+            logVarDump($client, $var_dumpFile);
+            logVarDump($callbackResult, $var_dumpFile);
+            die();
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
