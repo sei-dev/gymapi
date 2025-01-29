@@ -1360,11 +1360,11 @@ class Sdk extends Api
             $is_monthly = $request['is_monthly'];
             
             
-            logVarDump($client, $var_dumpFile);
+            /* logVarDump($client, $var_dumpFile);
             logVarDump($callbackResult, $var_dumpFile);
             logError($callbackResult, $logFile);
             logError($client, $logFile);
-            die();
+            die(); */
 
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $user_model = new Users($this->dbAdapter);
