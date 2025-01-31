@@ -1255,8 +1255,6 @@ class Sdk extends Api
         if (isset($request['token'])) {
             $debit->setTransactionToken($request['token']);
         }
-
-        die(var_dump($debit));
         
         $result = $client->debit($debit);
 
