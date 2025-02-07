@@ -84,7 +84,8 @@ class Sdk extends Api
             'removeInactive',
             'callback',
             'cronSubCheck',
-            'testMail'
+            'testMail',
+            'testInvoices'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1381,6 +1382,9 @@ class Sdk extends Api
                 $new_date = $date->modify($period_to_add)->format('Y-m-d');
 
                 $user_model->updateSub($customer_id, $new_date);
+                
+                //file_put_contents($logFile, print_r($callbackResult, true), FILE_APPEND);
+                
                 if ($is_monthly == "0") {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date);
                 } else {
@@ -1589,62 +1593,6 @@ class Sdk extends Api
         $client->fire();
     }
 
-    /*
-     * private function sendAndroidPush($user, $msg, $request = null)
-     * {
-     * // $firebase_api = "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCr+k+dh3qhlEu4\nkOYyaCzJw/q+tWa+DXyv8iCfwXX0O8r7eQs65q99RoFkUIdibWWJuQyOD0WM+Z1g\nzscKzGNUbT6MW8/baY7Ho5qsFpYj2B7MsjE7t56/lhOFXLN9s+z+GDVNm5n+jDpX\n3Jf/ZSDV7GXfV0+LM6niXmLyaSq+8nUC0ATweqQxWOawhsD4PpN5vTTTSuHUr9B9\n9Divrp7YjnLeIpvXTa1pNST6QN4HsOvN6DRXJ/CHDB5CsTLcAEFp3mPYAUXTvjwF\nKc4WV2VH4n7fgWlgLSjBkM0CN3p/dGDw0O4Gr4PXI9FBZaUbFdzl+vJuZRYnuHRM\ngX+bdxxfAgMBAAECggEAPzMZlvZ2pnJs8UKulc+axfrzZqobO7SRIceFHbBmvH5M\nteVhrx+fVhZW7pp5Zj51lgsfBgWutYP1xeG3W8yIpDoRRltnI2bDRbJl4N/cBQgj\nKW5CkYOFHzrzqYrLm2JHsYkL7Z1FFjpKJoe2g/CSBIt/VHgtjyZJRBsTman0P38W\nkmtkpEHUxPw2tl0Plvj6YcgZGAx03SulEqXpl8F14132OVLPjHCSbQtTSLa9ofCO\nfRPxQNNgvG9e26Qz+zMqmRkfvDyjmZX2PjiQCkJL2HS6xSZuqNG2EXuPexOpSso6\neRBbUvOJqlJdymVWC97ysSySNSwRRE2cps6C9ZJaYQKBgQDyhzw3Cdc10CnzOclQ\nfuofr7EyHiEQ3kCAjoDDXDt2remP6oVfOm4DludkpRZ8uG3r78cENt0q2a0XlmX9\nmKsJqro9UK44c1r/11gvXKCtkIBgsu8JBjNKmxzY8sQJy/wUulvIuElHEstKOl+K\nl3B1rhcyrp3SwSJG5xAJsXGHzQKBgQC1h9gZE4LPHs1191vh9Chukp6qptF/Odzb\nXpp8tNNmXITlbN03hMPIoTgw9klkqUqQJ+owCG7PixnFoZbZ8OZax06+mbsNevy5\n8eGgDleKUg6e+7S7mk0276FPRpAtqrdheqsuijvs8PJbGTAxCS8iQMihE0Jeewy0\n+zMyGOew2wKBgEGoFscXpOlul0y/Yh6mnR9C4wecXHtCj9e9vGIm//obDtXlOYIU\nQWA7ZB09DB9rlmZ/HTOo3qsRDukJ0EadJACT9aNPyjqCECqe08LOorkaG4cSKeAZ\ni50w7NhWsHeuf2nlIZ/vM/dHwT0xHFhasxlIrgMMfrFlk6/6Mb9OCFwpAoGAOgKK\nNSE+CRAv2kXMz/0lOoiSObiLdBu6j0PBHJ7we2KPeX17h/VeV2vluAfMVmWfFUgc\nF3Nqbdpmxvgna8gG5PWSHWilFN67inRYhLxwjxw/3eBT1iuuByM2qk3DX0SRy43W\nzE2SbtpkqGX5N4JW1JxdQNQVvnmWCvPHXXgF+kcCgYBFkdGkutIT2tRepIxA7uex\nNzU2KFYUopRAJ2ZY1iS2lIpb8xuTtvitAgw2AfcXkcCR2K9rBA+C8Mn14qMeOfVN\niQCmsY5+RzzQ8W8ZFAFRt2FdBr/Vp4utDjd/f+C1TuC2RgEy9/mjwcoZU9/EnH5X\n5q2KjdFp+S9Xku8O0Do8WA==";
-     * // $firebase_api = "AIzaSyCTTc0zYQN2noVWca82czK_iQ-nVgDQnW4";
-     * //$firebase_api = "AAAAaZzQSpw:APA91bENhf5YnYv09dPCwFQJKhgBE6auTVCHYKX6PPr-bcB0iK-srtHV199yAdkYWAPZJN3xJg6nATeTY1YYoY1vq8XjCwRD5wcsgT0zwhFwbh9eUiJc4yUNIzOk0yBZ_yhayNFJ5Hzr";
-     * $notification = array();
-     * $notification['title'] = "";
-     * $notification['message'] = $msg;
-     * $notification['image'] = "ddd";
-     * $notification['badge'] = "1";
-     *
-     * $fields = array(
-     * 'to' => $this->getDeviceToken($user),
-     * 'data' => $notification
-     * );
-     *
-     * // Set POST variables
-     * $url = 'https://fcm.googleapis.com/fcm/send';
-     *
-     * $headers = array(
-     * 'Authorization: key=' . $firebase_api,
-     * 'Content-Type: application/json'
-     * );
-     *
-     * // Open connection
-     * $ch = curl_init();
-     *
-     * // Set the url, number of POST vars, POST data
-     * curl_setopt($ch, CURLOPT_URL, $url);
-     *
-     * curl_setopt($ch, CURLOPT_POST, true);
-     * curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-     * curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-     *
-     * // Disabling SSL Certificate support temporarily
-     * curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-     *
-     * curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-     *
-     * $result = curl_exec($ch);
-     * if ($result === FALSE) {
-     * throw new \Exception("Curl failed: " . curl_error($ch));
-     * }
-     *
-     * $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-     *
-     * // var_dump($result);
-     * // mail("arsen.leontijevic@gmail.com", "and nots", $result);
-     *
-     * // die(var_dump($fields));
-     *
-     * return $result;
-     * }
-     */
-
     /**
      *
      * @return array
@@ -1662,6 +1610,17 @@ class Sdk extends Api
             $errorMessage = error_get_last()['message'];
         }
 
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $err);
+    }
+    
+    private function testInvoices()
+    {
+        $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
+        
+        if (! $success) {
+            $errorMessage = error_get_last()['message'];
+        }
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $err);
     }
 
