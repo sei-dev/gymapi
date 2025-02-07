@@ -1615,10 +1615,14 @@ class Sdk extends Api
     
     private function testInvoices()
     {
-        $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
+        $invoice_model = new Invoices($this->dbAdapter);
         
-        if (! $success) {
-            $errorMessage = error_get_last()['message'];
+        $is_monthly = "0";
+        
+        if ($is_monthly == "0") {
+            $invoice_model->addInvoiceYearly("2", "2025-02-07");
+        } else {
+            $invoice_model->addInvoiceMonthly("2", "2025-02-07");
         }
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $err);
