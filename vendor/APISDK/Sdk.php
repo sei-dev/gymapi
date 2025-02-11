@@ -941,7 +941,7 @@ class Sdk extends Api
 
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
     }
 
     private function searchMyClients()
