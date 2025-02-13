@@ -630,6 +630,16 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
 
+    public function setMailHash(String $id, String $hash)
+    {
+        $sQuery = "UPDATE " . self::getTablePrefix() . "users
+                   SET email_hash = '{$hash}'
+				   WHERE id = '{$id}'
+				";
+        
+        return $this->getDbAdapter()->query($sQuery);
+    }
+    
     // bcrypt, then compare hash with password
     public function login(string $email)
     {

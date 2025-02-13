@@ -929,10 +929,13 @@ class Sdk extends Api
             'nationality',
             'country_id'
         ]);
-
+        
+        
+        
         $users_model = new Users($this->dbAdapter);
 
         $user = $users_model->getUserByEmail($request['email']);
+       
 
         if ($user) {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
@@ -942,6 +945,31 @@ class Sdk extends Api
 
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
 
+        $hash = md5(time());
+        
+        $users_model->setMailHash($users[0]['id'], $hash);
+        
+        $mail = new PHPMailer();
+        // configure an SMTP
+        $mail->isSMTP();
+        $mail->Host = 'sandbox.smtp.mailtrap.io';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ff1891b36df9cb';
+        $mail->Password = 'e1241525bc4bbb';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 2525;
+        
+        $mail->setFrom('confirmation@trener.com', 'Test');
+        $mail->addAddress('nikola.bojovic9@gmail.com');
+        $mail->addCC('arsen.leontijevic@gmail.com');
+        $mail->Subject = 'Potvrda naloga';
+        // Set HTML
+        $mail->isHTML(TRUE);
+        $mail->Body = '<html>Link za potvrdu naloga: https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/'.$hash.'</html>';
+        $mail->AltBody = '<html>Alt Body</html>';
+        
+        $mail->send();
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
     }
 
