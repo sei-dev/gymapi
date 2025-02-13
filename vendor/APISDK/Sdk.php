@@ -1625,10 +1625,7 @@ class Sdk extends Api
         $mail->isHTML(TRUE);
         $mail->Body = '<html>Body.</html>';
         $mail->AltBody = '<html>Alt Body</html>';
-        // add attachment
-        // just add the '/path/to/file.pdf'
         
-        // send the message
         if(!$mail->send()){
             echo 'Message could not be sent.';
             echo 'Mailer Error: ' . $mail->ErrorInfo;
