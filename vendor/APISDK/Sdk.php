@@ -20,6 +20,7 @@ use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
+use PHPMailer\PHPMailer\PHPMailer;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -1604,13 +1605,24 @@ class Sdk extends Api
 
     private function testMail()
     {
-        $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
-
-        if (! $success) {
-            $errorMessage = error_get_last()['message'];
-        }
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $errorMessage);
+        /* $mail = new PHPMailer();
+         // configure an SMTP
+         $mail->isSMTP();
+         $mail->Host = 'sandbox.smtp.mailtrap.io';
+         $mail->SMTPAuth = true;
+         $mail->Username = 'ff1891b36df9cb';
+         $mail->Password = 'e1241525bc4bbb';
+         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+         $mail->Port = 2525;
+         
+         $mail->setFrom('confirmation@trener', 'Test');
+         $mail->addAddress('nikola.bojovic9@gmail.com');
+         $mail->addCC('arsen.leontijevic@gmail.com');
+         $mail->Subject = 'Testni mejl!';
+         // Set HTML
+         $mail->isHTML(TRUE);
+         $mail->Body = '<html>Body.</html>';
+         $mail->AltBody = '<html>Alt Body</html>'; */
     }
     
     private function testInvoices()
