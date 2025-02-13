@@ -18,8 +18,6 @@ use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
 use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
 
