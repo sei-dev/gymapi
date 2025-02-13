@@ -1615,7 +1615,7 @@ class Sdk extends Api
          $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
          $mail->Port = 2525;
          
-         $mail->setFrom('confirmation@trener', 'Test');
+         $mail->setFrom('confirmation@trener.com', 'Test');
          $mail->addAddress('nikola.bojovic9@gmail.com');
          $mail->addCC('arsen.leontijevic@gmail.com');
          $mail->Subject = 'Testni mejl!';
