@@ -942,12 +942,10 @@ class Sdk extends Api
         }
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
-
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality']);
-
-        $hash = md5(time());
         
-        $users_model->setMailHash($users[0]['id'], $hash);
+        $hash = md5(time());
+
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
         
         $mail = new PHPMailer();
         // configure an SMTP

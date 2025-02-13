@@ -594,14 +594,14 @@ class Users extends ModelAbstract implements ModelInterface
     }
 
     public function register(String $name, String $surname, String $age, String $phone, String $password, String $email,
-        String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $is_trainer, String $country_id, String $nationality)
+        String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $is_trainer, String $country_id, String $nationality, String $email_hash)
     {
         $sQuery = "INSERT INTO `users`(`first_name`, `last_name`, `email`, `password`, `phone`, `deadline`, 
                     `is_trainer`, `is_male`, `age`,`city_id`,
-                    `language_english`, `language_serbian`, `language_russian`, `country_id`, `nationality`)
+                    `language_english`, `language_serbian`, `language_russian`, `country_id`, `nationality`, `email_hash`)
                      VALUES ('{$name}','{$surname}','{$email}','{$password}',
                     '{$phone}','{$deadline}','{$is_trainer}','{$is_male}','{$age}','{$city_id}',
-                    '{$en}','{$rs}','{$ru}', '{$country_id}', '{$nationality}');
+                    '{$en}','{$rs}','{$ru}', '{$country_id}', '{$nationality}', '{$email_hash}');
 				";
 
         $sQuery2 = "SELECT * FROM `users` WHERE first_name = '{$name}' AND last_name = '{$surname}' AND email = '{$email}';";
