@@ -1635,12 +1635,6 @@ class Sdk extends Api
         } else {
             echo 'Message has been sent';
         }
-        
-        $success = mail("nikola.bojovic9@gmail.com", "Rezultat", "Rezultat");
-
-        if (! $success) {
-            $errorMessage = error_get_last()['message'];
-        }
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $errorMessage);
     }
