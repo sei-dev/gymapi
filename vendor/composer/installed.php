@@ -3,7 +3,7 @@
         'name' => 'sei/gym-api',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '737404b34b8ea44afa745e0f8452933ebdb671f1',
+        'reference' => '4aa9a0bf04a7dbbddd38ab876cc044ea1ed3df83',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -64,6 +64,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'phpmailer/phpmailer' => array(
+            'pretty_version' => 'v6.9.3',
+            'version' => '6.9.3.0',
+            'reference' => '2f5c94fe7493efc213f643c23b1b1c249d40f47e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpmailer/phpmailer',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'psr/http-message' => array(
             'pretty_version' => '1.1',
             'version' => '1.1.0.0',
@@ -100,7 +109,7 @@
         'sei/gym-api' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '737404b34b8ea44afa745e0f8452933ebdb671f1',
+            'reference' => '4aa9a0bf04a7dbbddd38ab876cc044ea1ed3df83',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

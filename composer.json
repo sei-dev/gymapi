@@ -4,7 +4,8 @@
 	"type" : "project",
 	"require" : {
 		"lkaybob/php-fcm-v1" : "^1.0",
-		"allsecure-pay/php-exchange" : "^3.9"
+		"allsecure-pay/php-exchange" : "^3.9",
+		"phpmailer/phpmailer": "^6.9"
 	},
 	"autoload" : {
 		"psr-4" : {
