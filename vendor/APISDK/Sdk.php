@@ -1605,7 +1605,7 @@ class Sdk extends Api
 
     private function testMail()
     {
-        /* $mail = new PHPMailer();
+        $mail = new PHPMailer();
          // configure an SMTP
          $mail->isSMTP();
          $mail->Host = 'sandbox.smtp.mailtrap.io';
@@ -1622,7 +1622,7 @@ class Sdk extends Api
          // Set HTML
          $mail->isHTML(TRUE);
          $mail->Body = '<html>Body.</html>';
-         $mail->AltBody = '<html>Alt Body</html>'; */
+         $mail->AltBody = '<html>Alt Body</html>';
     }
     
     private function testInvoices()
