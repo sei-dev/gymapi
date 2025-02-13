@@ -947,7 +947,7 @@ class Sdk extends Api
 
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
         
-        /* $mail = new PHPMailer();
+        $mail = new PHPMailer();
         // configure an SMTP
         $mail->isSMTP();
         $mail->Host = 'sandbox.smtp.mailtrap.io';
@@ -966,7 +966,7 @@ class Sdk extends Api
         $mail->Body = '<html>Link za potvrdu naloga: https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/'.$hash.'</html>';
         $mail->AltBody = '<html>Alt Body</html>';
         
-        $mail->send(); */
+        $mail->send();
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
     }
