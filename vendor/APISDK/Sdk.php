@@ -1619,7 +1619,7 @@ class Sdk extends Api
         
         $mail->setFrom('confirmation@trener', 'Test');
         $mail->addAddress('nikola.bojovic9@gmail.com');
-        $mail->addAddress('arsen.leontijevic@gmail.com');
+        $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Testni mejl!';
         // Set HTML
         $mail->isHTML(TRUE);
