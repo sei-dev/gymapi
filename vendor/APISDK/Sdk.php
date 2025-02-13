@@ -1623,6 +1623,18 @@ class Sdk extends Api
          $mail->isHTML(TRUE);
          $mail->Body = '<html>Body.</html>';
          $mail->AltBody = '<html>Alt Body</html>';
+         
+         if(!$mail->send()){
+             echo 'Message could not be sent.';
+             echo 'Mailer Error: ' . $mail->ErrorInfo;
+             
+             die();
+         } else {
+             echo 'Message has been sent';
+             die();
+         }
+         
+         return $this->formatResponse(self::STATUS_SUCCESS, "", $mail);
     }
     
     private function testInvoices()
