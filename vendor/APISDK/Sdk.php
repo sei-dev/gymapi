@@ -316,7 +316,7 @@ class Sdk extends Api
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
             }
         }else if($request['repeated'=='1']){
-            $start_date = new \DateTimeImmutable($request['start_date']);
+            $start_date = new \DateTimeImmutable($request['date']);
             $end_date = new \DateTimeImmutable($request['end_date']);
             $training_model = new Trainings($this->dbAdapter);
             
