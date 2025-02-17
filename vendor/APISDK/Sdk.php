@@ -230,8 +230,8 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
-
-    private function insertOneTimeTraining()
+    
+    private function insertRepeatedTraining()
     {
         $request = $this->filterParams([
             'trainer_id',
@@ -240,76 +240,21 @@ class Sdk extends Api
             'time',
             'is_group',
             'training_plan'
-        ]);
-
-        $training_model = new Trainings($this->dbAdapter);
-        $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-    }
-
-    private function addClientToTraining()
-    {
-        $request = $this->filterParams([
-            'training_id',
-            'client_id',
-            'price',
-            'trainer_id'
-        ]);
-
-        $training_model = new Trainings($this->dbAdapter);
-        $trainings = $training_model->insertClientToTraining($request['training_id'], $request['client_id'], $request['price']);
-        // $training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
-
-        $training_info = $training_model->getTrainingById($request['training_id']);
-
-        $user_model = new Users($this->dbAdapter);
-        $client = $user_model->getUserById($request['client_id']);
-        $trainer = $user_model->getUserById($request['trainer_id']);
-
-        $date = $training_info[0]['date'];
-        $date = date('d.m.Y', strtotime($date));
-
-        $time = $training_info[0]['time'];
-        $time = date('H:i', strtotime($time));
-
-        $dataPayload = [
-            'type' => 'new_training',
-            'date' => $date,
-            'time' => $time,
-            'user' => $trainer['first_name'] . " " . $trainer['last_name']
-        ];
-
-        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-    }
-
-    private function insertRepeatedTraining()
-    {
-        $request = $this->filterParams([
-            'trainer_id',
-            'gym_id',
-            'start_date',
-            'time',
-            'is_group',
-            'end_date',
-            'mon',
+        ],['mon',
             'tue',
             'wed',
             'thu',
             'fri',
             'sat',
             'sun',
-            'training_plan'
-        ]);
-
+            'end_date']);
+        
         $start_date = new \DateTimeImmutable($request['start_date']);
         $end_date = new \DateTimeImmutable($request['end_date']);
         $training_model = new Trainings($this->dbAdapter);
-
+        
         $trainings = [];
-
+        
         $i = 0;
         do {
             if ($start_date->format('N') == 1 && $request['mon'] == "1") {
@@ -333,10 +278,124 @@ class Sdk extends Api
             if ($start_date->format('N') == 7 && $request['sun'] == "1") {
                 $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
             }
-
+            
             $i ++;
             $start_date = $start_date->modify('+1 day');
         } while ($end_date != $start_date);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+    }
+
+    private function insertTraining()
+    {
+        $request = $this->filterParams([
+            'trainer_id',
+            'gym_id',
+            'date',
+            'time',
+            'is_group',
+            'training_plan',
+            'repeated',
+            'clients'
+        ],['mon',
+            'tue',
+            'wed',
+            'thu',
+            'fri',
+            'sat',
+            'sun',
+            'end_date']);
+
+        if($request['repeated']=='0'){
+            $training_model = new Trainings($this->dbAdapter);
+            $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
+            
+            foreach ($request['clients'] as $one){
+                $user_model = new Users($this->dbAdapter);
+                $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
+                $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
+            }
+        }else if($request['repeated'=='1']){
+            $start_date = new \DateTimeImmutable($request['start_date']);
+            $end_date = new \DateTimeImmutable($request['end_date']);
+            $training_model = new Trainings($this->dbAdapter);
+            
+            $trainings = [];
+            
+            $i = 0;
+            do {
+                if ($start_date->format('N') == 1 && $request['mon'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 2 && $request['tue'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 3 && $request['wed'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 4 && $request['thu'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 5 && $request['fri'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 6 && $request['sat'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 7 && $request['sun'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                
+                $i ++;
+                $start_date = $start_date->modify('+1 day');
+                
+                
+            } while ($end_date != $start_date);
+            foreach ($trainings['id'] as $training_id) {
+                foreach ($request['clients'] as $client_id){
+                    $user_model = new Users($this->dbAdapter);
+                    $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
+                    $this->addClientToTraining($training_id, $client_id, $price, $request['trainer_id']);
+                }
+            }
+        }
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+    }
+
+    private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)
+    {
+        /* $request = $this->filterParams([
+            'training_id',
+            'client_id',
+            'price',
+            'trainer_id'
+        ]); */
+
+        $training_model = new Trainings($this->dbAdapter);
+        $trainings = $training_model->insertClientToTraining($training_id, $client_id, $price);
+        // $training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
+
+        $training_info = $training_model->getTrainingById($training_id);
+
+        $user_model = new Users($this->dbAdapter);
+        $client = $user_model->getUserById($client_id);
+        $trainer = $user_model->getUserById($trainer_id);
+
+        $date = $training_info[0]['date'];
+        $date = date('d.m.Y', strtotime($date));
+
+        $time = $training_info[0]['time'];
+        $time = date('H:i', strtotime($time));
+
+        $dataPayload = [
+            'type' => 'new_training',
+            'date' => $date,
+            'time' => $time,
+            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+        ];
+
+        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }

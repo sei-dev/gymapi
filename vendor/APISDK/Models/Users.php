@@ -51,6 +51,20 @@ class Users extends ModelAbstract implements ModelInterface
         }
         return false;
     }
+    
+    public function getConnectionPriceByIds(string $trainer_id, string $client_id)
+    {
+        $sQuery = "SELECT price FROM connections WHERE
+				   client_id = '{$client_id}' AND trainer_id = '{$trainer_id}'
+				   LIMIT 1";
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetch(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row[0]["price"];
+        }
+        return false;
+    }
 
     public function getTrainerByConnectionId(string $id)
     {

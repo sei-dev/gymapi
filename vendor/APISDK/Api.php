@@ -206,7 +206,7 @@ abstract class Api {
 	 * @throws ApiException
 	 * @return string[]
 	 */
-	protected function filterParams(array $required = array())
+	protected function filterParams(array $required = array(), array $optional = [])
 	{
 		$result = [];
 		foreach ($required as $one)
@@ -218,6 +218,13 @@ abstract class Api {
 				$result[$one] = $this->request[$one];
 			}
 		}
+		
+		foreach ($optional as $one) {
+		    if (isset($this->request[$one]) && $this->request[$one] !== "") {
+		        $result[$one] = $this->request[$one];
+		    }
+		}
+		
 		return $result;
 	}
 	
