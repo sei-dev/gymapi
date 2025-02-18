@@ -357,13 +357,13 @@ class Sdk extends Api
                 
             } while ($end_date != $start_date);
             
-            die(var_dump($trainings));
+            //die(var_dump($trainings));
             
-            foreach ($trainings as $training_id) {
+            foreach ($trainings as $training) {
                 foreach ($clients as $client_id){
                     $user_model = new Users($this->dbAdapter);
                     $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
-                    $this->addClientToTraining($training_id, $client_id, $price, $request['trainer_id']);
+                    $this->addClientToTraining($training['id'], $client_id, $price, $request['trainer_id']);
                 }
             }
             die();
