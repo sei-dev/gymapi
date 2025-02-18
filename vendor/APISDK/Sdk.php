@@ -317,6 +317,8 @@ class Sdk extends Api
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
             }
+            
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }else if($request['repeated'=='1']){
             
             echo "repeated uslo";
@@ -370,9 +372,11 @@ class Sdk extends Api
                     $this->addClientToTraining($training_id, $client_id, $price, $request['trainer_id']);
                 }
             }
+            
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        return $this->formatResponse(self::STATUS_FAILED, "-1", $trainings);
     }
 
     private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)
