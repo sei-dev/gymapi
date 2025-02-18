@@ -61,7 +61,7 @@ class Users extends ModelAbstract implements ModelInterface
         ->query($sQuery)
         ->fetch(\PDO::FETCH_ASSOC);
         if (isset($row)) {
-            return $row;
+            return $row['price'];
         }
         return false;
     }
