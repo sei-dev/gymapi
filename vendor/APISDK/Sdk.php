@@ -306,11 +306,14 @@ class Sdk extends Api
             'sun',
             'end_date']);
 
+        $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
+        die(var_dump($clients));
+        
         if($request['repeated']=='0'){
             $training_model = new Trainings($this->dbAdapter);
             $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
             
-            foreach ($request['clients'] as $one){
+            foreach ($clients as $one){
                 $user_model = new Users($this->dbAdapter);
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
@@ -352,7 +355,7 @@ class Sdk extends Api
                 
             } while ($end_date != $start_date);
             foreach ($trainings['id'] as $training_id) {
-                foreach ($request['clients'] as $client_id){
+                foreach ($clients as $client_id){
                     $user_model = new Users($this->dbAdapter);
                     $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                     $this->addClientToTraining($training_id, $client_id, $price, $request['trainer_id']);
