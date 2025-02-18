@@ -307,6 +307,7 @@ class Sdk extends Api
             'end_date']);
 
         $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
+        echo $request['end_date'];
         die(var_dump($request['mon']));
         
         if($request['repeated']=='0'){
