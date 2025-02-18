@@ -314,6 +314,9 @@ class Sdk extends Api
             $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
             
             foreach ($clients as $one){
+                var_dump($one);
+                var_dump($request['trainer_id']);
+                die();
                 $user_model = new Users($this->dbAdapter);
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
