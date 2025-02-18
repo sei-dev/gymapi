@@ -366,7 +366,6 @@ class Sdk extends Api
                     $this->addClientToTraining($training['id'], $client_id, $price, $request['trainer_id']);
                 }
             }
-            die();
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
 
