@@ -321,9 +321,6 @@ class Sdk extends Api
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }else if($request['repeated']=='1'){
             
-            echo "repeated uslo";
-            die();
-            
             $start_date = new \DateTimeImmutable($request['date']);
             $end_date = new \DateTimeImmutable($request['end_date']);
             $training_model = new Trainings($this->dbAdapter);
