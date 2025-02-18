@@ -319,7 +319,7 @@ class Sdk extends Api
             }
             
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-        }else if($request['repeated'=='1']){
+        }else if($request['repeated']=='1'){
             
             echo "repeated uslo";
             die();
