@@ -357,11 +357,6 @@ class Sdk extends Api
                 
             } while ($end_date != $start_date);
             
-            var_dump($trainings);
-            var_dump($request['mon']);
-            var_dump($clients);
-            die();
-            
             foreach ($trainings['id'] as $training_id) {
                 foreach ($clients as $client_id){
                     $user_model = new Users($this->dbAdapter);
