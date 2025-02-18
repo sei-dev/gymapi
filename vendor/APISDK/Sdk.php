@@ -307,7 +307,7 @@ class Sdk extends Api
             'end_date']);
 
         $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
-        //die(var_dump($clients));
+        die(var_dump($request['repeated']));
         
         if($request['repeated']=='0'){
             $training_model = new Trainings($this->dbAdapter);
