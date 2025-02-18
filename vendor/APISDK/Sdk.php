@@ -359,12 +359,15 @@ class Sdk extends Api
             
             foreach ($trainings['id'] as $training_id) {
                 foreach ($clients as $client_id){
+                    echo"pairs";
+                    echo $client_id;
+                    echo $training_id;
                     $user_model = new Users($this->dbAdapter);
                     $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                     $this->addClientToTraining($training_id, $client_id, $price, $request['trainer_id']);
                 }
             }
-            
+            die();
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
 
