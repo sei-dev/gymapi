@@ -307,8 +307,6 @@ class Sdk extends Api
             'end_date']);
 
         $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
-        echo $request['end_date'];
-        die(var_dump($request['mon']));
         
         if($request['repeated']=='0'){
             $training_model = new Trainings($this->dbAdapter);
@@ -320,6 +318,10 @@ class Sdk extends Api
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
             }
         }else if($request['repeated'=='1']){
+            
+            echo "repeated uslo";
+            die();
+            
             $start_date = new \DateTimeImmutable($request['date']);
             $end_date = new \DateTimeImmutable($request['end_date']);
             $training_model = new Trainings($this->dbAdapter);
