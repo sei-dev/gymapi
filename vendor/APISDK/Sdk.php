@@ -859,24 +859,33 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         
         $user = $users_model->getUserById($this->user_id);
-        
+        return $this->populateUserModel($user);
+    }
+    
+    /**
+     * Populate user model with expected properties
+     */
+    private function populateUserModel(array $user){
+        $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
         if ($this->isFileExists(self::DIR_USERS, $user["id"])) {
             $user['image'] = $this->domain . "/images/users/" . $user["id"] . ".png?r=" . rand(0, 100000);
         } else {
             $user['image'] = $this->domain . "/images/users/logo.png";
         }
         
-        $user['active_clients'] = $users_model->getActiveClients($this->user_id);
-        $user['active_trainers'] = $users_model->getActiveTrainers($this->user_id);
-        $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($this->user_id);
-        $user['total_trainings_client'] = $training_model->getTrainingsClient($this->user_id);
+        $user['active_clients'] = $users_model->getActiveClients($user["id"]);
+        $user['active_trainers'] = $users_model->getActiveTrainers($user["id"]);
+        $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($user["id"]);
+        $user['total_trainings_client'] = $training_model->getTrainingsClient($user["id"]);
         if ($user['is_trainer'] == '1') {
-            $user['profit'] = $users_model->getProfitProfileTrainer($this->user_id);
+            $user['profit'] = $users_model->getProfitProfileTrainer($user["id"]);
             $user['debt'] = "0";
         } else {
             $user['profit'] = "0";
-            $user['debt'] = $users_model->getDebtProfileClient($this->user_id);
+            $user['debt'] = $users_model->getDebtProfileClient($user["id"]);
         }
+        $user["access_token"] = $this->getAccessToken($user);
         return $user;
     }
 
@@ -1301,10 +1310,9 @@ class Sdk extends Api
 
         if (password_verify($request['password'], $user["password"])) {
             unset($user["password"]);
-            $user["access_token"] = $this->getAccessToken($user);
 
-            // $user->image = $this->getDefaultImage();
-            return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
+            $toReturn = $this->populateUserModel($user);
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
         }
 
         return $this->formatResponse(self::STATUS_FAILED, "-1");
