@@ -1667,16 +1667,36 @@ class Sdk extends Api
 
     // return $this->formatResponse(self::STATUS_SUCCESS, []);
     // }
-    private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [])
+    private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
-
+        
         $client = new Client($filePath);
+        $notification = new Notification();
+        $notification->setNotification($title, $body);
+        
+        if (!empty($dataPayload)) {
+            $notification->setDataPayload($dataPayload);
+        }
+        
+        $allTokens = array_merge([$device_token], $more_tokens);
+        
+
+        foreach ($allTokens as $token) {
+            $recipient = new Recipient();
+            $recipient->setSingleRecipient($token);
+            
+            $client->build($recipient, $notification);
+            $client->fire();
+        }
+
+        /* $client = new Client($filePath);
 
         $recipient = new Recipient();
         $notification = new Notification();
 
         $recipient->setSingleRecipient($device_token);
+        
 
         $notification->setNotification($title, $body);
 
@@ -1685,7 +1705,8 @@ class Sdk extends Api
         }
 
         $client->build($recipient, $notification);
-        $client->fire();
+        $client->fire(); */
+ 
     }
 
     /**
