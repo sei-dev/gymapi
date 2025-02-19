@@ -852,6 +852,7 @@ class Sdk extends Api
             $user['profit'] = "0";
             $user['debt'] = $users_model->getDebtProfileClient($this->user_id);
         }
+        $user["access_token"] = $this->getAccessToken($user);
         return $user;
     }
 
