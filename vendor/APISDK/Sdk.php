@@ -495,8 +495,12 @@ class Sdk extends Api
             'time' => $time,
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
+        
+        $moreTokens = [
+            $client['device_token']
+        ];
 
-        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload);
+        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload, $moreTokens);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
