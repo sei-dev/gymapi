@@ -834,7 +834,15 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         
         $user = $users_model->getUserById($this->user_id);
-        
+        return $this->populateUserModel($user);
+    }
+    
+    /**
+     * Populate user model with expected properties
+     */
+    private function populateUserModel(array $user){
+        $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
         if ($this->isFileExists(self::DIR_USERS, $user["id"])) {
             $user['image'] = $this->domain . "/images/users/" . $user["id"] . ".png?r=" . rand(0, 100000);
         } else {
@@ -1279,8 +1287,8 @@ class Sdk extends Api
             unset($user["password"]);
             $user["access_token"] = $this->getAccessToken($user);
 
-            // $user->image = $this->getDefaultImage();
-            return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
+            $toReturn = $this->populateUserModel($user);
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
         }
 
         return $this->formatResponse(self::STATUS_FAILED, "-1");
