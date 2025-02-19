@@ -1647,6 +1647,52 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
     
+    private function saveImageNew()
+    {
+        $request = $this->filterParams([
+            'base_64',
+            'user_id'
+        ]);
+        
+        $base64_string = $request['base_64'];
+        $file_name = $request['user_id'];
+        
+        if (! $base64_string) {
+            throw new \Exception("base64_string is empty");
+        }
+        
+        // Remove the base64 URL prefix if it exists
+        $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
+        $base64_string = str_replace(' ', '+', $base64_string);
+        $decoded_data = base64_decode($base64_string);
+        
+        if ($decoded_data === false) {
+            throw new \Exception("Failed to decode base64 string");
+        }
+        
+        // Define the upload directory
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . "/images/users/";
+        $upload_path = $upload_dir . $file_name . ".png";
+        
+        // Create directory if it does not exist
+        if (! is_dir($upload_dir)) {
+            if (! mkdir($upload_dir, 0777, true) && ! is_dir($upload_dir)) {
+                throw new \Exception("Failed to create directory: " . $upload_dir);
+            }
+        }
+        
+        // Save the decoded image data to a file
+        if (file_put_contents($upload_path, $decoded_data) === false) {
+            throw new \Exception("Failed to save the image to: " . $upload_path);
+        }
+        
+        $image_url = "https://" . $_SERVER['HTTP_HOST'] . "/images/users/" . $file_name . ".png";
+        
+        var_dump($image_url);
+        die();
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
 
     private function removeImage()
     {
