@@ -562,6 +562,48 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
+    
+    private function updateFitnessCenters(){
+        $request = $this->filterParams([
+            'added',
+            'removed'
+        ]);
+        
+        $user_id = $this->user_id;
+        
+        $added = isset($request['added']) ? json_decode($request['added'], true) : [];
+        $removed = isset($request['removed']) ? json_decode($request['removed'], true) : [];
+        
+        var_dump($added);
+        var_dump($removed);
+        die();
+    }
+    
+    private function addFitnessCenterNew(string $user_id, string $gym_id)
+    {
+        /* $request = $this->filterParams([
+            'user_id',
+            'gym_id'
+        ]); */
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        $gyms = $gyms_model->addFitnessCenter($user_id, $gym_id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
+    
+    private function removeFitnessCenterNew(string $user_id, string $gym_id)
+    {
+/*         $request = $this->filterParams([
+            'user_id',
+            'gym_id'
+        ]); */
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        $gyms = $gyms_model->removeFitnessCenter($user_id, $gym_id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
 
     private function getUserById()
     {
