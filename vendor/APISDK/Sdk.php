@@ -577,14 +577,14 @@ class Sdk extends Api
         foreach ($added as $gym){
             $success = $this->addFitnessCenterNew($user_id, $gym);
             if (!$success) {
-                return $this->formatResponse(self::STATUS_FAILED, "", []);
+                return $this->formatResponse(self::STATUS_FAILED, "Failed to add gym with ID: $gym", []);
             }
         }
         
         foreach ($removed as $gone){
             $success = $this->removeFitnessCenterNew($user_id, $gone);
             if (!$success) {
-                return $this->formatResponse(self::STATUS_FAILED, "", []);
+                return $this->formatResponse(self::STATUS_FAILED, "Failed to add gym with ID: $gym", []);
             }
         }
         
