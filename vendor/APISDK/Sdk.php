@@ -824,7 +824,35 @@ class Sdk extends Api
 
         $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'], $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['country_id']);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        $user = $this->getUpdatedUser();
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
+    }
+    
+    private function getUpdatedUser()
+    {
+        $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
+        
+        $user = $users_model->getUserById($this->user_id);
+        
+        if ($this->isFileExists(self::DIR_USERS, $user["id"])) {
+            $user['image'] = $this->domain . "/images/users/" . $user["id"] . ".png?r=" . rand(0, 100000);
+        } else {
+            $user['image'] = $this->domain . "/images/users/logo.png";
+        }
+        
+        $user['active_clients'] = $users_model->getActiveClients($this->user_id);
+        $user['active_trainers'] = $users_model->getActiveTrainers($this->user_id);
+        $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($this->user_id);
+        $user['total_trainings_client'] = $training_model->getTrainingsClient($this->user_id);
+        if ($user['is_trainer'] == '1') {
+            $user['profit'] = $users_model->getProfitProfileTrainer($this->user_id);
+            $user['debt'] = "0";
+        } else {
+            $user['profit'] = "0";
+            $user['debt'] = $users_model->getDebtProfileClient($this->user_id);
+        }
+        return $user;
     }
 
     private function getConnectedUsersByTrainerId()
@@ -1620,6 +1648,7 @@ class Sdk extends Api
 
         // Remove the base64 URL prefix if it exists
         $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
+        $base64_string = str_replace(' ', '+', $base64_string);
         $decoded_data = base64_decode($base64_string);
 
         if ($decoded_data === false) {
