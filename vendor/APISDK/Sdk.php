@@ -849,16 +849,16 @@ class Sdk extends Api
             $user['image'] = $this->domain . "/images/users/logo.png";
         }
         
-        $user['active_clients'] = $users_model->getActiveClients($this->user_id);
-        $user['active_trainers'] = $users_model->getActiveTrainers($this->user_id);
-        $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($this->user_id);
-        $user['total_trainings_client'] = $training_model->getTrainingsClient($this->user_id);
+        $user['active_clients'] = $users_model->getActiveClients($user["id"]);
+        $user['active_trainers'] = $users_model->getActiveTrainers($user["id"]);
+        $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($user["id"]);
+        $user['total_trainings_client'] = $training_model->getTrainingsClient($user["id"]);
         if ($user['is_trainer'] == '1') {
-            $user['profit'] = $users_model->getProfitProfileTrainer($this->user_id);
+            $user['profit'] = $users_model->getProfitProfileTrainer($user["id"]);
             $user['debt'] = "0";
         } else {
             $user['profit'] = "0";
-            $user['debt'] = $users_model->getDebtProfileClient($this->user_id);
+            $user['debt'] = $users_model->getDebtProfileClient($user["id"]);
         }
         $user["access_token"] = $this->getAccessToken($user);
         return $user;
@@ -1285,7 +1285,6 @@ class Sdk extends Api
 
         if (password_verify($request['password'], $user["password"])) {
             unset($user["password"]);
-            $user["access_token"] = $this->getAccessToken($user);
 
             $toReturn = $this->populateUserModel($user);
             return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
