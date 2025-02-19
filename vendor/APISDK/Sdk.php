@@ -575,17 +575,11 @@ class Sdk extends Api
         $removed = isset($request['removed']) ? json_decode($request['removed'], true) : [];
         
         foreach ($added as $gym){
-            $success = $this->addFitnessCenterNew($user_id, $gym);
-            if (!$success) {
-                return $this->formatResponse(self::STATUS_FAILED, "Failed to add gym with ID: $gym", []);
-            }
+            $this->addFitnessCenterNew($user_id, $gym);
         }
         
         foreach ($removed as $gone){
-            $success = $this->removeFitnessCenterNew($user_id, $gone);
-            if (!$success) {
-                return $this->formatResponse(self::STATUS_FAILED, "Failed to add gym with ID: $gym", []);
-            }
+            $this->removeFitnessCenterNew($user_id, $gone);
         }
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
