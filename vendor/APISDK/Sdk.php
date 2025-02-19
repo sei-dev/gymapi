@@ -159,9 +159,7 @@ class Sdk extends Api
         $trainings = $training_model->getTodayTrainingsByTrainerId($request['trainer_id']);
 
         array_walk($trainings, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
+            if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
@@ -224,10 +222,8 @@ class Sdk extends Api
         
 
         array_walk($trainings, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["trainer_id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["trainer_id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -533,10 +529,8 @@ class Sdk extends Api
         $users = $users_model->getUsersByTrainingId($request['id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -915,10 +909,8 @@ class Sdk extends Api
         $users = $users_model->getConnectedUsersByTrainerId($request['id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -944,10 +936,8 @@ class Sdk extends Api
         $users = $users_model->getConnectedUsersByClientId($request['id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -972,10 +962,8 @@ class Sdk extends Api
         $users = $users_model->getRequestsTrainer($request['id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -1032,10 +1020,8 @@ class Sdk extends Api
         $users = $users_model->getRequestsClient($request['id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -1182,10 +1168,8 @@ class Sdk extends Api
         $users = $users_model->searchConnectedUsers($request['id'], $request['search_param']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -1212,10 +1196,8 @@ class Sdk extends Api
         $users = $users_model->searchConnectedTrainers($request['id'], $request['search_param']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
@@ -1241,10 +1223,8 @@ class Sdk extends Api
         $users = $users_model->getTrainers($request['is_male'], $request['city_id']);
 
         array_walk($users, function (&$a) {
-            $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $a["client_id"] . ".png";
-            
-            if (file_exists($file_path)) {
-                $a['image'] = $this->domain . "/images/users/" . $a["client_id"] . ".png?r=" . rand(0, 100000);
+            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+                $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
