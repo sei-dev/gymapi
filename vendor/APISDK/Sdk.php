@@ -574,9 +574,21 @@ class Sdk extends Api
         $added = isset($request['added']) ? json_decode($request['added'], true) : [];
         $removed = isset($request['removed']) ? json_decode($request['removed'], true) : [];
         
-        var_dump($added);
-        var_dump($removed);
-        die();
+        foreach ($added as $gym){
+            $success = $this->addFitnessCenterNew($user_id, $gym);
+            if (!$success) {
+                return $this->formatResponse(self::STATUS_FAILED, "", []);
+            }
+        }
+        
+        foreach ($removed as $gone){
+            $success = $this->removeFitnessCenterNew($user_id, $gone);
+            if (!$success) {
+                return $this->formatResponse(self::STATUS_FAILED, "", []);
+            }
+        }
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
     
     private function addFitnessCenterNew(string $user_id, string $gym_id)
@@ -587,9 +599,16 @@ class Sdk extends Api
         ]); */
         
         $gyms_model = new Gyms($this->dbAdapter);
-        $gyms = $gyms_model->addFitnessCenter($user_id, $gym_id);
+        $result = $gyms_model->addFitnessCenter($user_id, $gym_id);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+        // Check if $result indicates success
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+        
+        //return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
     
     private function removeFitnessCenterNew(string $user_id, string $gym_id)
@@ -600,7 +619,13 @@ class Sdk extends Api
         ]); */
         
         $gyms_model = new Gyms($this->dbAdapter);
-        $gyms = $gyms_model->removeFitnessCenter($user_id, $gym_id);
+        $result = $gyms_model->removeFitnessCenter($user_id, $gym_id);
+        
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
