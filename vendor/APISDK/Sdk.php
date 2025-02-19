@@ -1578,6 +1578,7 @@ class Sdk extends Api
 
         // Remove the base64 URL prefix if it exists
         $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
+        $base64_string = str_replace(' ', '+', $base64_string);
         $decoded_data = base64_decode($base64_string);
 
         if ($decoded_data === false) {
