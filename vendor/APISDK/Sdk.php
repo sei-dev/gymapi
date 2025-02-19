@@ -139,9 +139,14 @@ class Sdk extends Api
      */
 
     // Preradi
-    private function isFileExists($dir, $id)
+    /* private function isFileExists($dir, $id)
     {
         return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
+    } */
+    
+    private function isFileExists($dir, $id)
+    {
+       return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
     }
 
     private function getTodayTrainingsByTrainerId()
@@ -644,7 +649,8 @@ class Sdk extends Api
 
         $users = $users_model->getUserById($request['id']);
 
-        if ($this->isFileExists(self::DIR_USERS, $users["id"])) {
+        $file_path = $_SERVER['DOCUMENT_ROOT'] . "/images/users/" . $users["id"] . ".png";
+        if (file_exists($file_path)) {
             $users['image'] = $this->domain . "/images/users/" . $users["id"] . ".png?r=" . rand(0, 100000);
         } else {
             $users['image'] = $this->domain . "/images/users/logo.png";
