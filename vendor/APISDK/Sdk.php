@@ -1603,61 +1603,7 @@ class Sdk extends Api
         die();
     }
 
-    private function saveImageReport(String $base64_string, String $file_name, String $dir, String $report_id)
-    {
-        if (! $base64_string) {
-            throw new \Exception("base64_string is empty");
-        }
 
-        $base64_string = $this->base64UrlDecode(preg_replace('#^data:image/\w+;base64,#i', '', $base64_string));
-
-        /*
-         * $upload_dir = "/home/ekozasti/public_html/app.ekozastita.com/public/uploads/reports/";
-         * $upload_path = $upload_dir.$file_name.".png";
-         * $url= "uploads/reports/".$file_name.png;
-         */
-
-        $upload_dir = self::DIR_UPLOADS . $dir . '/';
-        $upload_path = $upload_dir . $file_name . ".png";
-        $url = "images/" . $dir . "/" . $file_name . ".png";
-
-        // Create dir if not exists
-        if (! is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
-        file_put_contents($upload_path, $base64_string);
-
-        $appReportModel = new AppReports($this->dbAdapter);
-        $appReportModel->saveImage($file_name, $url, $report_id);
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
-    }
-
-    private function saveImages()
-    {
-        $request = $this->filterParams([
-            'report_id',
-            'images'
-        ]);
-
-        $images_array = json_decode($request['images'], true);
-        $names_array = array();
-
-        for ($i = 0; $i < sizeof($images_array); $i ++) {
-            $file_name = $request['report_id'] . $i;
-
-            /*
-             * var_dump($file_name);
-             * var_dump($request["report_id"]);
-             */
-
-            $this->saveImageReport($images_array[$i], $file_name, "reports", $request['report_id']);
-
-            array_push($names_array, $file_name);
-        }
-
-        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
-    }
 
     private function saveImage()
     {
@@ -1700,6 +1646,7 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
+    
 
     private function removeImage()
     {
