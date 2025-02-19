@@ -206,6 +206,15 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
+        
+        $user_model = new Users($this->dbAdapter);
+        
+        foreach ($trainings as &$one){
+            $users = $user_model->getUsersByTrainingId($one['id']);
+            $count = sizeof($users);
+            $one['count'] = $count;
+        }
+        
 
         array_walk($trainings, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["trainer_id"])) {
