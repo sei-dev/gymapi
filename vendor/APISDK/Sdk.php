@@ -212,7 +212,7 @@ class Sdk extends Api
         foreach ($trainings as &$one){
             $users = $user_model->getUsersByTrainingId($one['id']);
             $count = sizeof($users);
-            $one['count'] = $count;
+            $one['count'] = strval($count);
         }
         
 
