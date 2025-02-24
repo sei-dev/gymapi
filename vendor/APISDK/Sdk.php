@@ -160,7 +160,7 @@ class Sdk extends Api
         
 
         array_walk($trainings, function (&$a) {
-            if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
+            if ($this->isFileExists(self::DIR_USERS, $a["client_ids"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["client_ids"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
@@ -193,7 +193,7 @@ class Sdk extends Api
         $trainings = $training_model->getTrainingsByDate($request['id'], $request['date']);
 
         array_walk($trainings, function (&$a) {
-            if ($this->isFileExists(self::DIR_USERS, $a["client_id"])) {
+            if ($this->isFileExists(self::DIR_USERS, $a["client_ids"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["client_ids"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
