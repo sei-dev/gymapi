@@ -354,9 +354,9 @@ class Sdk extends Api
                 return $this->formatResponse(self::STATUS_SUCCESS, "", []);
             }
             
-            var_dump($start_date);
+            /* var_dump($start_date);
             var_dump($end_date);
-            die();
+            die(); */
             
             $i = 0;
             do {
