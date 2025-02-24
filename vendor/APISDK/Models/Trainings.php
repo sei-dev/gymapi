@@ -24,14 +24,24 @@ class Trainings extends ModelAbstract implements ModelInterface
 	 * @return array
 	 */
 	public function getTodayTrainingsByTrainerId(string $id) {
-		$sQuery = "SELECT client.id as client_id, client.first_name as client_first_name, client.last_name as client_last_name, training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
-                   gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city FROM training
-                   LEFT JOIN users ON training.trainer_id = users.id
-                   LEFT JOIN gyms ON training.gym_id = gyms.id
-                   LEFT JOIN cities ON cities.id = gyms.city_id
-                   LEFT JOIN training_clients ON training_clients.training_id = training.id
-                   LEFT JOIN users client ON training_clients.client_id = client.id
-				   WHERE trainer_id = '{$id}'  AND training.date = CURRENT_DATE;
+		$sQuery = "SELECT 
+                        training.*,
+                        users.first_name AS trainer_first_name, 
+                        users.last_name AS trainer_last_name,
+                        gyms.name AS gym_name, 
+                        gyms.address AS gym_address, 
+                        cities.city AS gym_city,
+                        GROUP_CONCAT(client.id) AS client_ids,
+                        GROUP_CONCAT(CONCAT(client.first_name, ' ', client.last_name)) AS client_names
+                    FROM training
+                    LEFT JOIN users ON training.trainer_id = users.id
+                    LEFT JOIN gyms ON training.gym_id = gyms.id
+                    LEFT JOIN cities ON cities.id = gyms.city_id
+                    LEFT JOIN training_clients ON training_clients.training_id = training.id
+                    LEFT JOIN users client ON training_clients.client_id = client.id
+                    WHERE training.trainer_id = '{$id}'  
+                    AND training.date = CURRENT_DATE
+                    GROUP BY training.id;
 				    ";
 		$rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 		if (isset($rows)) {
