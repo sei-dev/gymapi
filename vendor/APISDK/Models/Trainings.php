@@ -100,7 +100,7 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    LEFT JOIN cities ON cities.id = gyms.city_id
                 	    LEFT JOIN training_clients ON training_clients.training_id = training.id
                 	    LEFT JOIN users client ON training_clients.client_id = client.id
-                	    WHERE trainer_id = '{$id}'  AND training.date = '{$date}
+                	    WHERE trainer_id = '{$id}'  AND training.date = '{$date}'
                 	    GROUP BY training.id;
 				    ";
 	    
