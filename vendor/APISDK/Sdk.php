@@ -350,6 +350,14 @@ class Sdk extends Api
             
             $trainings = [];
             
+            if($start_date == $end_date){
+                return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+            }
+            
+            var_dump($start_date);
+            var_dump($end_date);
+            die();
+            
             $i = 0;
             do {
                 if ($start_date->format('N') == 1 && $request['mon'] == "1") {
