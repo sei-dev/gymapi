@@ -351,6 +351,28 @@ class Sdk extends Api
             $trainings = [];
             
             if($start_date == $end_date){
+                if ($start_date->format('N') == 1 && $request['mon'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 2 && $request['tue'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 3 && $request['wed'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 4 && $request['thu'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 5 && $request['fri'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 6 && $request['sat'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                if ($start_date->format('N') == 7 && $request['sun'] == "1") {
+                    $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
+                }
+                
                 return $this->formatResponse(self::STATUS_SUCCESS, "", []);
             }
             
