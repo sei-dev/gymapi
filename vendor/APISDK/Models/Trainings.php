@@ -174,7 +174,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getClientTrainingsByDate(string $id, string $date) {
-	    /* $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, training.trainer_id as trainer_id,
+	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, training.trainer_id as trainer_id,
                    gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group, training.cancelled, training.finished,
                    training.time, training_clients.cancelled as one_cancelled FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
@@ -182,9 +182,9 @@ class Trainings extends ModelAbstract implements ModelInterface
                    LEFT JOIN cities ON gyms.city_id = cities.id
                    LEFT JOIN training_clients ON training.id = training_clients.training_id 
 				   WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}';
-				    "; */
+				    ";
 	    
-	    $sQuery = "SELECT
+	    /* $sQuery = "SELECT
                 	    training.*,
                 	    users.first_name AS trainer_first_name,
                 	    users.last_name AS trainer_last_name,
@@ -201,7 +201,7 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    LEFT JOIN users client ON training_clients.client_id = client.id
                 	    WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}'
                 	    GROUP BY training.id;
-				    ";
+				    "; */
 	    
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($rows)) {
