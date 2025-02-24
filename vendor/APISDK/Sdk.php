@@ -275,6 +275,10 @@ class Sdk extends Api
             return $this->formatResponse(self::STATUS_SUCCESS, "", []);
         }
         
+        var_dump($start_date);
+        var_dump($end_date);
+        die();
+        
         do {
             if ($start_date->format('N') == 1 && $request['mon'] == "1") {
                 $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
