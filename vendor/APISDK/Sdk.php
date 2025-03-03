@@ -1576,7 +1576,7 @@ class Sdk extends Api
             'is_monthly'
         ]);
 
-        function logError($message, $logFile)
+        /* function logError($message, $logFile)
         {
             $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
             $logEntry = "[{$timestamp}] ERROR: {$message}\n";
@@ -1588,7 +1588,7 @@ class Sdk extends Api
             $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
             $logEntry = "[{$timestamp}] Object: {$message}\n";
             file_put_contents($logFile, $logEntry, FILE_APPEND);
-        }
+        } */
 
         try {
 
