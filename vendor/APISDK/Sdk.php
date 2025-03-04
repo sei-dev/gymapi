@@ -1960,7 +1960,7 @@ class Sdk extends Api
             
             // Oslobodi resurse
             openssl_free_key($privateKey);
-            echo $jwtToken;
+            //echo $jwtToken;
             return $jwtToken;
         } catch (Exception $e) {
             error_log("Greška pri generiranju JWT tokena: " . $e->getMessage());
@@ -1968,11 +1968,16 @@ class Sdk extends Api
         }
     }
     
-    private function sendIOSPush($userRow){
-        $deviceToken = $userRow['device_token']; // Zamijeni s device tokenom tvog uređaja
+    private function sendIOSPush(){
+        
+        $request = $this->filterParams([
+            'device_token'
+        ]);
+        
+        $deviceToken = $request['device_token']; // Zamijeni s device tokenom tvog uređaja
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
-        $jwtToken = "";
+        $jwtToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IktGQzNaNkhMNTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJZMjY2TlVLRjVDIiwiaWF0IjoxNzQxMTA1ODI1fQ.icnH8u_887-6e7qr3G1SvTGSh0KxCZQ1eb60hm_hWNFHYGgiQGu6vfZKHLI_f_V7mNctLAmYnacizV1NRD15QQ";
         // Payload za push notifikaciju
         $payload = json_encode([
             'aps' => [
