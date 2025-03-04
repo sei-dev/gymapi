@@ -1989,10 +1989,10 @@ class Sdk extends Api
         $request = $this->filterParams([
             'device_token'
         ]);
-        return $this->sendIOSPushNotification($request["device_token"]);
+        return $this->sendIOSPushNotification($request["device_token"], "Gym Trainer", "Trening je zakazan za sutra u 10h");
     }
     
-    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload){
+    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = []){
             
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
