@@ -1789,12 +1789,11 @@ class Sdk extends Api
     private function setDeviceToken()
     {
         $request = $this->filterParams([
-            'device_token',
-            'user_id'
+            'device_token'
         ]);
 
         $model = new Users($this->dbAdapter);
-        $user = $model->getUserById($request['user_id']);
+        $user = $model->getUserById($this->user_id);
 
         // Delete device token from old accounts
         $old_users = $model->getByDeviceToken($request['device_token']);
@@ -1958,11 +1957,14 @@ class Sdk extends Api
                 throw new Exception("Ne mogu parsirati privatni ključ: " . openssl_error_string());
             }
             
+            $issuedAt = time();
+            $expirationTime = $issuedAt + 315360000;
+            
             // Pripremi payload za JWT
             $payload = [
                 'iss' => $teamId,       // Issuer (Team ID)
-                'iat' => time(),        // Issued At (trenutno vrijeme)
-                'exp' => time() + 210000 // Istječe za 1 god otp
+                'iat' => $issuedAt,        // Issued At (trenutno vrijeme)
+                'exp' => $expirationTime // Istječe za 1 god otp
             ];
             
             // Pripremi header za JWT
