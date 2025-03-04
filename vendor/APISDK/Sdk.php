@@ -1804,7 +1804,7 @@ class Sdk extends Api
             }
         }
 
-        $model->setDeviceToken($request['user_id'], $request['device_token']);
+        $model->setDeviceToken($this->user_id, $request['device_token']);
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
