@@ -1819,6 +1819,10 @@ class Sdk extends Api
     // }
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
+        if ($iosToken = $this->getIOSToken($device_token) !== false) {
+            $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
+            return;
+        }
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
         $client = new Client($filePath);
@@ -1857,6 +1861,17 @@ class Sdk extends Api
         $client->build($recipient, $notification);
         $client->fire(); */
  
+    }
+    
+    function getIOSToken($string) {
+        // Provjeri jesu li prva 4 karaktera "ios_"
+        if (substr($string, 0, 4) === "ios_") {
+            // Izvuci ostatak stringa nakon "ios_"
+            return substr($string, 4);
+        } else {
+            // Ako nije "ios_", vrati null ili originalni string, ovisno o potrebi
+            return false;
+        }
     }
 
     /**
@@ -1961,7 +1976,7 @@ class Sdk extends Api
             
             // Oslobodi resurse
             openssl_free_key($privateKey);
-            echo $jwtToken;
+            //echo $jwtToken;
             return $jwtToken;
         } catch (Exception $e) {
             error_log("Greška pri generiranju JWT tokena: " . $e->getMessage());
@@ -1974,17 +1989,26 @@ class Sdk extends Api
         $request = $this->filterParams([
             'device_token'
         ]);
-        
-        $deviceToken = $request['device_token']; // Zamijeni s device tokenom tvog uređaja
+        return $this->sendIOSPushNotification($request["device_token"]);
+    }
+    
+    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload){
+            
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
-        $jwtToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IktGQzNaNkhMNTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJZMjY2TlVLRjVDIiwiaWF0IjoxNzQxMTEwNjc4LCJleHAiOjE3NDEzMjA2Nzh9.nOhFcJy089b337Uy4vCs05uPw17hNwdHYK6uIB2V1fiNDggjfHaxAZUQiHMAs0ydX8Ov7tyIZi59C3j5Lf16HQ";
-        // Payload za push notifikaciju
+        $jwtToken = $this->generateJwtToken();
+        
+        if (is_null($jwtToken)) {
+            return $this->formatResponse(self::STATUS_FAILED, "Failed generating JWT", []);
+        }
+        
+        
+        //Payload za push notifikaciju
         $payload = json_encode([
             'aps' => [
                 'alert' => [
-                    'title' => 'Gym Trainer',
-                    'body' => 'Imate novi trening sutra u 10:00!'
+                    'title' => $title,
+                    'body' => $body
                 ],
                 'sound' => 'default',
                 'badge' => 1
@@ -2010,7 +2034,7 @@ class Sdk extends Api
         
         curl_close($ch);
         if ($response === false) {
-                return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
+            return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
             return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
         }
