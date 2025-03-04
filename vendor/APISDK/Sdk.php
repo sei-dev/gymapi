@@ -1924,6 +1924,93 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
+    
+    
+    function generateJwtToken() {
+        $teamId = 'Y266NUKF5C'; // Zamijeni s tvojim Team ID-om
+        $keyId = 'KFC3Z6HL52';   // Zamijeni s tvojim Key ID-om
+        $p8FilePath = __DIR__ . DIRECTORY_SEPARATOR . 'AuthKey_KFC3Z6HL52.p8';
+        try {
+            // Učitaj privatni ključ iz .p8 datoteke
+            $privateKeyContent = file_get_contents($p8FilePath);
+            if ($privateKeyContent === false) {
+                throw new Exception("Ne mogu učitati .p8 datoteku iz putanje: $p8FilePath");
+            }
+            
+            // Parsiraj privatni ključ
+            $privateKey = openssl_pkey_get_private($privateKeyContent);
+            if ($privateKey === false) {
+                throw new Exception("Ne mogu parsirati privatni ključ: " . openssl_error_string());
+            }
+            
+            // Pripremi payload za JWT
+            $payload = [
+                'iss' => $teamId,       // Issuer (Team ID)
+                'iat' => time(),        // Issued At (trenutno vrijeme)
+            ];
+            
+            // Pripremi header za JWT
+            $header = [
+                'alg' => 'ES256',       // Algoritam za potpisivanje (Apple zahtijeva ES256)
+                'kid' => $keyId         // Key ID
+            ];
+            
+            // Generiraj JWT token
+            $jwtToken = JWT::encode($payload, $privateKey, 'ES256', $keyId, $header);
+            
+            // Oslobodi resurse
+            openssl_free_key($privateKey);
+            echo $jwtToken;
+            return $jwtToken;
+        } catch (Exception $e) {
+            error_log("Greška pri generiranju JWT tokena: " . $e->getMessage());
+            return null;
+        }
+    }
+    
+    private function sendIOSPush($userRow){
+        $deviceToken = $userRow['device_token']; // Zamijeni s device tokenom tvog uređaja
+        $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
+        $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
+        $jwtToken = "";
+        // Payload za push notifikaciju
+        $payload = json_encode([
+            'aps' => [
+                'alert' => [
+                    'title' => 'Gym Trainer',
+                    'body' => 'Imate novi trening sutra u 10:00!'
+                ],
+                'sound' => 'default',
+                'badge' => 1
+            ]
+        ]);
+        
+        // Slanje push notifikacije pomoću curl
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $apnsUrl);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "apns-topic: $bundleId",
+            "apns-push-type: alert",
+            "authorization: bearer $jwtToken",
+            'Content-Type: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        
+        if ($response === false) {
+            echo "Greška pri slanju push notifikacije: " . curl_error($ch) . "\n";
+        } else {
+            echo "Push notifikacija poslana. HTTP kod: $httpCode\n";
+            echo "Odgovor: $response\n";
+        }
+        
+        curl_close($ch);
+    }
 
     /*
      * $merchant_key = "TREESRS";
