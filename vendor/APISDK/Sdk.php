@@ -2007,14 +2007,13 @@ class Sdk extends Api
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
+        curl_close($ch);
         if ($response === false) {
-            echo "Greška pri slanju push notifikacije: " . curl_error($ch) . "\n";
+            return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
-            echo "Push notifikacija poslana. HTTP kod: $httpCode\n";
-            echo "Odgovor: $response\n";
+            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
         }
         
-        curl_close($ch);
     }
 
     /*
