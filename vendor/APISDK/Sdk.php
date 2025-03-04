@@ -1978,7 +1978,7 @@ class Sdk extends Api
         $deviceToken = $request['device_token']; // Zamijeni s device tokenom tvog uređaja
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
-        $jwtToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IktGQzNaNkhMNTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJZMjY2TlVLRjVDIiwiaWF0IjoxNzQxMTA1ODI1fQ.icnH8u_887-6e7qr3G1SvTGSh0KxCZQ1eb60hm_hWNFHYGgiQGu6vfZKHLI_f_V7mNctLAmYnacizV1NRD15QQ";
+        $jwtToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IktGQzNaNkhMNTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJZMjY2TlVLRjVDIiwiaWF0IjoxNzQxMTEwNjc4LCJleHAiOjE3NDEzMjA2Nzh9.nOhFcJy089b337Uy4vCs05uPw17hNwdHYK6uIB2V1fiNDggjfHaxAZUQiHMAs0ydX8Ov7tyIZi59C3j5Lf16HQ";
         // Payload za push notifikaciju
         $payload = json_encode([
             'aps' => [
