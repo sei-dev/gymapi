@@ -1947,6 +1947,7 @@ class Sdk extends Api
             $payload = [
                 'iss' => $teamId,       // Issuer (Team ID)
                 'iat' => time(),        // Issued At (trenutno vrijeme)
+                'exp' => time() + 210000 // Istječe za 1 god otp
             ];
             
             // Pripremi header za JWT
@@ -2009,7 +2010,7 @@ class Sdk extends Api
         
         curl_close($ch);
         if ($response === false) {
-            return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
+                return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
             return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
         }
