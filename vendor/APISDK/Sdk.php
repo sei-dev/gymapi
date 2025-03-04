@@ -1961,7 +1961,7 @@ class Sdk extends Api
             
             // Oslobodi resurse
             openssl_free_key($privateKey);
-            //echo $jwtToken;
+            echo $jwtToken;
             return $jwtToken;
         } catch (Exception $e) {
             error_log("Greška pri generiranju JWT tokena: " . $e->getMessage());
