@@ -3,7 +3,7 @@
         'name' => 'sei/gym-api',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '4aa9a0bf04a7dbbddd38ab876cc044ea1ed3df83',
+        'reference' => 'ea0c61cf63b44c811975b83563ef3d6b5baae398',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -109,7 +109,7 @@
         'sei/gym-api' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '4aa9a0bf04a7dbbddd38ab876cc044ea1ed3df83',
+            'reference' => 'ea0c61cf63b44c811975b83563ef3d6b5baae398',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
