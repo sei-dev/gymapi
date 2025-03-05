@@ -1789,12 +1789,11 @@ class Sdk extends Api
     private function setDeviceToken()
     {
         $request = $this->filterParams([
-            'device_token',
-            'user_id'
+            'device_token'
         ]);
 
         $model = new Users($this->dbAdapter);
-        $user = $model->getUserById($request['user_id']);
+        $user = $model->getUserById($this->user_id);
 
         // Delete device token from old accounts
         $old_users = $model->getByDeviceToken($request['device_token']);
@@ -1805,7 +1804,7 @@ class Sdk extends Api
             }
         }
 
-        $model->setDeviceToken($request['user_id'], $request['device_token']);
+        $model->setDeviceToken($this->user_id, $request['device_token']);
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
@@ -1819,6 +1818,10 @@ class Sdk extends Api
     // }
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
+        if ($iosToken = $this->getIOSToken($device_token) !== false) {
+            $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
+            return;
+        }
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
         $client = new Client($filePath);
@@ -1857,6 +1860,17 @@ class Sdk extends Api
         $client->build($recipient, $notification);
         $client->fire(); */
  
+    }
+    
+    function getIOSToken($string) {
+        // Provjeri jesu li prva 4 karaktera "ios_"
+        if (substr($string, 0, 4) === "ios_") {
+            // Izvuci ostatak stringa nakon "ios_"
+            return substr($string, 4);
+        } else {
+            // Ako nije "ios_", vrati null ili originalni string, ovisno o potrebi
+            return false;
+        }
     }
 
     /**
@@ -1943,10 +1957,14 @@ class Sdk extends Api
                 throw new Exception("Ne mogu parsirati privatni ključ: " . openssl_error_string());
             }
             
+            $issuedAt = time();
+            $expirationTime = $issuedAt + 315360000;
+            
             // Pripremi payload za JWT
             $payload = [
                 'iss' => $teamId,       // Issuer (Team ID)
-                'iat' => time(),        // Issued At (trenutno vrijeme)
+                'iat' => $issuedAt,        // Issued At (trenutno vrijeme)
+                'exp' => $expirationTime // Istječe za 1 god otp
             ];
             
             // Pripremi header za JWT
@@ -1973,17 +1991,26 @@ class Sdk extends Api
         $request = $this->filterParams([
             'device_token'
         ]);
-        
-        $deviceToken = $request['device_token']; // Zamijeni s device tokenom tvog uređaja
+        return $this->sendIOSPushNotification($request["device_token"], "Gym Trainer", "Trening je zakazan za sutra u 10h");
+    }
+    
+    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = []){
+            
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
-        $jwtToken = "eyJhbGciOiJFUzI1NiIsImtpZCI6IktGQzNaNkhMNTIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJZMjY2TlVLRjVDIiwiaWF0IjoxNzQxMTA1ODI1fQ.icnH8u_887-6e7qr3G1SvTGSh0KxCZQ1eb60hm_hWNFHYGgiQGu6vfZKHLI_f_V7mNctLAmYnacizV1NRD15QQ";
-        // Payload za push notifikaciju
+        $jwtToken = $this->generateJwtToken();
+        
+        if (is_null($jwtToken)) {
+            return $this->formatResponse(self::STATUS_FAILED, "Failed generating JWT", []);
+        }
+        
+        
+        //Payload za push notifikaciju
         $payload = json_encode([
             'aps' => [
                 'alert' => [
-                    'title' => 'Gym Trainer',
-                    'body' => 'Imate novi trening sutra u 10:00!'
+                    'title' => $title,
+                    'body' => $body
                 ],
                 'sound' => 'default',
                 'badge' => 1
@@ -2007,14 +2034,13 @@ class Sdk extends Api
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
+        curl_close($ch);
         if ($response === false) {
-            echo "Greška pri slanju push notifikacije: " . curl_error($ch) . "\n";
+            return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
-            echo "Push notifikacija poslana. HTTP kod: $httpCode\n";
-            echo "Odgovor: $response\n";
+            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
         }
         
-        curl_close($ch);
     }
 
     /*
