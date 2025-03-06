@@ -1847,9 +1847,9 @@ class Sdk extends Api
         
         $allTokens = array_merge([$device_token], $more_tokens);
         
-        var_dump($notification);
+        /* var_dump($notification);
         var_dump($client);
-        die();
+        die(); */
 
         foreach ($allTokens as $token) {
             $recipient = new Recipient();
