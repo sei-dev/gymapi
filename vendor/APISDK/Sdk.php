@@ -4,6 +4,7 @@ namespace APISDK;
 use APISDK\ApiException;
 use Firebase\JWT\JWT;
 use Exception;
+use ReflectionClass;
 use APISDK\Models\Users;
 use APISDK\Models\Trainings;
 use APISDK\Models\Cities;
@@ -1840,6 +1841,12 @@ class Sdk extends Api
         $client = new Client($filePath);
         $notification = new Notification();
         $notification->setNotification($title, $body);
+        
+        $reflection = new ReflectionClass($notification);
+        $classDir = dirname($reflection->getFileName());
+        
+        echo $classDir;
+        die();
         
         if (!empty($dataPayload)) {
             $notification->setDataPayload($dataPayload);
