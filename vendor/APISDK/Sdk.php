@@ -1809,7 +1809,7 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
-    private function test(){
+    /* private function test(){
 
         $device_token = "dvqJzYkfRXKZsVsrqS6uiW:APA91bHUyvgSt9QYev8HcuIJ4NX8mVbSl2KvhD87q8NFAN5xWmEP6INPzWpYMyhxzXZ2P6sYw8uHSYZzopIS-xxQxpWNJFxoQpb1mUOfRZPvzP8PeEpeFAU";
     
@@ -1824,7 +1824,7 @@ class Sdk extends Api
    
         
         return $this->formatResponse(self::STATUS_SUCCESS, []);
-    }
+    } */
     
     
     
