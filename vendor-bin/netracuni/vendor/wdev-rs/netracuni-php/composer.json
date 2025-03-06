@@ -1,0 +1,44 @@
+{
+    "name": "wdev-rs/netracuni-php",
+    "description": "PHP library for NetRacuni API",
+    "keywords": [
+        "wdev-rs",
+        "netracuni-php"
+    ],
+    "homepage": "https://github.com/wdev-rs/netracuni-php",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Daniel Werner",
+            "email": "daniel@wdev.rs",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "guzzlehttp/guzzle": "^7.8"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.6",
+        "phpunit/phpunit": "^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "WdevRs\\NetRacuniPhp\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "WdevRs\\NetRacuniPhp\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

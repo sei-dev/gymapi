@@ -10,6 +10,9 @@ error_reporting(E_ALL);
 
 require_once(__DIR__.'/../vendor/APISDK/loader.php');
 require_once(__DIR__.'/../vendor/autoload.php');
+require_once(__DIR__.'/../vendor-bin/fcm/vendor/autoload.php');
+require_once(__DIR__.'/../vendor-bin/netracuni/vendor/autoload.php');
+
 
 set_error_handler(function ($severity, $message, $file, $line) {
 	if (!(error_reporting() & $severity)) {

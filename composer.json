@@ -13,10 +13,16 @@
 		}
 	},
 	"config" : {
-		"optimize-autoloader" : true
+		"optimize-autoloader" : true,
+		"allow-plugins": {
+			"bamarni/composer-bin-plugin": true
+		}
 	},
 	"scripts" : {
 		"post-install-cmd" : "composer dump-autoload",
 		"post-update-cmd" : "composer dump-autoload"
+	},
+	"require-dev": {
+		"bamarni/composer-bin-plugin": "^1.8"
 	}
 }

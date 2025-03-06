@@ -45,6 +45,10 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         array (
             'Exchange\\Client\\' => 16,
         ),
+        'B' => 
+        array (
+            'Bamarni\\Composer\\Bin\\' => 21,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -96,6 +100,10 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
         array (
             0 => __DIR__ . '/..' . '/allsecure-pay/php-exchange/src',
         ),
+        'Bamarni\\Composer\\Bin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
@@ -103,6 +111,19 @@ class ComposerStaticInitebda91f5643b684e5f1d84addd6b9e69
     );
 
     public static $classMap = array (
+        'Bamarni\\Composer\\Bin\\ApplicationFactory\\FreshInstanceApplicationFactory' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/ApplicationFactory/FreshInstanceApplicationFactory.php',
+        'Bamarni\\Composer\\Bin\\ApplicationFactory\\NamespaceApplicationFactory' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/ApplicationFactory/NamespaceApplicationFactory.php',
+        'Bamarni\\Composer\\Bin\\BamarniBinPlugin' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/BamarniBinPlugin.php',
+        'Bamarni\\Composer\\Bin\\CommandProvider' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/CommandProvider.php',
+        'Bamarni\\Composer\\Bin\\Command\\BinCommand' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Command/BinCommand.php',
+        'Bamarni\\Composer\\Bin\\Command\\CouldNotCreateNamespaceDir' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Command/CouldNotCreateNamespaceDir.php',
+        'Bamarni\\Composer\\Bin\\Config\\Config' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Config/Config.php',
+        'Bamarni\\Composer\\Bin\\Config\\ConfigFactory' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Config/ConfigFactory.php',
+        'Bamarni\\Composer\\Bin\\Config\\InvalidBamarniComposerExtraConfig' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Config/InvalidBamarniComposerExtraConfig.php',
+        'Bamarni\\Composer\\Bin\\Input\\BinInputFactory' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Input/BinInputFactory.php',
+        'Bamarni\\Composer\\Bin\\Input\\InvalidBinInput' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Input/InvalidBinInput.php',
+        'Bamarni\\Composer\\Bin\\Logger' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/Logger.php',
+        'Bamarni\\Composer\\Bin\\PublicIO' => __DIR__ . '/..' . '/bamarni/composer-bin-plugin/src/PublicIO.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Exchange\\Client\\Callback\\ChargebackData' => __DIR__ . '/..' . '/allsecure-pay/php-exchange/src/Callback/ChargebackData.php',
         'Exchange\\Client\\Callback\\ChargebackReversalData' => __DIR__ . '/..' . '/allsecure-pay/php-exchange/src/Callback/ChargebackReversalData.php',

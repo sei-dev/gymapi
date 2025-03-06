@@ -1,0 +1,5 @@
+{
+    "require": {
+        "wdev-rs/netracuni-php": "^1.0"
+    }
+}

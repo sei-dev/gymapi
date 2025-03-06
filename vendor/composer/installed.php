@@ -3,7 +3,7 @@
         'name' => 'sei/gym-api',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'ea0c61cf63b44c811975b83563ef3d6b5baae398',
+        'reference' => '6d264990eb8201a3e149f5dd110c739b31499c4f',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -18,6 +18,15 @@
             'install_path' => __DIR__ . '/../allsecure-pay/php-exchange',
             'aliases' => array(),
             'dev_requirement' => false,
+        ),
+        'bamarni/composer-bin-plugin' => array(
+            'pretty_version' => '1.8.2',
+            'version' => '1.8.2.0',
+            'reference' => '92fd7b1e6e9cdae19b0d57369d8ad31a37b6a880',
+            'type' => 'composer-plugin',
+            'install_path' => __DIR__ . '/../bamarni/composer-bin-plugin',
+            'aliases' => array(),
+            'dev_requirement' => true,
         ),
         'firebase/php-jwt' => array(
             'pretty_version' => 'v5.5.1',
@@ -109,7 +118,7 @@
         'sei/gym-api' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ea0c61cf63b44c811975b83563ef3d6b5baae398',
+            'reference' => '6d264990eb8201a3e149f5dd110c739b31499c4f',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

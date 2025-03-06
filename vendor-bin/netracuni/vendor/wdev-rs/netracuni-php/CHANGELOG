@@ -1,0 +1,17 @@
+
+VERSION 1  RELEASE FIRST VERSION
+================================
+
+   Version 1.0 - Release first version
+      14/01/2025 09:42  1.0.2  Remove RMT as dependency
+         f323f54 Update .gitignore
+         55f9fc2 Remove RMT as a dependency, use if from global install
+      02/01/2024 14:58  1.0.1  Fix sandbox url
+         6aafad3 Fix sandbox url
+      02/01/2024 12:42  1.0.0  initial release
+
+VERSION 1  RELEASE V 1.0.0.
+===========================
+
+   Version 1.0 - Release v 1.0.0.
+      02/01/2024 12:39  1.0.0  initial release

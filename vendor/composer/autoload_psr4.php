@@ -17,5 +17,6 @@ return array(
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),
     'Firebase\\JWT\\' => array($vendorDir . '/firebase/php-jwt/src'),
     'Exchange\\Client\\' => array($vendorDir . '/allsecure-pay/php-exchange/src'),
+    'Bamarni\\Composer\\Bin\\' => array($vendorDir . '/bamarni/composer-bin-plugin/src'),
     'App\\' => array($baseDir . '/src'),
 );
