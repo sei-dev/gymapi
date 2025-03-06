@@ -1811,7 +1811,7 @@ class Sdk extends Api
 
     private function test(){
 
-        $device_token = "cczcYfXOQQ2RtMPUyQgOy0:APA91bH-DjXAu0DbEuxYNO5F8I-KsUjlupSgYVJg72jEH4hGBoE25VVjVzcvOmPQ-0UNUR_SPOhyH81B9wqTS0x79_iuI6AKvdD0QMVCzvZC6IWhP1GtK6s";
+        $device_token = "dvqJzYkfRXKZsVsrqS6uiW:APA91bHUyvgSt9QYev8HcuIJ4NX8mVbSl2KvhD87q8NFAN5xWmEP6INPzWpYMyhxzXZ2P6sYw8uHSYZzopIS-xxQxpWNJFxoQpb1mUOfRZPvzP8PeEpeFAU";
     
         $dataPayload = [
             'type' => 'new_request',
