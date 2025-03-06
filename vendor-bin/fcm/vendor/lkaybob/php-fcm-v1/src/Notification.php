@@ -30,6 +30,13 @@ class Notification extends Base {
      * @throws \UnderflowException
      */
     public function __invoke() {
-        return parent ::__invoke();
+        $payload = parent::__invoke();
+        
+        // Merge custom data payload into the final payload
+        if (!empty($this->dataPayload)) {
+            $payload['data'] = $this->dataPayload;
+        }
+        
+        return $payload;
     }
 }
