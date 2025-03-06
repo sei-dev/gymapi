@@ -1,0 +1,793 @@
+Folder PATH listing
+Volume serial number is E40E-F11C
+C:.
+¦   .DS_Store
+¦   APISDKimagesusers1.png
+¦   autoload.php
+¦   json.base64
+¦   tree.txt
+¦   
++---allsecure-pay
+¦   +---php-exchange
+¦       ¦   CHANGELOG.md
+¦       ¦   composer.json
+¦       ¦   initClientAutoload.php
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   
+¦       +---examples
+¦       ¦       callback.php
+¦       ¦       capture.php
+¦       ¦       customerprofile.php
+¦       ¦       debit.php
+¦       ¦       options.php
+¦       ¦       preauthorization.php
+¦       ¦       refund.php
+¦       ¦       schedule.php
+¦       ¦       status.php
+¦       ¦       void.php
+¦       ¦       
+¦       +---src
+¦           ¦   Client.php
+¦           ¦   
+¦           +---Callback
+¦           ¦       ChargebackData.php
+¦           ¦       ChargebackReversalData.php
+¦           ¦       Result.php
+¦           ¦       
+¦           +---CustomerProfile
+¦           ¦   ¦   CustomerData.php
+¦           ¦   ¦   DeleteProfileResponse.php
+¦           ¦   ¦   GetProfileResponse.php
+¦           ¦   ¦   PaymentInstrument.php
+¦           ¦   ¦   UpdateProfileResponse.php
+¦           ¦   ¦   
+¦           ¦   +---PaymentData
+¦           ¦           CardData.php
+¦           ¦           IbanData.php
+¦           ¦           PaymentData.php
+¦           ¦           WalletData.php
+¦           ¦           
+¦           +---Data
+¦           ¦   ¦   ChargebackData.php
+¦           ¦   ¦   ChargebackReversalData.php
+¦           ¦   ¦   CreditCardCustomer.php
+¦           ¦   ¦   Customer.php
+¦           ¦   ¦   CustomerProfileData.php
+¦           ¦   ¦   Data.php
+¦           ¦   ¦   IbanCustomer.php
+¦           ¦   ¦   Item.php
+¦           ¦   ¦   PayByLinkData.php
+¦           ¦   ¦   Request.php
+¦           ¦   ¦   RiskCheckData.php
+¦           ¦   ¦   ThreeDSecureData.php
+¦           ¦   ¦   TransactionSplit.php
+¦           ¦   ¦   
+¦           ¦   +---PaymentData
+¦           ¦   ¦       CardData.php
+¦           ¦   ¦       DccData.php
+¦           ¦   ¦       IbanData.php
+¦           ¦   ¦       PaymentData.php
+¦           ¦   ¦       WalletData.php
+¦           ¦   ¦       
+¦           ¦   +---Result
+¦           ¦           CreditcardData.php
+¦           ¦           IbanData.php
+¦           ¦           PhoneData.php
+¦           ¦           ResultData.php
+¦           ¦           ScheduleResultData.php
+¦           ¦           WalletData.php
+¦           ¦           
+¦           +---Exception
+¦           ¦       ClientException.php
+¦           ¦       GeneralErrorException.php
+¦           ¦       InvalidValueException.php
+¦           ¦       RateLimitException.php
+¦           ¦       TimeoutException.php
+¦           ¦       TypeException.php
+¦           ¦       
+¦           +---Http
+¦           ¦   ¦   ClientInterface.php
+¦           ¦   ¦   CurlClient.php
+¦           ¦   ¦   CurlExec.php
+¦           ¦   ¦   Response.php
+¦           ¦   ¦   ResponseInterface.php
+¦           ¦   ¦   
+¦           ¦   +---Exception
+¦           ¦           ClientException.php
+¦           ¦           ResponseException.php
+¦           ¦           
+¦           +---Json
+¦           ¦       DataObject.php
+¦           ¦       ErrorResponse.php
+¦           ¦       JsonGenerator.php
+¦           ¦       JsonParser.php
+¦           ¦       ResponseObject.php
+¦           ¦       
+¦           +---Options
+¦           ¦       OptionsResult.php
+¦           ¦       
+¦           +---Schedule
+¦           ¦       ContinueSchedule.php
+¦           ¦       ScheduleData.php
+¦           ¦       ScheduleError.php
+¦           ¦       ScheduleResult.php
+¦           ¦       ScheduleWithTransaction.php
+¦           ¦       StartSchedule.php
+¦           ¦       
+¦           +---StatusApi
+¦           ¦       StatusRequestData.php
+¦           ¦       StatusResult.php
+¦           ¦       
+¦           +---Transaction
+¦           ¦   ¦   Capture.php
+¦           ¦   ¦   Debit.php
+¦           ¦   ¦   Deregister.php
+¦           ¦   ¦   Error.php
+¦           ¦   ¦   IncrementalAuthorization.php
+¦           ¦   ¦   Payout.php
+¦           ¦   ¦   Preauthorize.php
+¦           ¦   ¦   Refund.php
+¦           ¦   ¦   Register.php
+¦           ¦   ¦   Result.php
+¦           ¦   ¦   VoidTransaction.php
+¦           ¦   ¦   
+¦           ¦   +---Base
+¦           ¦           AbstractTransaction.php
+¦           ¦           AbstractTransactionWithReference.php
+¦           ¦           AddToCustomerProfileInterface.php
+¦           ¦           AddToCustomerProfileTrait.php
+¦           ¦           AmountableInterface.php
+¦           ¦           AmountableTrait.php
+¦           ¦           CustomerInterface.php
+¦           ¦           CustomerTrait.php
+¦           ¦           DccDataInterface.php
+¦           ¦           DccDataTrait.php
+¦           ¦           IndicatorInterface.php
+¦           ¦           IndicatorTrait.php
+¦           ¦           ItemsInterface.php
+¦           ¦           ItemsTrait.php
+¦           ¦           LevelTwoAndThreeDataInterface.php
+¦           ¦           LevelTwoAndThreeDataTrait.php
+¦           ¦           OffsiteInterface.php
+¦           ¦           OffsiteTrait.php
+¦           ¦           PayByLinkTrait.php
+¦           ¦           ReferenceSchemeTransactionIdentifierInterface.php
+¦           ¦           ReferenceSchemeTransactionIdentifierTrait.php
+¦           ¦           ScheduleInterface.php
+¦           ¦           ScheduleTrait.php
+¦           ¦           SurchargeInterface.php
+¦           ¦           SurchargeTrait.php
+¦           ¦           ThreeDSecureInterface.php
+¦           ¦           ThreeDSecureTrait.php
+¦           ¦           TransactionSplitsInterface.php
+¦           ¦           TransactionSplitsTrait.php
+¦           ¦           
+¦           +---Xml
+¦                   Generator.php
+¦                   Parser.php
+¦                   XmlGenerator.php
+¦                   
++---APISDK
+¦   ¦   .buildpath
+¦   ¦   .DS_Store
+¦   ¦   .project
+¦   ¦   Api.php
+¦   ¦   apidoc.json
+¦   ¦   ApiException.php
+¦   ¦   AuthKey_KFC3Z6HL52.p8
+¦   ¦   header.md
+¦   ¦   loader.php
+¦   ¦   Sdk.php
+¦   ¦   
+¦   +---.settings
+¦   ¦       org.eclipse.php.core.prefs
+¦   ¦       org.eclipse.wst.common.project.facet.core.xml
+¦   ¦       
+¦   +---DbAdapters
+¦   ¦       CIAdapter.php
+¦   ¦       DBAdapter.php
+¦   ¦       DbAdapterAbstract.php
+¦   ¦       DbAdapterInterface.php
+¦   ¦       
+¦   +---Models
+¦           Cities.php
+¦           Countries.php
+¦           Gyms.php
+¦           Invoices.php
+¦           Measurements.php
+¦           ModelAbstract.php
+¦           ModelInterface.php
+¦           Trainings.php
+¦           Users.php
+¦           
++---bamarni
+¦   +---composer-bin-plugin
+¦       ¦   .php-cs-fixer.php
+¦       ¦   composer.json
+¦       ¦   infection.json
+¦       ¦   LICENSE
+¦       ¦   Makefile
+¦       ¦   README.md
+¦       ¦   
+¦       +---.github
+¦       ¦   +---workflows
+¦       ¦           phpstan.yml
+¦       ¦           tests.yaml
+¦       ¦           
+¦       +---.makefile
+¦       ¦       touch.sh
+¦       ¦       
+¦       +---.phive
+¦       ¦       phars.xml
+¦       ¦       
+¦       +---e2e
+¦       ¦   +---scenario0
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦       ¦       composer.json
+¦       ¦   ¦       ¦       
+¦       ¦   ¦       +---ns2
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario1
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦       ¦       composer.json
+¦       ¦   ¦       ¦       
+¦       ¦   ¦       +---ns2
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario10
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario11
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario12
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   root_root.php
+¦       ¦   ¦   ¦   root_vendorbin.php
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---tool
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               root_root.php
+¦       ¦   ¦               root_vendorbin.php
+¦       ¦   ¦               
+¦       ¦   +---scenario2
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦       ¦       composer.json
+¦       ¦   ¦       ¦       
+¦       ¦   ¦       +---ns2
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario3
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario5
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦       ¦       composer.json
+¦       ¦   ¦       ¦       
+¦       ¦   ¦       +---ns2
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario6
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦       ¦       composer.json
+¦       ¦   ¦       ¦       
+¦       ¦   ¦       +---ns2
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario7
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario8
+¦       ¦   ¦   ¦   composer.json
+¦       ¦   ¦   ¦   expected.txt
+¦       ¦   ¦   ¦   README.md
+¦       ¦   ¦   ¦   script.sh
+¦       ¦   ¦   ¦   
+¦       ¦   ¦   +---vendor-bin
+¦       ¦   ¦       +---ns1
+¦       ¦   ¦               composer.json
+¦       ¦   ¦               
+¦       ¦   +---scenario9
+¦       ¦       ¦   composer.json
+¦       ¦       ¦   expected.txt
+¦       ¦       ¦   README.md
+¦       ¦       ¦   script.sh
+¦       ¦       ¦   
+¦       ¦       +---vendor-bin
+¦       ¦           +---composer-unused
+¦       ¦                   composer.json
+¦       ¦                   
+¦       +---src
+¦           ¦   BamarniBinPlugin.php
+¦           ¦   CommandProvider.php
+¦           ¦   Logger.php
+¦           ¦   PublicIO.php
+¦           ¦   
+¦           +---ApplicationFactory
+¦           ¦       FreshInstanceApplicationFactory.php
+¦           ¦       NamespaceApplicationFactory.php
+¦           ¦       
+¦           +---Command
+¦           ¦       BinCommand.php
+¦           ¦       CouldNotCreateNamespaceDir.php
+¦           ¦       
+¦           +---Config
+¦           ¦       Config.php
+¦           ¦       ConfigFactory.php
+¦           ¦       InvalidBamarniComposerExtraConfig.php
+¦           ¦       
+¦           +---Input
+¦                   BinInputFactory.php
+¦                   InvalidBinInput.php
+¦                   
++---composer
+¦       autoload_classmap.php
+¦       autoload_files.php
+¦       autoload_namespaces.php
+¦       autoload_psr4.php
+¦       autoload_real.php
+¦       autoload_static.php
+¦       ClassLoader.php
+¦       installed.json
+¦       installed.php
+¦       InstalledVersions.php
+¦       LICENSE
+¦       platform_check.php
+¦       
++---db
+¦   ¦   .DS_Store
+¦   ¦   .gitignore
+¦   ¦   .travis.yml
+¦   ¦   CHANGELOG.md
+¦   ¦   composer.json
+¦   ¦   LICENSE.md
+¦   ¦   phpunit.xml.dist
+¦   ¦   README.md
+¦   ¦   
+¦   +---src
+¦   ¦   ¦   .DS_Store
+¦   ¦   ¦   Adapter.php
+¦   ¦   ¦   AdapterInterface.php
+¦   ¦   ¦   SqlFragment.php
+¦   ¦   ¦   
+¦   ¦   +---Adapter
+¦   ¦   ¦       Config.php
+¦   ¦   ¦       ConnectionFactory.php
+¦   ¦   ¦       CrudTrait.php
+¦   ¦   ¦       QuoteHandler.php
+¦   ¦   ¦       
+¦   ¦   +---Exception
+¦   ¦           Exception.php
+¦   ¦           InvalidArgumentException.php
+¦   ¦           InvalidQueryException.php
+¦   ¦           OutOfRangeException.php
+¦   ¦           RuntimeException.php
+¦   ¦           UnknownDatabaseException.php
+¦   ¦           
+¦   +---tests
+¦       ¦   AdapterTest.php
+¦       ¦   SqlFragmentTest.php
+¦       ¦   
+¦       +---Adapter
+¦       ¦       ConfigTest.php
+¦       ¦       ConnectionFactoryTest.php
+¦       ¦       CrudTraitTest.php
+¦       ¦       QuoteHandlerTest.php
+¦       ¦       
+¦       +---Exception
+¦               InvalidQueryExceptionTest.php
+¦               PDOExceptionStub.php
+¦               RuntimeExceptionTest.php
+¦               UnknownDatabaseExceptionTest.php
+¦               
++---firebase
+¦   +---php-jwt
+¦       ¦   composer.json
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   
+¦       +---src
+¦               BeforeValidException.php
+¦               ExpiredException.php
+¦               JWK.php
+¦               JWT.php
+¦               Key.php
+¦               SignatureInvalidException.php
+¦               
++---guzzlehttp
+¦   +---guzzle
+¦   ¦   ¦   .php_cs
+¦   ¦   ¦   CHANGELOG.md
+¦   ¦   ¦   composer.json
+¦   ¦   ¦   Dockerfile
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   README.md
+¦   ¦   ¦   UPGRADING.md
+¦   ¦   ¦   
+¦   ¦   +---src
+¦   ¦       ¦   Client.php
+¦   ¦       ¦   ClientInterface.php
+¦   ¦       ¦   functions.php
+¦   ¦       ¦   functions_include.php
+¦   ¦       ¦   HandlerStack.php
+¦   ¦       ¦   MessageFormatter.php
+¦   ¦       ¦   Middleware.php
+¦   ¦       ¦   Pool.php
+¦   ¦       ¦   PrepareBodyMiddleware.php
+¦   ¦       ¦   RedirectMiddleware.php
+¦   ¦       ¦   RequestOptions.php
+¦   ¦       ¦   RetryMiddleware.php
+¦   ¦       ¦   TransferStats.php
+¦   ¦       ¦   UriTemplate.php
+¦   ¦       ¦   Utils.php
+¦   ¦       ¦   
+¦   ¦       +---Cookie
+¦   ¦       ¦       CookieJar.php
+¦   ¦       ¦       CookieJarInterface.php
+¦   ¦       ¦       FileCookieJar.php
+¦   ¦       ¦       SessionCookieJar.php
+¦   ¦       ¦       SetCookie.php
+¦   ¦       ¦       
+¦   ¦       +---Exception
+¦   ¦       ¦       BadResponseException.php
+¦   ¦       ¦       ClientException.php
+¦   ¦       ¦       ConnectException.php
+¦   ¦       ¦       GuzzleException.php
+¦   ¦       ¦       InvalidArgumentException.php
+¦   ¦       ¦       RequestException.php
+¦   ¦       ¦       SeekException.php
+¦   ¦       ¦       ServerException.php
+¦   ¦       ¦       TooManyRedirectsException.php
+¦   ¦       ¦       TransferException.php
+¦   ¦       ¦       
+¦   ¦       +---Handler
+¦   ¦               CurlFactory.php
+¦   ¦               CurlFactoryInterface.php
+¦   ¦               CurlHandler.php
+¦   ¦               CurlMultiHandler.php
+¦   ¦               EasyHandle.php
+¦   ¦               MockHandler.php
+¦   ¦               Proxy.php
+¦   ¦               StreamHandler.php
+¦   ¦               
+¦   +---promises
+¦   ¦   ¦   CHANGELOG.md
+¦   ¦   ¦   composer.json
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   README.md
+¦   ¦   ¦   
+¦   ¦   +---src
+¦   ¦           AggregateException.php
+¦   ¦           CancellationException.php
+¦   ¦           Coroutine.php
+¦   ¦           Create.php
+¦   ¦           Each.php
+¦   ¦           EachPromise.php
+¦   ¦           FulfilledPromise.php
+¦   ¦           functions.php
+¦   ¦           functions_include.php
+¦   ¦           Is.php
+¦   ¦           Promise.php
+¦   ¦           PromiseInterface.php
+¦   ¦           PromisorInterface.php
+¦   ¦           RejectedPromise.php
+¦   ¦           RejectionException.php
+¦   ¦           TaskQueue.php
+¦   ¦           TaskQueueInterface.php
+¦   ¦           Utils.php
+¦   ¦           
+¦   +---psr7
+¦       ¦   .php_cs.dist
+¦       ¦   CHANGELOG.md
+¦       ¦   composer.json
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   
+¦       +---.github
+¦       ¦   ¦   FUNDING.yml
+¦       ¦   ¦   stale.yml
+¦       ¦   ¦   
+¦       ¦   +---workflows
+¦       ¦           ci.yml
+¦       ¦           integration.yml
+¦       ¦           static.yml
+¦       ¦           
+¦       +---src
+¦               AppendStream.php
+¦               BufferStream.php
+¦               CachingStream.php
+¦               DroppingStream.php
+¦               FnStream.php
+¦               functions.php
+¦               functions_include.php
+¦               Header.php
+¦               InflateStream.php
+¦               LazyOpenStream.php
+¦               LimitStream.php
+¦               Message.php
+¦               MessageTrait.php
+¦               MimeType.php
+¦               MultipartStream.php
+¦               NoSeekStream.php
+¦               PumpStream.php
+¦               Query.php
+¦               Request.php
+¦               Response.php
+¦               Rfc7230.php
+¦               ServerRequest.php
+¦               Stream.php
+¦               StreamDecoratorTrait.php
+¦               StreamWrapper.php
+¦               UploadedFile.php
+¦               Uri.php
+¦               UriComparator.php
+¦               UriNormalizer.php
+¦               UriResolver.php
+¦               Utils.php
+¦               
++---lkaybob
+¦   +---php-fcm-v1
+¦       ¦   .gitignore
+¦       ¦   .travis.yml
+¦       ¦   composer.json
+¦       ¦   LICENSE.md
+¦       ¦   phpunit.xml
+¦       ¦   README.md
+¦       ¦   service_account.json.enc
+¦       ¦   service_account_false.json
+¦       ¦   
+¦       +---src
+¦       ¦   ¦   Base.php
+¦       ¦   ¦   Client.php
+¦       ¦   ¦   Config.php
+¦       ¦   ¦   Credentials.php
+¦       ¦   ¦   Data.php
+¦       ¦   ¦   Notification.php
+¦       ¦   ¦   Recipient.php
+¦       ¦   ¦   
+¦       ¦   +---Config
+¦       ¦           AndroidConfig.php
+¦       ¦           APNsConfig.php
+¦       ¦           CommonConfig.php
+¦       ¦           
+¦       +---tests
+¦               AndroidConfigTest.php
+¦               APNsConfigTest.php
+¦               ConfigTest.php
+¦               CredentialTest.php
+¦               FCMTest.php
+¦               RecipientTest.php
+¦               
++---phpmailer
+¦   +---phpmailer
+¦       ¦   .editorconfig
+¦       ¦   COMMITMENT
+¦       ¦   composer.json
+¦       ¦   get_oauth_token.php
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   SECURITY.md
+¦       ¦   VERSION
+¦       ¦   
+¦       +---language
+¦       ¦       phpmailer.lang-af.php
+¦       ¦       phpmailer.lang-ar.php
+¦       ¦       phpmailer.lang-as.php
+¦       ¦       phpmailer.lang-az.php
+¦       ¦       phpmailer.lang-ba.php
+¦       ¦       phpmailer.lang-be.php
+¦       ¦       phpmailer.lang-bg.php
+¦       ¦       phpmailer.lang-bn.php
+¦       ¦       phpmailer.lang-ca.php
+¦       ¦       phpmailer.lang-cs.php
+¦       ¦       phpmailer.lang-da.php
+¦       ¦       phpmailer.lang-de.php
+¦       ¦       phpmailer.lang-el.php
+¦       ¦       phpmailer.lang-eo.php
+¦       ¦       phpmailer.lang-es.php
+¦       ¦       phpmailer.lang-et.php
+¦       ¦       phpmailer.lang-fa.php
+¦       ¦       phpmailer.lang-fi.php
+¦       ¦       phpmailer.lang-fo.php
+¦       ¦       phpmailer.lang-fr.php
+¦       ¦       phpmailer.lang-gl.php
+¦       ¦       phpmailer.lang-he.php
+¦       ¦       phpmailer.lang-hi.php
+¦       ¦       phpmailer.lang-hr.php
+¦       ¦       phpmailer.lang-hu.php
+¦       ¦       phpmailer.lang-hy.php
+¦       ¦       phpmailer.lang-id.php
+¦       ¦       phpmailer.lang-it.php
+¦       ¦       phpmailer.lang-ja.php
+¦       ¦       phpmailer.lang-ka.php
+¦       ¦       phpmailer.lang-ko.php
+¦       ¦       phpmailer.lang-ku.php
+¦       ¦       phpmailer.lang-lt.php
+¦       ¦       phpmailer.lang-lv.php
+¦       ¦       phpmailer.lang-mg.php
+¦       ¦       phpmailer.lang-mn.php
+¦       ¦       phpmailer.lang-ms.php
+¦       ¦       phpmailer.lang-nb.php
+¦       ¦       phpmailer.lang-nl.php
+¦       ¦       phpmailer.lang-pl.php
+¦       ¦       phpmailer.lang-pt.php
+¦       ¦       phpmailer.lang-pt_br.php
+¦       ¦       phpmailer.lang-ro.php
+¦       ¦       phpmailer.lang-ru.php
+¦       ¦       phpmailer.lang-si.php
+¦       ¦       phpmailer.lang-sk.php
+¦       ¦       phpmailer.lang-sl.php
+¦       ¦       phpmailer.lang-sr.php
+¦       ¦       phpmailer.lang-sr_latn.php
+¦       ¦       phpmailer.lang-sv.php
+¦       ¦       phpmailer.lang-tl.php
+¦       ¦       phpmailer.lang-tr.php
+¦       ¦       phpmailer.lang-uk.php
+¦       ¦       phpmailer.lang-ur.php
+¦       ¦       phpmailer.lang-vi.php
+¦       ¦       phpmailer.lang-zh.php
+¦       ¦       phpmailer.lang-zh_cn.php
+¦       ¦       
+¦       +---src
+¦               DSNConfigurator.php
+¦               Exception.php
+¦               OAuth.php
+¦               OAuthTokenProvider.php
+¦               PHPMailer.php
+¦               POP3.php
+¦               SMTP.php
+¦               
++---psr
+¦   +---http-message
+¦   ¦   ¦   CHANGELOG.md
+¦   ¦   ¦   composer.json
+¦   ¦   ¦   LICENSE
+¦   ¦   ¦   README.md
+¦   ¦   ¦   
+¦   ¦   +---docs
+¦   ¦   ¦       PSR7-Interfaces.md
+¦   ¦   ¦       PSR7-Usage.md
+¦   ¦   ¦       
+¦   ¦   +---src
+¦   ¦           MessageInterface.php
+¦   ¦           RequestInterface.php
+¦   ¦           ResponseInterface.php
+¦   ¦           ServerRequestInterface.php
+¦   ¦           StreamInterface.php
+¦   ¦           UploadedFileInterface.php
+¦   ¦           UriInterface.php
+¦   ¦           
+¦   +---log
+¦       ¦   composer.json
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   
+¦       +---Psr
+¦           +---Log
+¦               ¦   AbstractLogger.php
+¦               ¦   InvalidArgumentException.php
+¦               ¦   LoggerAwareInterface.php
+¦               ¦   LoggerAwareTrait.php
+¦               ¦   LoggerInterface.php
+¦               ¦   LoggerTrait.php
+¦               ¦   LogLevel.php
+¦               ¦   NullLogger.php
+¦               ¦   
+¦               +---Test
+¦                       DummyTest.php
+¦                       LoggerInterfaceTest.php
+¦                       TestLogger.php
+¦                       
++---ralouphie
+¦   +---getallheaders
+¦       ¦   composer.json
+¦       ¦   LICENSE
+¦       ¦   README.md
+¦       ¦   
+¦       +---src
+¦               getallheaders.php
+¦               
++---symfony
+    +---polyfill-intl-idn
+    ¦   ¦   bootstrap.php
+    ¦   ¦   bootstrap80.php
+    ¦   ¦   composer.json
+    ¦   ¦   Idn.php
+    ¦   ¦   Info.php
+    ¦   ¦   LICENSE
+    ¦   ¦   README.md
+    ¦   ¦   
+    ¦   +---Resources
+    ¦       +---unidata
+    ¦               deviation.php
+    ¦               disallowed.php
+    ¦               DisallowedRanges.php
+    ¦               disallowed_STD3_mapped.php
+    ¦               disallowed_STD3_valid.php
+    ¦               ignored.php
+    ¦               mapped.php
+    ¦               Regex.php
+    ¦               virama.php
+    ¦               
+    +---polyfill-intl-normalizer
+        ¦   bootstrap.php
+        ¦   bootstrap80.php
+        ¦   composer.json
+        ¦   LICENSE
+        ¦   Normalizer.php
+        ¦   README.md
+        ¦   
+        +---Resources
+            +---stubs
+            ¦       Normalizer.php
+            ¦       
+            +---unidata
+                    canonicalComposition.php
+                    canonicalDecomposition.php
+                    combiningClass.php
+                    compatibilityDecomposition.php
+                    

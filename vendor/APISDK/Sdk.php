@@ -86,7 +86,8 @@ class Sdk extends Api
             'callback',
             'cronSubCheck',
             'testMail',
-            'testInvoices'
+            'testInvoices',
+            'test'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1808,14 +1809,25 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
-    // private function test(){
+    private function test(){
 
-    // $device_token = "czrk_P4vQkSWtz3EEqVE1p:APA91bELLrL9TY99N0AyQEm5N_iEkcqMj3oV6yyv4_LFRpEJHrIUSB7eukGQN_P9SPqVz9mhC9c4vufFn3WUy3kmQJRSXbxP4hgqO2gWBVkdKPa5IbUqiz0";
-
-    // $this->sendNotification("Test", "Test Test", $device_token);
-
-    // return $this->formatResponse(self::STATUS_SUCCESS, []);
-    // }
+        $device_token = "cczcYfXOQQ2RtMPUyQgOy0:APA91bH-DjXAu0DbEuxYNO5F8I-KsUjlupSgYVJg72jEH4hGBoE25VVjVzcvOmPQ-0UNUR_SPOhyH81B9wqTS0x79_iuI6AKvdD0QMVCzvZC6IWhP1GtK6s";
+    
+        $dataPayload = [
+            'type' => 'new_request',
+            'date' => "",
+            'time' => "",
+            'user' => "Test Test"
+        ];
+        
+        $this->sendNotification("Novi zahtev", "Funkcija", $device_token, $dataPayload);
+   
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, []);
+    }
+    
+    
+    
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         if ($iosToken = $this->getIOSToken($device_token) !== false) {
@@ -1835,6 +1847,9 @@ class Sdk extends Api
         
         $allTokens = array_merge([$device_token], $more_tokens);
         
+        var_dump($notification);
+        var_dump($client);
+        die();
 
         foreach ($allTokens as $token) {
             $recipient = new Recipient();
