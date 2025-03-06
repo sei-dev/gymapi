@@ -20,6 +20,10 @@ class Notification extends Base {
             ))
         );
     }
+    
+    public function setDataPayload(array $data) {
+        $this->dataPayload = $data;
+    }
 
     /**
      * @return array
