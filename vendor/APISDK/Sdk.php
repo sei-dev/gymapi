@@ -1822,6 +1822,7 @@ class Sdk extends Api
             $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
             return;
         }
+        
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
         
         $client = new Client($filePath);
