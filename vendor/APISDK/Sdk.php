@@ -1838,18 +1838,18 @@ class Sdk extends Api
         
         $result = $netRacuni->ping();
     
-        return $this->formatResponse(self::STATUS_SUCCESS, $result);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
     
     private function testTaxLabels(){
         
         $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
-        $netRacuni->sandbox();
+        //$netRacuni->sandbox();
         
         $result = $netRacuni->getTaxLabels();
         
         
-        return $this->formatResponse(self::STATUS_SUCCESS, $result);
+        return $this->formatResponse(self::STATUS_SUCCESS, "",  $result);
     }
     
     private function testInvoiceCheck(){
@@ -1881,7 +1881,7 @@ class Sdk extends Api
         $array['invoice'] = $invoice;
         
         
-        return $this->formatResponse(self::STATUS_SUCCESS, $array);
+        return $this->formatResponse(self::STATUS_SUCCESS, "",  $array);
     }
     
 
