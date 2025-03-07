@@ -21,8 +21,8 @@ use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
 use PHPMailer\PHPMailer\PHPMailer;
-use WdevRs\NetRacuniPhp\InvoiceResponse;
-use WdevRs\NetRacuniPhp\NetRacuniClient;
+use WdevRs\NetRacuniPhp\InvoiceResponse as NetRacunResponse;
+use WdevRs\NetRacuniPhp\NetRacuniClient as NetRacun;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -92,7 +92,7 @@ class Sdk extends Api
             'test',
             'testPing',
             'testTaxLabels',
-            'testInvoice'
+            'testInvoiceCheck'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1831,8 +1831,60 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, []);
     } */
     
+    private function testPing(){
     
+        $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
+        $netRacuni->sandbox();
+        
+        $result = $netRacuni->ping();
     
+        return $this->formatResponse(self::STATUS_SUCCESS, $result);
+    }
+    
+    private function testTaxLabels(){
+        
+        $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
+        $netRacuni->sandbox();
+        
+        $result = $netRacuni->getTaxLabels();
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, $result);
+    }
+    
+    private function testInvoiceCheck(){
+        
+        $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
+        $netRacuni->sandbox();
+        
+        //NetRacunResponse
+        $items = [
+            "items" => [
+                [
+                    "name" => "Test Item",
+                    "taxLabels" => [
+                        "A"
+                    ],
+                    "unit" => "KOM",
+                    "quantity" => 2,
+                    "price" => 152.66
+                ]
+            ]
+        ];
+        
+        $result = $netRacuni->createInvoice($items);
+        $invoiceUrl = $result->getInvoicePdfUrl();
+        $invoice = $result->getInvoice();
+        
+        $array['result'] = $result;
+        $array['invoice_url'] = $invoiceUrl;
+        $array['invoice'] = $invoice;
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, $array);
+    }
+    
+
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         if ($iosToken = $this->getIOSToken($device_token) !== false) {
