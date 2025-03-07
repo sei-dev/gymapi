@@ -21,6 +21,8 @@ use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
 use PHPMailer\PHPMailer\PHPMailer;
+use WdevRs\NetRacuniPhp\InvoiceResponse;
+use WdevRs\NetRacuniPhp\NetRacuniClient;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -87,7 +89,10 @@ class Sdk extends Api
             'cronSubCheck',
             'testMail',
             'testInvoices',
-            'test'
+            'test',
+            'testPing',
+            'testTaxLabels',
+            'testInvoice'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
