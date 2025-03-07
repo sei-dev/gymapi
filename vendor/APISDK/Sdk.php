@@ -1833,7 +1833,7 @@ class Sdk extends Api
     
     private function testPing(){
     
-        $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
+        $netRacuni = new NetRacun('net_racuni_staging_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
         $netRacuni->sandbox();
         
         $result = $netRacuni->ping();
