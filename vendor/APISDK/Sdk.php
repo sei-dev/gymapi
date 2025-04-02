@@ -21,6 +21,7 @@ use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
 use PHPMailer\PHPMailer\PHPMailer;
+use DateTime;
 use WdevRs\NetRacuniPhp\InvoiceResponse as NetRacunResponse;
 use WdevRs\NetRacuniPhp\NetRacuniClient as NetRacun;
 
@@ -92,7 +93,8 @@ class Sdk extends Api
             'test',
             'testPing',
             'testTaxLabels',
-            'testInvoiceCheck'
+            'testInvoiceCheck',
+            'testDateTime'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1830,6 +1832,26 @@ class Sdk extends Api
         
         return $this->formatResponse(self::STATUS_SUCCESS, []);
     } */
+    
+    private function testDateTime() {
+        /**
+         * Retrieves and formats the server's current date and time.
+         *
+         * @return array An array containing the status, message, and date/time data.
+         */
+        
+        $currentTime = new DateTime(); // Get the current date and time
+        
+        $dateTimeData = [
+            'date' => $currentTime->format('Y-m-d'), // Format as YYYY-MM-DD
+            'time' => $currentTime->format('H:i:s'), // Format as HH:MM:SS
+            'datetime' => $currentTime->format('Y-m-d H:i:s'), // Format as YYYY-MM-DD HH:MM:SS
+            'timestamp' => $currentTime->getTimestamp(), // Unix timestamp
+            'timezone' => $currentTime->getTimezone()->getName() // server timezone
+        ];
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $dateTimeData);
+    }
     
     private function testPing(){
     
