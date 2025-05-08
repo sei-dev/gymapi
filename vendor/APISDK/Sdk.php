@@ -1648,9 +1648,9 @@ class Sdk extends Api
                 
                 if ($is_monthly == "0") {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date);
-                    $this->sandboxReceiptMonthly($request['email']);
                 } else {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date);
+                    $this->sandboxReceiptMonthly($request['email']);
                 }
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorMessage = $callbackResult->getErrorMessage();
