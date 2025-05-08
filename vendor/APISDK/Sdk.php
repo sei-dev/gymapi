@@ -1181,16 +1181,16 @@ class Sdk extends Api
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
         
         $mail = new PHPMailer();
-        // configure an SMTP
-        $mail->isSMTP();
-        $mail->Host = 'sandbox.smtp.mailtrap.io';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'ff1891b36df9cb';
-        $mail->Password = 'e1241525bc4bbb';
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 2525;
         
-        $mail->setFrom('confirmation@trener.com', 'Test');
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'ptrenersrb@gmail.com';
+        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        
+        $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
         $mail->addAddress('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Potvrda naloga';
@@ -1877,7 +1877,7 @@ class Sdk extends Api
     private function testInvoiceCheck(){
         
         $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
-        $netRacuni->sandbox();
+        //$netRacuni->sandbox();
         
         //NetRacunResponse
         $items = [
@@ -1979,34 +1979,33 @@ class Sdk extends Api
 
     private function testMail()
     {
-        $mail = new PHPMailer();
-         // configure an SMTP
-         $mail->isSMTP();
-         $mail->Host = 'sandbox.smtp.mailtrap.io';
-         $mail->SMTPAuth = true;
-         $mail->Username = 'ff1891b36df9cb';
-         $mail->Password = 'e1241525bc4bbb';
-         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-         $mail->Port = 2525;
-         
-         $mail->setFrom('confirmation@trener.com', 'Test');
-         $mail->addAddress('nikola.bojovic9@gmail.com');
-         $mail->addCC('arsen.leontijevic@gmail.com');
-         $mail->Subject = 'Testni mejl!';
-         // Set HTML
-         $mail->isHTML(TRUE);
-         $mail->Body = '<html>Body.</html>';
-         $mail->AltBody = '<html>Alt Body</html>';
-         
-         if(!$mail->send()){
-             echo 'Message could not be sent.';
-             echo 'Mailer Error: ' . $mail->ErrorInfo;
-             
-             die();
-         } else {
-             echo 'Message has been sent';
-             die();
-         }
+        $mail = new PHPMailer(true);
+        
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ptrenersrb@gmail.com';
+            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            
+            // Recipients
+            $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+            $mail->addAddress('nikola.bojovic9@gmail.com');
+            $mail->addCC('arsen.leontijevic@gmail.com');
+            
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Test email from app';
+            $mail->Body    = '<b>Hello! This is a test email.</b>';
+            $mail->AltBody = 'Hello! This is a test email.';
+            
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Error: {$mail->ErrorInfo}";
+        }
          
          return $this->formatResponse(self::STATUS_SUCCESS, "", $mail);
     }
