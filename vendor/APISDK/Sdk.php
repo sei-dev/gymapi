@@ -1504,7 +1504,8 @@ class Sdk extends Api
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
             ->setCurrency('RSD')
-            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly'] . '')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly']
+                            . '&email=' . $request['email'] . '')
             ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
             ->setErrorUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/error')
             ->setDescription('Subscription')
@@ -1581,7 +1582,8 @@ class Sdk extends Api
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
         $request = $this->filterParams([
             'id',
-            'is_monthly'
+            'is_monthly',
+            'email'
         ]);
 
         /* function logError($message, $logFile)
@@ -1646,6 +1648,7 @@ class Sdk extends Api
                 
                 if ($is_monthly == "0") {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date);
+                    $this->sandboxReceiptMonthly($request['email']);
                 } else {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date);
                 }
@@ -1666,7 +1669,100 @@ class Sdk extends Api
         die();
     }
 
-
+    private function sandboxReceiptMonthly(string $email){
+        
+        $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
+        $invoice_model = new Invoices($this->dbAdapter);
+        $item = $invoice_model->getMonthlyItem();
+        $price = $item ? $item["price"] : null;
+        $netRacuni->sandbox();
+        
+        //NetRacunResponse
+        $items = [
+            "items" => [
+                [
+                    "name" => "Mesečna pretplata",
+                    "taxLabels" => [
+                        "Ж"
+                    ],
+                    "unit" => "KOM",
+                    "quantity" => 1,
+                    "price" => $price
+                ]
+            ]
+        ];
+        
+        $result = $netRacuni->createInvoice($items);
+        $invoiceUrl = $result->getInvoicePdfUrl();
+        $invoice = $result->getInvoice();
+        
+        $array['invoice_url'] = $invoiceUrl;
+        $array['invoice'] = $invoice;
+        
+        $mail = new PHPMailer(true);
+        
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ptrenersrb@gmail.com';
+            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            
+            // Recipients
+            $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+            $mail->addAddress($email);
+            $mail->addCC('nikola.bojovic9@gmail.com');
+            $mail->addCC('arsen.leontijevic@gmail.com');
+            
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Sandbox Invoice Monthly';
+            $mail->Body    = $invoice['journal'] . "/n/n" . $invoiceUrl;
+            $mail->AltBody = 'Hello! This is a test email.';
+            
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Error: {$mail->ErrorInfo}";
+        }
+        
+        
+        return;
+    }
+    
+    private function sandboxReceiptYearly(){
+        
+        $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
+        $netRacuni->sandbox();
+        
+        //NetRacunResponse
+        $items = [
+            "items" => [
+                [
+                    "name" => "Test Item",
+                    "taxLabels" => [
+                        "Ж"
+                    ],
+                    "unit" => "KOM",
+                    "quantity" => 2,
+                    "price" => 152.66
+                ]
+            ]
+        ];
+        
+        $result = $netRacuni->createInvoice($items);
+        $invoiceUrl = $result->getInvoicePdfUrl();
+        $invoice = $result->getInvoice();
+        
+        $array['result'] = $result;
+        $array['invoice_url'] = $invoiceUrl;
+        $array['invoice'] = $invoice;
+        
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "",  $array);
+    }
 
     private function saveImage()
     {
