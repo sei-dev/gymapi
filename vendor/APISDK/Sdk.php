@@ -1715,7 +1715,7 @@ class Sdk extends Api
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
-            $mail->addCC('arsen.leontijevic@gmail.com');
+            //$mail->addCC('arsen.leontijevic@gmail.com');
             
             // Content
             $mail->isHTML(true);
