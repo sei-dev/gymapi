@@ -1666,7 +1666,7 @@ class Sdk extends Api
         }
 
         echo "OK";
-        die();
+        return;
     }
 
     private function sandboxReceiptMonthly(string $email){
@@ -1677,7 +1677,7 @@ class Sdk extends Api
         $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
         
-        //NetRacunResponse
+        //OVDE
         $items = [
             "items" => [
                 [
