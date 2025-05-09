@@ -1665,6 +1665,7 @@ class Sdk extends Api
             logError("Exception caught: " . $e->getMessage(), $logFile);
         }
 
+        http_response_code(200);
         echo "OK";
         return;
     }
@@ -1728,7 +1729,7 @@ class Sdk extends Api
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
         
-        
+        http_response_code(200);
         return;
     }
     
