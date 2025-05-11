@@ -1574,97 +1574,98 @@ class Sdk extends Api
     private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
-        $var_dumpFile= __DIR__ . '/var_dump_log.txt';
+        $varDumpFile = __DIR__ . '/var_dump_log.txt';
+        
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
         $connector_api_key = "personal-simulator";
         $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        
         $request = $this->filterParams([
             'id',
             'is_monthly',
             'email'
         ]);
-
-        /* function logError($message, $logFile)
-        {
-            $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-            $logEntry = "[{$timestamp}] ERROR: {$message}\n";
-            file_put_contents($logFile, $logEntry, FILE_APPEND);
-        }
         
-        function logVarDump($message, $logFile)
-        {
-            $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-            $logEntry = "[{$timestamp}] Object: {$message}\n";
-            file_put_contents($logFile, $logEntry, FILE_APPEND);
-        } */
-
         try {
-
             $valid = $client->validateCallbackWithGlobals();
-
-            if (! $valid) {
-                logError("Callback validation failed.", $logFile);
-                die();
+            
+            if (!$valid) {
+                $this->logError("Callback validation failed.", $logFile);
+                http_response_code(200);
+                echo "OK";
+                return;
             }
-
+            
             $callbackInput = file_get_contents('php://input');
-            if (! $callbackInput) {
-                logError("Empty callback input received.", $logFile);
-                die();
+            if (!$callbackInput) {
+                $this->logError("Empty callback input received.", $logFile);
+                http_response_code(200);
+                echo "OK";
+                return;
             }
-
+            
             $callbackResult = $client->readCallback($callbackInput);
+            $transactionId = $callbackResult->getMerchantTransactionId();
+            
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
+            $email = $request['email'];
             
-            /* logVarDump($client, $var_dumpFile);
-            logVarDump($callbackResult, $var_dumpFile);
-            logError($callbackResult, $logFile);
-            logError($client, $logFile);
-            die(); */
-
+            // Log transaction ID
+            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $transactionId\n", FILE_APPEND);
+            
+            $user_model = new Users($this->dbAdapter);
+            $invoice_model = new Invoices($this->dbAdapter);
+            
+            // Avoid duplicate processing
+            if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
+                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
+                http_response_code(200);
+                echo "Already handled";
+                return;
+            }
+            
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
-                $user_model = new Users($this->dbAdapter);
-                $invoice_model = new Invoices($this->dbAdapter);
-
                 $current_sub_date = $user_model->getSubLength($customer_id);
-
                 $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
-
+                
                 $current_date = new \DateTimeImmutable();
-                $period_to_add = $is_monthly ? '+1 month' : '+1 year';
-
-                if (! $date || $date < $current_date) {
+                $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
+                
+                if (!$date || $date < $current_date) {
                     $date = $current_date;
                 }
-
+                
                 $new_date = $date->modify($period_to_add)->format('Y-m-d');
-
+                
+                // Update user subscription
                 $user_model->updateSub($customer_id, $new_date);
                 
-                //file_put_contents($logFile, print_r($callbackResult, true), FILE_APPEND);
-                
-                if ($is_monthly == "0") {
-                    $invoice_model->addInvoiceYearly($customer_id, $new_date);
+                // Save invoice and mark transaction as handled
+                if ($is_monthly == "1") {
+                    $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
+                    $this->sandboxReceiptMonthly($email);
                 } else {
-                    $invoice_model->addInvoiceMonthly($customer_id, $new_date);
-                    $this->sandboxReceiptMonthly($request['email']);
+                    $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                 }
+                
+                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
-                $errorMessage = $callbackResult->getErrorMessage();
-                $errorCode = $callbackResult->getErrorCode();
-                $adapterMessage = $callbackResult->getAdapterMessage();
-                $adapterCode = $callbackResult->getAdapterCode();
-
-                $errorDetails = "Payment failed. ErrorMessage: {$errorMessage}, ErrorCode: {$errorCode}, AdapterMessage: {$adapterMessage}, AdapterCode: {$adapterCode}";
-                logError($errorDetails, $logFile);
+                $errorDetails = sprintf(
+                    "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+                    $callbackResult->getErrorMessage(),
+                    $callbackResult->getErrorCode(),
+                    $callbackResult->getAdapterMessage(),
+                    $callbackResult->getAdapterCode()
+                    );
+                $this->logError($errorDetails, $logFile);
             }
         } catch (Exception $e) {
-            logError("Exception caught: " . $e->getMessage(), $logFile);
+            $this->logError("Exception caught: " . $e->getMessage(), $logFile);
         }
-
+        
         http_response_code(200);
         echo "OK";
         return;
@@ -2232,6 +2233,12 @@ class Sdk extends Api
             return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
         }
         
+    }
+    
+    private function logError($message, $logFile)
+    {
+        $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        file_put_contents($logFile, "[{$timestamp}] ERROR: {$message}\n", FILE_APPEND);
     }
 
     /*
