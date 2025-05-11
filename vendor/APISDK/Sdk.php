@@ -1632,6 +1632,26 @@ class Sdk extends Api
                 return;
             }
             
+            $statusRequestData = new StatusRequestData();
+            
+            // use either the UUID or your merchantTransactionId but not both
+            //$statusRequestData->setTransactionUuid($transactionUuid);
+            $statusRequestData->setMerchantTransactionId($transactionId);
+            
+            $statusResult = $client->sendStatusRequest($statusRequestData);
+            
+            // dump all data
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Status result:\n" . var_dump($statusResult), FILE_APPEND);
+            
+            // dump card data
+            $cardData = $statusResult->getreturnData();
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Card data:\n" . var_dump($cardData), FILE_APPEND);
+            
+            // dump & echo error data
+            $errorData = $statusResult->getFirstError();
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Error data:\n" . var_dump($errorData), FILE_APPEND);
+            
+            
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $current_sub_date = $user_model->getSubLength($customer_id);
                 $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
