@@ -1619,7 +1619,7 @@ class Sdk extends Api
             $email = $request['email'];
             
             // Log transaction ID
-            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $transactionId\n", FILE_APPEND);
+            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $client\n", FILE_APPEND);
             
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
