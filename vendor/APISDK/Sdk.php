@@ -2242,6 +2242,31 @@ class Sdk extends Api
         $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         file_put_contents($logFile, "[{$timestamp}] ERROR: {$message}\n", FILE_APPEND);
     }
+    
+    public function testPaymentInit()
+    {
+        // Simulate $_POST or filterParams equivalent
+        $_POST = [
+            'id' => '9999',
+            'token' => 'dummy-token', // Use a valid one if needed for tokenized payments
+            'name' => 'Test',
+            'surname' => 'User',
+            'email' => 'testuser@example.com',
+            'is_monthly' => '1'
+        ];
+        
+        try {
+            // Call your initPayment method
+            $response = $this->initPayment();
+            
+            // Dump the response for inspection
+            echo "<pre>";
+            print_r($response);
+            echo "</pre>";
+        } catch (Exception $e) {
+            echo "Exception during test: " . $e->getMessage();
+        }
+    }
 
     /*
      * $merchant_key = "TREESRS";
