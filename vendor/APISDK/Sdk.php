@@ -94,7 +94,8 @@ class Sdk extends Api
             'testPing',
             'testTaxLabels',
             'testInvoiceCheck',
-            'testDateTime'
+            'testDateTime',
+            'testPaymentInit'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
