@@ -1484,7 +1484,7 @@ class Sdk extends Api
 
         // define your transaction ID
         // must be unique! e.g.
-        $merchantTransactionId = $merchantTransactionId ="Trener " . uniqid('myId', true) . '-' . date('YmdHis');
+        $merchantTransactionId = $merchantTransactionId ="Trener-" . uniqid('myId', true) . '-' . date('YmdHis');
 
         // define transaction relevant object
 
@@ -1518,6 +1518,8 @@ class Sdk extends Api
         }
         
         $result = $client->debit($debit);
+        
+        file_put_contents(__DIR__ . '/debit_result_log.txt', "[" . date('Y-m-d H:i:s') . "] Transaction ID: {$merchantTransactionId}\n" . print_r($result, true) . "\n\n", FILE_APPEND);
 
         // handle the result
         if ($result->isSuccess()) {
@@ -1721,7 +1723,7 @@ class Sdk extends Api
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Monthly';
-            $mail->Body    = $invoice['journal'] . "/n/n" . $invoiceUrl;
+            $mail->Body    = $invoice['journal'] . "<br><br>" . $invoiceUrl;
             $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
