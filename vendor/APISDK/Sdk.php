@@ -1641,15 +1641,15 @@ class Sdk extends Api
             $statusResult = $client->sendStatusRequest($statusRequestData);
             
             // dump all data
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Status result:\n" . var_dump($statusResult), FILE_APPEND);
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Status result:\n" . $statusResult, FILE_APPEND);
             
             // dump card data
             $cardData = $statusResult->getreturnData();
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Card data:\n" . var_dump($cardData), FILE_APPEND);
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Card data:\n" . $cardData, FILE_APPEND);
             
             // dump & echo error data
             $errorData = $statusResult->getFirstError();
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Error data:\n" . var_dump($errorData), FILE_APPEND);
+            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Error data:\n" . $errorData, FILE_APPEND);
             
             
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
