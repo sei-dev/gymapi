@@ -1484,7 +1484,7 @@ class Sdk extends Api
 
         // define your transaction ID
         // must be unique! e.g.
-        $merchantTransactionId = $merchantTransactionId ="Trener-" . uniqid('myId', true) . '-' . date('YmdHis');
+        $merchantTransactionId = "Trener-" . uniqid('myId', true) . '-' . date('YmdHis');
 
         // define transaction relevant object
 
