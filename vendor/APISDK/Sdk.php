@@ -1539,6 +1539,7 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
+                file_put_contents(__DIR__ . '/gateway_init_log.txt', "[" . date("Y-m-d H:i:s") . "] Init result:\n" . print_r($result, true), FILE_APPEND);
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
 
@@ -1548,6 +1549,7 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
                 // payment is pending, wait for callback to complete
 
+                file_put_contents(__DIR__ . '/gateway_init_log.txt', "[" . date("Y-m-d H:i:s") . "] Init result:\n" . print_r($result, true), FILE_APPEND);
                 $response['status'] = "pending";
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
