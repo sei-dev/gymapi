@@ -94,8 +94,7 @@ class Sdk extends Api
             'testPing',
             'testTaxLabels',
             'testInvoiceCheck',
-            'testDateTime',
-            'testPaymentInit'
+            'testDateTime'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
@@ -1539,7 +1538,6 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
-                file_put_contents(__DIR__ . '/gateway_init_log.txt', "[" . date("Y-m-d H:i:s") . "] Init result:\n" . print_r($result, true), FILE_APPEND);
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
 
@@ -1549,7 +1547,6 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
                 // payment is pending, wait for callback to complete
 
-                file_put_contents(__DIR__ . '/gateway_init_log.txt', "[" . date("Y-m-d H:i:s") . "] Init result:\n" . print_r($result, true), FILE_APPEND);
                 $response['status'] = "pending";
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
@@ -1619,7 +1616,7 @@ class Sdk extends Api
             $email = $request['email'];
             
             // Log transaction ID
-            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $client\n", FILE_APPEND);
+            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $transactionId\n", FILE_APPEND);
             
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
@@ -1631,26 +1628,6 @@ class Sdk extends Api
                 echo "Already handled";
                 return;
             }
-            
-            $statusRequestData = new StatusRequestData();
-            
-            // use either the UUID or your merchantTransactionId but not both
-            //$statusRequestData->setTransactionUuid($transactionUuid);
-            $statusRequestData->setMerchantTransactionId($transactionId);
-            
-            $statusResult = $client->sendStatusRequest($statusRequestData);
-            
-            // dump all data
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Status result:\n" . $statusResult, FILE_APPEND);
-            
-            // dump card data
-            $cardData = $statusResult->getreturnData();
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Card data:\n" . $cardData, FILE_APPEND);
-            
-            // dump & echo error data
-            $errorData = $statusResult->getFirstError();
-            file_put_contents(__DIR__ . '/callback_last.txt', "[" . date("Y-m-d H:i:s") . "] Error data:\n" . $errorData, FILE_APPEND);
-            
             
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $current_sub_date = $user_model->getSubLength($customer_id);
