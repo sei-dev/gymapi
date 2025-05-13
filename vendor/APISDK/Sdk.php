@@ -1763,6 +1763,33 @@ class Sdk extends Api
         $this->respondOk();
     }
     
+    public function callbackDebug()
+    {
+        $logFile = __DIR__ . '/callback_debug_log.txt';
+        
+        // 1. Capture raw input
+        $callbackInput = file_get_contents('php://input');
+        
+        // 2. Dump input to log file
+        $logEntry = "[" . date('Y-m-d H:i:s') . "] Raw Callback Input:\n" . $callbackInput . "\n\n";
+        file_put_contents($logFile, $logEntry, FILE_APPEND);
+        
+        // 3. Optionally decode JSON if needed
+        $decoded = json_decode($callbackInput, true);
+        if (json_last_error() === JSON_ERROR_NONE) {
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Decoded JSON:\n" . print_r($decoded, true) . "\n\n", FILE_APPEND);
+        }
+        
+        // 4. Respond with what the gateway expects
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+        http_response_code(200);
+        header("Content-Type: text/plain");
+        echo "OK";
+        exit;
+    }
+    
     private function respondOk()
     {
         if (ob_get_length()) {
