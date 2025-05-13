@@ -1744,6 +1744,7 @@ class Sdk extends Api
                     $this->sandboxReceiptMonthly($email);
                 } else {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
+                    $this->sandboxReceiptYearly($email);
                 }
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
@@ -1836,7 +1837,7 @@ class Sdk extends Api
         }
     }
     
-    private function sandboxReceiptYearly(){
+    private function sandboxReceiptYearly(string $email){
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
