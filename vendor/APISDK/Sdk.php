@@ -1568,7 +1568,7 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_FAILED, "", $errors);
     }
 
-    private function callback()
+    /* private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
         $varDumpFile = __DIR__ . '/var_dump_log.txt';
@@ -1644,12 +1644,12 @@ class Sdk extends Api
                 // Save invoice and mark transaction as handled
                 if ($is_monthly == "1") {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
-                    //$this->sandboxReceiptMonthly($email);
+                    $this->sandboxReceiptMonthly($email);
                 } else {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                 }
                 
-                //http_response_code(200);
+                http_response_code(200);
                 echo "OK";
                 file_put_contents($logFile, print_r("200 OK", true), FILE_APPEND);
                 die();
@@ -1671,6 +1671,108 @@ class Sdk extends Api
         echo "OK";
         file_put_contents($logFile, print_r("200 OK End", true), FILE_APPEND);
         die();
+    } */
+    
+    private function callback()
+    {
+        $logFile = __DIR__ . '/callback_error_log.txt';
+        $varDumpFile = __DIR__ . '/var_dump_log.txt';
+        
+        $api_user = "personal-api";
+        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+        $connector_api_key = "personal-simulator";
+        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        
+        $request = $this->filterParams([
+            'id',
+            'is_monthly',
+            'email'
+        ]);
+        
+        try {
+            $valid = $client->validateCallbackWithGlobals();
+            
+            if (!$valid) {
+                $this->logError("Callback validation failed.", $logFile);
+                $this->respondOk(); // Exit safely
+            }
+            
+            $callbackInput = file_get_contents('php://input');
+            if (!$callbackInput) {
+                $this->logError("Empty callback input received.", $logFile);
+                $this->respondOk();
+            }
+            
+            $callbackResult = $client->readCallback($callbackInput);
+            $transactionId = $callbackResult->getMerchantTransactionId();
+            
+            $customer_id = $request['id'];
+            $is_monthly = $request['is_monthly'];
+            $email = $request['email'];
+            
+            $user_model = new Users($this->dbAdapter);
+            $invoice_model = new Invoices($this->dbAdapter);
+            
+            // Avoid duplicate processing
+            if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
+                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
+                $this->respondOk();
+            }
+            
+            if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
+                $current_sub_date = $user_model->getSubLength($customer_id);
+                $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
+                
+                $current_date = new \DateTimeImmutable();
+                $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
+                
+                if (!$date || $date < $current_date) {
+                    $date = $current_date;
+                }
+                
+                $new_date = $date->modify($period_to_add)->format('Y-m-d');
+                
+                // Update user subscription
+                $user_model->updateSub($customer_id, $new_date);
+                
+                // Save invoice and mark transaction as handled
+                if ($is_monthly == "1") {
+                    $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
+                    $this->sandboxReceiptMonthly($email);
+                } else {
+                    $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
+                }
+                
+                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
+            } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
+                $errorDetails = sprintf(
+                    "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+                    $callbackResult->getErrorMessage(),
+                    $callbackResult->getErrorCode(),
+                    $callbackResult->getAdapterMessage(),
+                    $callbackResult->getAdapterCode()
+                    );
+                $this->logError($errorDetails, $logFile);
+            }
+        } catch (Exception $e) {
+            $this->logError("Exception caught: " . $e->getMessage(), $logFile);
+        }
+        
+        // Always respond OK at the end
+        $this->respondOk();
+    }
+    
+    private function respondOk()
+    {
+        if (ob_get_length()) {
+            ob_end_clean(); // Clear any previous output
+        }
+        
+        http_response_code(200);
+        header('Content-Type: text/plain');
+        echo 'OK';
+        exit;
     }
 
     private function sandboxReceiptMonthly(string $email){
