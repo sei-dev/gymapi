@@ -2131,6 +2131,8 @@ class Sdk extends Api
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
         
+        var_dump($array);
+        die();
         
         return $this->formatResponse(self::STATUS_SUCCESS, "",  $array);
     }
