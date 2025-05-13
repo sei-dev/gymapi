@@ -1766,12 +1766,12 @@ class Sdk extends Api
     private function respondOk()
     {
         if (ob_get_length()) {
-            ob_end_clean(); // Clear any previous output
+            ob_end_clean();
         }
         
         http_response_code(200);
         header('Content-Type: text/plain');
-        echo 'OK';
+        echo "OK";
         exit;
     }
 
