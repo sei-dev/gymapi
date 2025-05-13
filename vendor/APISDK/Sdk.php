@@ -1506,7 +1506,7 @@ class Sdk extends Api
             ->setCurrency('RSD')
             /* ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly']
                             . '&email=' . $request['email'] . '') */
-            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=callbackDebug')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callbackDebug')
             ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
             ->setErrorUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/error')
             ->setDescription('Subscription')
