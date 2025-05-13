@@ -87,6 +87,7 @@ class Sdk extends Api
             'saveServicesTrainer',
             'removeInactive',
             'callback',
+            'callbackDebug',
             'cronSubCheck',
             'testMail',
             'testInvoices',
