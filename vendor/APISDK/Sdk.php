@@ -1395,11 +1395,27 @@ class Sdk extends Api
         }
 
         $userModel->forgotPassword($user['id'], $password_hash);
-
-        $subject = 'Zahtev za promenu lozinke';
-        $body = "Dobili smo zahtev da ste zaboravili lozinku. Vašа nova lozinka je: {$generated_pass}. Lozinku kasnije možete promeniti.";
-
-        mail($request['email'], $subject, $body);
+        
+        $mail = new PHPMailer();
+        
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'ptrenersrb@gmail.com';
+        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        
+        $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+        $mail->addAddress('nikola.bojovic9@gmail.com');
+        $mail->addCC('arsen.leontijevic@gmail.com');
+        $mail->Subject = 'Zahtev za promenu lozinke';
+        // Set HTML
+        $mail->isHTML(TRUE);
+        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Vašа nova lozinka je: {$generated_pass}. Lozinku kasnije možete promeniti.";
+        $mail->AltBody = '<html>Alt Body</html>';
+        
+        $mail->send();
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
