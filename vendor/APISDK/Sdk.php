@@ -1810,6 +1810,14 @@ class Sdk extends Api
         
         $mail = new PHPMailer(true);
         
+        $rawReceipt = $invoice['journal'];
+        
+        // Normalize newlines (in case API uses \n or \r\n)
+        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
+        
+        // Insert <br> tags for HTML formatting
+        $receiptHtml = nl2br($receiptFormatted);
+        
         try {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
@@ -1827,7 +1835,7 @@ class Sdk extends Api
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Monthly';
-            $mail->Body    = $invoice['journal'] . "<br><br>" . $invoiceUrl;
+            $mail->Body    = $mail->Body = "<pre style='font-family: monospace;'>$receiptHtml</pre><br><br><a href='$invoiceUrl'>Download Invoice PDF</a>";
             $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
