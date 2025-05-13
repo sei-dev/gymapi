@@ -1511,7 +1511,6 @@ class Sdk extends Api
             ->setDescription('Subscription')
             ->setCustomer($customer);
 
-        // if token acquired via payment.js
 
         if (isset($request['token'])) {
             $debit->setTransactionToken($request['token']);
@@ -1519,12 +1518,8 @@ class Sdk extends Api
         
         $result = $client->debit($debit);
         
-        file_put_contents(__DIR__ . '/debit_result_log.txt', "[" . date('Y-m-d H:i:s') . "] Transaction ID: {$merchantTransactionId}\n" . print_r($result, true) . "\n\n", FILE_APPEND);
-
-        // handle the result
         if ($result->isSuccess()) {
 
-            // store the uuid you receive from the gateway for future references
             $gatewayReferenceId = $result->getUuid();
 
             // handle result based on it's returnType
@@ -1597,7 +1592,7 @@ class Sdk extends Api
                 $this->logError("Callback validation failed.", $logFile);
                 http_response_code(200);
                 echo "OK";
-                return;
+                die();
             }
             
             $callbackInput = file_get_contents('php://input');
@@ -1605,7 +1600,7 @@ class Sdk extends Api
                 $this->logError("Empty callback input received.", $logFile);
                 http_response_code(200);
                 echo "OK";
-                return;
+                die();
             }
             
             $callbackResult = $client->readCallback($callbackInput);
@@ -1625,8 +1620,8 @@ class Sdk extends Api
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
                 http_response_code(200);
-                echo "Already handled";
-                return;
+                echo "OK";
+                die();
             }
             
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
@@ -1654,6 +1649,9 @@ class Sdk extends Api
                 }
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
+                
+                echo "OK";
+                die();
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorDetails = sprintf(
                     "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
@@ -1670,7 +1668,7 @@ class Sdk extends Api
         
         http_response_code(200);
         echo "OK";
-        return;
+        die();
     }
 
     private function sandboxReceiptMonthly(string $email){
@@ -1714,7 +1712,6 @@ class Sdk extends Api
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port       = 587;
             
-            // Recipients
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
@@ -1733,25 +1730,29 @@ class Sdk extends Api
         }
         
         http_response_code(200);
+        echo("OK");
         return;
     }
     
     private function sandboxReceiptYearly(){
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
+        $invoice_model = new Invoices($this->dbAdapter);
+        $item = $invoice_model->getYearlyItem();
+        $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
         
         //NetRacunResponse
         $items = [
             "items" => [
                 [
-                    "name" => "Test Item",
+                    "name" => "Godišnja pretplata",
                     "taxLabels" => [
                         "Ж"
                     ],
                     "unit" => "KOM",
-                    "quantity" => 2,
-                    "price" => 152.66
+                    "quantity" => 1,
+                    "price" => $price
                 ]
             ]
         ];
@@ -1760,12 +1761,40 @@ class Sdk extends Api
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
         
-        $array['result'] = $result;
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
         
+        $mail = new PHPMailer(true);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "",  $array);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ptrenersrb@gmail.com';
+            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = 587;
+            
+            $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+            $mail->addAddress($email);
+            $mail->addCC('nikola.bojovic9@gmail.com');
+            //$mail->addCC('arsen.leontijevic@gmail.com');
+            
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Sandbox Invoice Yearly';
+            $mail->Body    = $invoice['journal'] . "<br><br>" . $invoiceUrl;
+            $mail->AltBody = 'Hello! This is a test email.';
+            
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Error: {$mail->ErrorInfo}";
+        }
+        
+        http_response_code(200);
+        echo("OK");
+        return;
     }
 
     private function saveImage()
