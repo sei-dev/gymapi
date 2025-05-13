@@ -1650,6 +1650,7 @@ class Sdk extends Api
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
                 
+                http_response_code(200);
                 echo "OK";
                 die();
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
@@ -1728,10 +1729,6 @@ class Sdk extends Api
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
-        
-        http_response_code(200);
-        echo("OK");
-        return;
     }
     
     private function sandboxReceiptYearly(){
@@ -1792,9 +1789,6 @@ class Sdk extends Api
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
         
-        http_response_code(200);
-        echo("OK");
-        return;
     }
 
     private function saveImage()
