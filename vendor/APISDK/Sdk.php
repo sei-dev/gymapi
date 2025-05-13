@@ -1703,7 +1703,7 @@ class Sdk extends Api
             $callbackInput = file_get_contents('php://input');
             if (!$callbackInput) {
                 $this->logError("Empty callback input received.", $logFile);
-                $this->respondOk();
+                $this->respondError();
             }
             
             $callbackResult = $client->readCallback($callbackInput);
@@ -1719,7 +1719,7 @@ class Sdk extends Api
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
-                $this->respondOk();
+                $this->respondError();
             }
             
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
@@ -1801,6 +1801,18 @@ class Sdk extends Api
         http_response_code(200);
         header('Content-Type: text/plain');
         echo "OK";
+        exit;
+    }
+    
+    private function respondError()
+    {
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
+        
+        http_response_code(200);
+        header('Content-Type: text/plain');
+        echo "Error";
         exit;
     }
 
