@@ -1592,6 +1592,7 @@ class Sdk extends Api
                 $this->logError("Callback validation failed.", $logFile);
                 http_response_code(200);
                 echo "OK";
+                file_put_contents($logFile, print_r("Exit not valid", true), FILE_APPEND);
                 die();
             }
             
@@ -1600,6 +1601,7 @@ class Sdk extends Api
                 $this->logError("Empty callback input received.", $logFile);
                 http_response_code(200);
                 echo "OK";
+                file_put_contents($logFile, print_r("input not valid", true), FILE_APPEND);
                 die();
             }
             
@@ -1610,8 +1612,6 @@ class Sdk extends Api
             $is_monthly = $request['is_monthly'];
             $email = $request['email'];
             
-            // Log transaction ID
-            file_put_contents($varDumpFile, "[" . date('Y-m-d H:i:s') . "] Transaction: $transactionId\n", FILE_APPEND);
             
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
@@ -1621,6 +1621,7 @@ class Sdk extends Api
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
                 http_response_code(200);
                 echo "OK";
+                file_put_contents($logFile, print_r("Transaction already handled", true), FILE_APPEND);
                 die();
             }
             
@@ -1648,10 +1649,9 @@ class Sdk extends Api
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                 }
                 
-                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
-                
                 http_response_code(200);
                 echo "OK";
+                file_put_contents($logFile, print_r("200 OK", true), FILE_APPEND);
                 die();
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $errorDetails = sprintf(
@@ -1669,6 +1669,7 @@ class Sdk extends Api
         
         http_response_code(200);
         echo "OK";
+        file_put_contents($logFile, print_r("200 OK End", true), FILE_APPEND);
         die();
     }
 
