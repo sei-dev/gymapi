@@ -1453,7 +1453,8 @@ class Sdk extends Api
         $mail->Port       = 587;
         
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress('nikola.bojovic9@gmail.com');
+        $mail->addAddress($user['email']);
+        $mail->addCC('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
