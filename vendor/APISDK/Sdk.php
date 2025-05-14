@@ -2024,13 +2024,14 @@ class Sdk extends Api
                                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
                               }
                               .receipt-box {
-                                background-color: #fafafa;
-                                border: 1px solid #ddd;
-                                padding: 20px;
-                                font-family: monospace;
-                                white-space: pre-wrap;
-                                border-radius: 6px;
-                              }
+                              background-color: #fafafa;
+                              border: 1px solid #ddd;
+                              padding: 20px;
+                              font-family: 'Courier New', Courier, monospace;
+                              white-space: pre-wrap;
+                              border-radius: 6px;
+                              overflow-x: auto;
+                            }
                               .button {
                                 display: inline-block;
                                 margin-top: 20px;
@@ -2051,8 +2052,8 @@ class Sdk extends Api
                               <h2>Hvala na kupovini!</h2>
                               <p>Vaša potvrda uplate izgleda ovako:</p>
                               <div class='receipt-box'>
-                                $receiptHtml
-                              </div>
+                              <pre style="margin: 0; padding: 0; text-align: center;">$receiptHtml</pre>
+                            </div>
                               <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
                             </div>
                           </body>
