@@ -484,6 +484,22 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
+    public function getUserByHash(string $hash)
+    {
+        $sQuery = "SELECT *
+				FROM " . self::getTablePrefix() . "users
+				WHERE email_hash = '{$hash}'
+				LIMIT 1";
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetch(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        return false;
+    }
+    
+    
     /**
      *
      * @param string $email

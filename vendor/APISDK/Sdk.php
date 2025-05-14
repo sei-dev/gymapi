@@ -75,6 +75,7 @@ class Sdk extends Api
             'login',
             'register',
             'forgotPassword',
+            'forgotPasswordCheck',
             'setTrainingsFinished',
             'initPayment',
             'register',
@@ -1375,11 +1376,56 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_FAILED, "-1");
     }
+    
+    private function forgotPasswordCheck()
+    {
+        $request = $this->filterParams([
+            'email'
+        ]);
+        
+        $hash = md5(time());
+        
+        
+        $userModel = new Users($this->dbAdapter);
+        $user = (array) $userModel->getUserByEmail($request["email"]);
+        
+        $userModel->setMailHash($user['id'], $hash);
+        
+        if (! isset($user['id'])) {
+            throw new ApiException("There is no such user");
+        }
+        
+        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash;
+        
+        $mail = new PHPMailer();
+        
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com';
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'ptrenersrb@gmail.com';
+        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        
+        $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+        $mail->addAddress($user['email']);
+        $mail->addCC('nikola.bojovic9@gmail.com');
+        $mail->addCC('arsen.leontijevic@gmail.com');
+        $mail->Subject = 'Zahtev za promenu lozinke';
+        // Set HTML
+        $mail->isHTML(TRUE);
+        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Ukoliko ste vi zatražili novu lozinku kliknite na link: {$generated_link}. Nova lozinka će vam stići na mejl.";
+        $mail->AltBody = '<html>Alt Body</html>';
+        
+        $mail->send();
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
 
     private function forgotPassword()
     {
         $request = $this->filterParams([
-            'email'
+            'hash'
         ]);
         // $request = $this->filterParams(['email']);
 
@@ -1388,7 +1434,7 @@ class Sdk extends Api
         $password_hash = password_hash($generated_pass, PASSWORD_BCRYPT);
 
         $userModel = new Users($this->dbAdapter);
-        $user = (array) $userModel->getUserByEmail($request["email"]);
+        $user = (array) $userModel->getUserByHash($request["hash"]);
 
         if (! isset($user['id'])) {
             throw new ApiException("There is no such user");
@@ -1412,7 +1458,7 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Vašа nova lozinka je: {$generated_pass}. Lozinku kasnije možete promeniti.";
+        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Vašа nova lozinka je: {$generated_pass}. Lozinku kasnije možete promeniti u aplikaciji.";
         $mail->AltBody = '<html>Alt Body</html>';
         
         $mail->send();
@@ -1846,7 +1892,7 @@ class Sdk extends Api
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
-            //$mail->addCC('arsen.leontijevic@gmail.com');
+            $mail->addCC('arsen.leontijevic@gmail.com');
             
             // Content
             $mail->isHTML(true);
@@ -1891,6 +1937,14 @@ class Sdk extends Api
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
         
+        $rawReceipt = $invoice['journal'];
+        
+        // Normalize newlines (in case API uses \n or \r\n)
+        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
+        
+        // Insert <br> tags for HTML formatting
+        $receiptHtml = nl2br($receiptFormatted);
+        
         $mail = new PHPMailer(true);
         
         try {
@@ -1905,12 +1959,12 @@ class Sdk extends Api
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
-            //$mail->addCC('arsen.leontijevic@gmail.com');
+            $mail->addCC('arsen.leontijevic@gmail.com');
             
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Yearly';
-            $mail->Body    = $invoice['journal'] . "<br><br>" . $invoiceUrl;
+            $mail->Body    = $mail->Body = "<pre style='font-family: monospace;'>$receiptHtml</pre><br><br><a href='$invoiceUrl'>Download Invoice PDF</a>";
             $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
@@ -2421,6 +2475,16 @@ class Sdk extends Api
         } catch (Exception $e) {
             echo "Exception during test: " . $e->getMessage();
         }
+    }
+    
+    function getBaseUrl(): string
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $script = $_SERVER['SCRIPT_NAME'] ?? ''; // e.g. /index.php or /api.php
+        $path = rtrim(dirname($script), '/\\'); // removes file part
+        
+        return $protocol . '://' . $host . $path;
     }
 
     /*
