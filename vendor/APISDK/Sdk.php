@@ -1448,7 +1448,7 @@ class Sdk extends Api
                                         <p>Dobili smo zahtev za resetovanje lozinke vašeg naloga.</p>
                                         <p>Ako ste vi zatražili novu lozinku, kliknite na dugme ispod da nastavite:</p>
                                         <a href='{$generated_link}' class='button'>Promeni lozinku</a>
-                                        <p class='footer'>Ako niste vi podneli zahtev, slobodno ignorišite ovu poruku.</p>
+                                        <p class='footer'>Ako niste Vi podneli zahtev, slobodno ignorišite ovu poruku.</p>
                                     </div>
                                 </body>
                             </html>
@@ -2005,7 +2005,59 @@ class Sdk extends Api
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Monthly';
-            $mail->Body    = $mail->Body = "<pre style='font-family: monospace;'>$receiptHtml</pre><br><br><a href='$invoiceUrl'>Download Invoice PDF</a>";
+            $mail->Body = "
+                        <html>
+                          <head>
+                            <style>
+                              body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f5f5f5;
+                                padding: 40px;
+                                color: #333;
+                              }
+                              .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                padding: 30px;
+                                border-radius: 10px;
+                                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                              }
+                              .receipt-box {
+                                background-color: #fafafa;
+                                border: 1px solid #ddd;
+                                padding: 20px;
+                                font-family: monospace;
+                                white-space: pre-wrap;
+                                border-radius: 6px;
+                              }
+                              .button {
+                                display: inline-block;
+                                margin-top: 20px;
+                                padding: 12px 20px;
+                                background-color: #211951;
+                                color: #ffffff;
+                                text-decoration: none;
+                                border-radius: 6px;
+                                font-weight: bold;
+                              }
+                              .button:hover {
+                                background-color: #3b2c73;
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            <div class='container'>
+                              <h2>Hvala na kupovini!</h2>
+                              <p>Vaša potvrda uplate izgleda ovako:</p>
+                              <div class='receipt-box'>
+                                $receiptHtml
+                              </div>
+                              <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
+                            </div>
+                          </body>
+                        </html>
+                        ";
             $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
@@ -2072,7 +2124,59 @@ class Sdk extends Api
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Yearly';
-            $mail->Body    = $mail->Body = "<pre style='font-family: monospace;'>$receiptHtml</pre><br><br><a href='$invoiceUrl'>Download Invoice PDF</a>";
+            $mail->Body = "
+                        <html>
+                          <head>
+                            <style>
+                              body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f5f5f5;
+                                padding: 40px;
+                                color: #333;
+                              }
+                              .container {
+                                max-width: 600px;
+                                margin: 0 auto;
+                                background-color: #ffffff;
+                                padding: 30px;
+                                border-radius: 10px;
+                                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                              }
+                              .receipt-box {
+                                background-color: #fafafa;
+                                border: 1px solid #ddd;
+                                padding: 20px;
+                                font-family: monospace;
+                                white-space: pre-wrap;
+                                border-radius: 6px;
+                              }
+                              .button {
+                                display: inline-block;
+                                margin-top: 20px;
+                                padding: 12px 20px;
+                                background-color: #211951;
+                                color: #ffffff;
+                                text-decoration: none;
+                                border-radius: 6px;
+                                font-weight: bold;
+                              }
+                              .button:hover {
+                                background-color: #3b2c73;
+                              }
+                            </style>
+                          </head>
+                          <body>
+                            <div class='container'>
+                              <h2>Hvala na kupovini!</h2>
+                              <p>Vaša potvrda uplate izgleda ovako:</p>
+                              <div class='receipt-box'>
+                                $receiptHtml
+                              </div>
+                              <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
+                            </div>
+                          </body>
+                        </html>
+                        ";
             $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
