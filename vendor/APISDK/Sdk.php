@@ -1193,12 +1193,30 @@ class Sdk extends Api
         $mail->Port       = 587;
         
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+        $mail->addAddress($request['email']);
         $mail->addAddress('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Potvrda naloga';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = '<html>Link za potvrdu naloga: https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/'.$hash.'</html>';
+        $mail->Body = '
+                    <html>
+                      <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                          <h2 style="color: #211951;">Potvrda naloga</h2>
+                          <p>Hvala što ste se registrovali! Da biste aktivirali svoj nalog, molimo kliknite na sledeći link:</p>
+                          <p style="margin: 30px 0;">
+                            <a href="https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/' . $hash . '"
+                               style="display: inline-block; padding: 12px 24px; background-color: #211951; color: #ffffff; text-decoration: none; border-radius: 5px;">
+                              Aktiviraj nalog
+                            </a>
+                          </p>
+                          <p>Ako niste vi zatražili registraciju, slobodno ignorišite ovu poruku.</p>
+                          <br>
+                          <p style="font-size: 12px; color: #888;">Personalni Trener Team</p>
+                        </div>
+                      </body>
+                    </html>';
         $mail->AltBody = '<html>Alt Body</html>';
         
         $mail->send();
