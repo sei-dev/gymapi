@@ -1536,7 +1536,42 @@ class Sdk extends Api
         
         $mail->send();
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+        echo "
+                <html>
+                    <head>
+                        <title>Reset uspešan</title>
+                        <script>
+                            setTimeout(function() {
+                                window.close();
+                            }, 4000); // Close after 2 seconds
+                        </script>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f5f5f5;
+                                text-align: center;
+                                padding-top: 100px;
+                                color: #333;
+                            }
+                            .message-box {
+                                display: inline-block;
+                                padding: 20px;
+                                background-color: #fff;
+                                border: 1px solid #ddd;
+                                border-radius: 10px;
+                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='message-box'>
+                            <h2>Lozinka je uspešno resetovana</h2>
+                            <p>Možete zatvoriti ovu stranicu.</p>
+                        </div>
+                    </body>
+                </html>
+                ";
+        exit;
     }
 
     private function changePassword()
