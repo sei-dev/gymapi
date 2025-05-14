@@ -2052,7 +2052,7 @@ class Sdk extends Api
                               <h2>Hvala na kupovini!</h2>
                               <p>Vaša potvrda uplate izgleda ovako:</p>
                               <div class='receipt-box'>
-                              <pre style="margin: 0; padding: 0; text-align: center;">$receiptHtml</pre>
+                              <pre style='margin: 0; padding: 0; text-align: center;'>$receiptHtml</pre>
                             </div>
                               <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
                             </div>
