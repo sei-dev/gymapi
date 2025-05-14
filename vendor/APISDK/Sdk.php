@@ -1414,7 +1414,45 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Ukoliko ste vi zatražili novu lozinku kliknite na link: {$generated_link}. Nova lozinka će vam stići na mejl.";
+        $mail->Body = "
+                            <html>
+                                <head>
+                                    <style>
+                                        .container {
+                                            font-family: Arial, sans-serif;
+                                            padding: 20px;
+                                            background-color: #f9f9f9;
+                                            border-radius: 10px;
+                                            color: #333;
+                                        }
+                                        .button {
+                                            display: inline-block;
+                                            padding: 10px 20px;
+                                            margin-top: 20px;
+                                            font-size: 16px;
+                                            color: white;
+                                            background-color: #211951;
+                                            text-decoration: none;
+                                            border-radius: 5px;
+                                        }
+                                        .footer {
+                                            margin-top: 30px;
+                                            font-size: 12px;
+                                            color: #777;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='container'>
+                                        <h2>Zahtev za promenu lozinke</h2>
+                                        <p>Dobili smo zahtev za resetovanje lozinke vašeg naloga.</p>
+                                        <p>Ako ste vi zatražili novu lozinku, kliknite na dugme ispod da nastavite:</p>
+                                        <a href='{$generated_link}' class='button'>Promeni lozinku</a>
+                                        <p class='footer'>Ako niste vi podneli zahtev, slobodno ignorišite ovu poruku.</p>
+                                    </div>
+                                </body>
+                            </html>
+                        ";
         $mail->AltBody = '<html>Alt Body</html>';
         
         $mail->send();
@@ -1459,7 +1497,41 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = "Dobili smo zahtev da ste zaboravili lozinku. Vašа nova lozinka je: {$generated_pass}. Lozinku kasnije možete promeniti u aplikaciji.";
+        $mail->Body = "
+                        <html>
+                            <head>
+                                <style>
+                                    .container {
+                                        font-family: Arial, sans-serif;
+                                        padding: 20px;
+                                        background-color: #f9f9f9;
+                                        border-radius: 10px;
+                                        color: #333;
+                                    }
+                                    .password {
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                        color: #211951;
+                                    }
+                                    .footer {
+                                        margin-top: 30px;
+                                        font-size: 12px;
+                                        color: #777;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class='container'>
+                                    <h2>Vaša nova lozinka</h2>
+                                    <p>Zahtev za resetovanje lozinke je uspešno obrađen.</p>
+                                    <p>Vaša nova lozinka je:</p>
+                                    <p class='password'>{$generated_pass}</p>
+                                    <p>Preporučujemo da je odmah promenite u aplikaciji.</p>
+                                    <p class='footer'>Hvala što koristite aplikaciju Personalni Trener.</p>
+                                </div>
+                            </body>
+                        </html>
+                    ";
         $mail->AltBody = '<html>Alt Body</html>';
         
         $mail->send();
