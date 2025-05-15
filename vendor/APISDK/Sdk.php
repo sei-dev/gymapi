@@ -1655,6 +1655,7 @@ class Sdk extends Api
         $connector_api_key = "personal-simulator";
         $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        $request['token'] = str_replace(' ', '+', $request['token']);
         /*
          * $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
          * EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w"
