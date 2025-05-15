@@ -1395,6 +1395,22 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_FAILED, "-1");
     }
     
+    private function getMyAccount()
+    {
+        $users_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
+        
+        $user = $users_model->getUserById($this->user_id);
+        
+        unset($user["password"]);
+        
+        $toReturn = $this->populateUserModel($user);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
+    }
+    
+    
+    
+    
     private function forgotPasswordCheck()
     {
         $request = $this->filterParams([
@@ -1650,6 +1666,7 @@ class Sdk extends Api
             'is_monthly'
         ]);
 
+        $request['token'] = str_replace(' ', '+', $request['token']);
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
         $connector_api_key = "personal-simulator";
