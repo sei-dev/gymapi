@@ -896,7 +896,8 @@ class Sdk extends Api
             'en',
             'rs',
             'ru',
-            'country_id'
+            'country_id',
+            'nationality'
         ]);
 
         $users_model = new Users($this->dbAdapter);
@@ -906,7 +907,9 @@ class Sdk extends Api
             $users_model->changePassword($request['id'], $newPassHash);
         }
 
-        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'], $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['country_id']);
+        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'],
+            $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'],
+            $request['ru'], $request['country_id'], $request['nationality']);
 
         $user = $this->getUpdatedUser();
         return $this->formatResponse(self::STATUS_SUCCESS, "", $user);

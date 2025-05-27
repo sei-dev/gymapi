@@ -559,12 +559,13 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
 
-    public function updateInfo(String $id, String $name, String $surname, String $age, String $phone, String $email, String $deadline, String $is_male, String $city_id, String $en, String $rs, String $ru, String $country_id)
+    public function updateInfo(String $id, String $name, String $surname, String $age, String $phone, String $email, String $deadline,
+                               String $is_male, String $city_id, String $en, String $rs, String $ru, String $country_id, String $nationality)
     {
         $sQuery = "UPDATE `users` SET `first_name`='{$name}',`last_name`='{$surname}',`email`='{$email}',
                         `phone`='{$phone}',`deadline`='{$deadline}', 
                         `is_male`='{$is_male}',`age`='{$age}',`city_id`='{$city_id}',
-                        `language_english`='{$en}',`language_serbian`='{$rs}',`language_russian`='{$ru}', `country_id`='{$country_id}'
+                        `language_english`='{$en}',`language_serbian`='{$rs}',`language_russian`='{$ru}', `country_id`='{$country_id}', `nationality` = '{$nationality}'
                         WHERE `id`='{$id}'";
 
         return $this->getDbAdapter()->query($sQuery);
