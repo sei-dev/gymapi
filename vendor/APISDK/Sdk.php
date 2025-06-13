@@ -1220,7 +1220,6 @@ class Sdk extends Api
                         </div>
                       </body>
                     </html>';
-        $mail->AltBody = '<html>Alt Body</html>';
         
         $mail->send();
         
@@ -1490,7 +1489,7 @@ class Sdk extends Api
                                 </body>
                             </html>
                         ";
-        $mail->AltBody = '<html>Alt Body</html>';
+        
         
         $mail->send();
         
@@ -1569,7 +1568,7 @@ class Sdk extends Api
                             </body>
                         </html>
                     ";
-        $mail->AltBody = '<html>Alt Body</html>';
+        
         
         $mail->send();
 
