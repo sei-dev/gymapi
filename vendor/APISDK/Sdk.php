@@ -361,6 +361,10 @@ class Sdk extends Api
             
             $trainings = [];
             
+            if ($end_date < $start_date) {
+                return $this->formatResponse(self::STATUS_FAILED, "End date before start date.", $trainings);
+            }
+            
             if($start_date == $end_date){
                 if ($start_date->format('N') == 1 && $request['mon'] == "1") {
                     $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
