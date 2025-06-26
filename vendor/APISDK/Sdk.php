@@ -1542,7 +1542,7 @@ class Sdk extends Api
 
         $userModel->forgotPassword($user['id'], $password_hash);
         
-        $lang = $request['lang'];
+        $lang = $request['language'];
         
         $mail = new PHPMailer();
         
