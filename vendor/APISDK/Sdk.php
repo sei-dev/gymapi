@@ -1454,7 +1454,7 @@ class Sdk extends Api
         
         $lang = $this->getAppLanguage($user['id']);
         
-        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "language=" . $lang;
+        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "&language=" . $lang;
         
         //Ovde sam stao lang
         
