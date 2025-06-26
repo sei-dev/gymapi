@@ -1423,7 +1423,7 @@ class Sdk extends Api
         return $language;
     }
     
-    private function setAppLanguage(){
+    function setAppLanguage(){
         $request = $this->filterParams([
             'language'
         ]);
