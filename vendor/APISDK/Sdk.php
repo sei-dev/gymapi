@@ -1434,7 +1434,7 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
     
-    private function  PasswordCheck()
+    private function forgotPasswordCheck()
     {
         $request = $this->filterParams([
             'email'
