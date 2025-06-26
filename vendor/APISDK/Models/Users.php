@@ -671,6 +671,31 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
     
+    public function setAppLanguage(String $id, String $language)
+    {
+        $sQuery = "UPDATE " . self::getTablePrefix() . "users
+                   SET app_lang = '{$language}'
+				   WHERE id = '{$id}'
+				";
+        
+        return $this->getDbAdapter()->query($sQuery);
+    }
+    
+    public function getAppLanguage(String $id, String $language)
+    {
+        $sQuery = "SELECT app_language FROM users
+				   WHERE id = '{$id}'
+				";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row[0]["app_language"])) {
+            return $row[0]["app_language"];
+        }
+        return false;
+    }
+    
     // bcrypt, then compare hash with password
     public function login(string $email)
     {

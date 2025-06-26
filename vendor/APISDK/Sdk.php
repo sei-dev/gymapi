@@ -38,6 +38,7 @@ class Sdk extends Api
     const DIR_UPLOADS = __DIR__ . "/../../images/";
 
     const DIR_USERS = "users";
+    
 
     /*
      * const DIR_BAITS = "baits";
@@ -1414,10 +1415,26 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
     }
     
+    private function getAppLanguage()
+    {
+        $users_model = new Users($this->dbAdapter);
+        $language = $users_model->getAppLanguage($this->user_id);
+        
+        return $language;
+    }
     
+    private function setAppLanguage(){
+        $request = $this->filterParams([
+            'language'
+        ]);
+        
+        $users_model = new Users($this->dbAdapter);
+        $users_model->setAppLanguage($this->user_id, $request['language']);
+     
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+    }
     
-    
-    private function forgotPasswordCheck()
+    private function  PasswordCheck()
     {
         $request = $this->filterParams([
             'email'
@@ -1520,6 +1537,8 @@ class Sdk extends Api
 
         $userModel->forgotPassword($user['id'], $password_hash);
         
+        $lang = $userModel->getAppLanguage($this->user_id);
+        
         $mail = new PHPMailer();
         
         $mail->isSMTP();
@@ -1537,80 +1556,11 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = "
-                        <html>
-                            <head>
-                                <style>
-                                    .container {
-                                        font-family: Arial, sans-serif;
-                                        padding: 20px;
-                                        background-color: #f9f9f9;
-                                        border-radius: 10px;
-                                        color: #333;
-                                    }
-                                    .password {
-                                        font-size: 18px;
-                                        font-weight: bold;
-                                        color: #211951;
-                                    }
-                                    .footer {
-                                        margin-top: 30px;
-                                        font-size: 12px;
-                                        color: #777;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                <div class='container'>
-                                    <h2>Vaša nova lozinka</h2>
-                                    <p>Zahtev za resetovanje lozinke je uspešno obrađen.</p>
-                                    <p>Vaša nova lozinka je:</p>
-                                    <p class='password'>{$generated_pass}</p>
-                                    <p>Preporučujemo da je odmah promenite u aplikaciji.</p>
-                                    <p class='footer'>Hvala što koristite aplikaciju Personalni Trener.</p>
-                                </div>
-                            </body>
-                        </html>
-                    ";
-        
+        $mail->Body = $this->getForgotPassLanguageMail($lang, $generated_pass);
         
         $mail->send();
 
-        echo "
-                <html>
-                    <head>
-                        <title>Reset uspešan</title>
-                        <script>
-                            setTimeout(function() {
-                                window.close();
-                            }, 4000); // Close after 2 seconds
-                        </script>
-                        <style>
-                            body {
-                                font-family: Arial, sans-serif;
-                                background-color: #f5f5f5;
-                                text-align: center;
-                                padding-top: 100px;
-                                color: #333;
-                            }
-                            .message-box {
-                                display: inline-block;
-                                padding: 20px;
-                                background-color: #fff;
-                                border: 1px solid #ddd;
-                                border-radius: 10px;
-                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class='message-box'>
-                            <h2>Lozinka je uspešno resetovana</h2>
-                            <p>Možete zatvoriti ovu stranicu.</p>
-                        </div>
-                    </body>
-                </html>
-                ";
+        echo $this->getForgotPassEcho($lang);
         exit;
     }
 
@@ -2736,7 +2686,232 @@ class Sdk extends Api
         
         return $protocol . '://' . $host . $path;
     }
+    
+    private function getForgotPassLanguageMail(string $lang, string $generated_pass){
+        $forgotpassmail = [
+            'en' => "
+                    <html>
+                        <head>
+                            <style>
+                                .container {
+                                    font-family: Arial, sans-serif;
+                                    padding: 20px;
+                                    background-color: #f9f9f9;
+                                    border-radius: 10px;
+                                    color: #333;
+                                }
+                                .password {
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                    color: #211951;
+                                }
+                                .footer {
+                                    margin-top: 30px;
+                                    font-size: 12px;
+                                    color: #777;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h2>Your New Password</h2>
+                                <p>Your password reset request has been successfully processed.</p>
+                                <p>Your new password is:</p>
+                                <p class='password'>{$generated_pass}</p>
+                                <p>We recommend that you change it immediately in the app.</p>
+                                <p class='footer'>Thank you for using the Personal Trainer app.</p>
+                            </div>
+                        </body>
+                    </html>
+                    ",
+            'ru' => "
+                        <html>
+                            <head>
+                                <style>
+                                    .container {
+                                        font-family: Arial, sans-serif;
+                                        padding: 20px;
+                                        background-color: #f9f9f9;
+                                        border-radius: 10px;
+                                        color: #333;
+                                    }
+                                    .password {
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                        color: #211951;
+                                    }
+                                    .footer {
+                                        margin-top: 30px;
+                                        font-size: 12px;
+                                        color: #777;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class='container'>
+                                    <h2>Ваш новый пароль</h2>
+                                    <p>Запрос на сброс пароля был успешно обработан.</p>
+                                    <p>Ваш новый пароль:</p>
+                                    <p class='password'>{$generated_pass}</p>
+                                    <p>Рекомендуем сразу изменить его в приложении.</p>
+                                    <p class='footer'>Спасибо за использование приложения Персональный Тренер.</p>
+                                </div>
+                            </body>
+                        </html>
+                        ",
+            'sr' => "
+                        <html>
+                            <head>
+                                <style>
+                                    .container {
+                                        font-family: Arial, sans-serif;
+                                        padding: 20px;
+                                        background-color: #f9f9f9;
+                                        border-radius: 10px;
+                                        color: #333;
+                                    }
+                                    .password {
+                                        font-size: 18px;
+                                        font-weight: bold;
+                                        color: #211951;
+                                    }
+                                    .footer {
+                                        margin-top: 30px;
+                                        font-size: 12px;
+                                        color: #777;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class='container'>
+                                    <h2>Vaša nova lozinka</h2>
+                                    <p>Zahtev za resetovanje lozinke je uspešno obrađen.</p>
+                                    <p>Vaša nova lozinka je:</p>
+                                    <p class='password'>{$generated_pass}</p>
+                                    <p>Preporučujemo da je odmah promenite u aplikaciji.</p>
+                                    <p class='footer'>Hvala što koristite aplikaciju Personalni Trener.</p>
+                                </div>
+                            </body>
+                        </html>
+                    "
+                    ];
+        
+        if($lang == "en") return $forgotpassmail['en'];
+        else if ($lang == "sr") return $forgotpassmail['sr'];
+        else if ($lang == "ru") return $forgotpassmail['ru'];
+        else return $forgotpassmail['en'];
+    }
 
+    private function getForgotPassEcho(string $lang){
+        $languageReturn = [
+            "sr"=>"
+                <html>
+                    <head>
+                        <title>Reset uspešan</title>
+                        <script>
+                            setTimeout(function() {
+                                window.close();
+                            }, 4000); // Close after 2 seconds
+                        </script>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f5f5f5;
+                                text-align: center;
+                                padding-top: 100px;
+                                color: #333;
+                            }
+                            .message-box {
+                                display: inline-block;
+                                padding: 20px;
+                                background-color: #fff;
+                                border: 1px solid #ddd;
+                                border-radius: 10px;
+                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='message-box'>
+                            <h2>Lozinka je uspešno resetovana</h2>
+                            <p>Možete zatvoriti ovu stranicu.</p>
+                        </div>
+                    </body>
+                </html>
+                ",
+            "en"=>"<html>
+                <head>
+                    <title>Reset Successful</title>
+                    <script>
+                        setTimeout(function() {
+                            window.close();
+                        }, 4000); // Close after 4 seconds
+                    </script>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f5f5f5;
+                            text-align: center;
+                            padding-top: 100px;
+                            color: #333;
+                        }
+                        .message-box {
+                            display: inline-block;
+                            padding: 20px;
+                            background-color: #fff;
+                            border: 1px solid #ddd;
+                            border-radius: 10px;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='message-box'>
+                        <h2>Password has been successfully reset</h2>
+                        <p>You may close this page.</p>
+                    </div>
+                </body>
+            </html>",
+            "ru"=>"<html>
+                    <head>
+                        <title>Сброс выполнен успешно</title>
+                        <script>
+                            setTimeout(function() {
+                                window.close();
+                            }, 4000); // Закрыть через 4 секунды
+                        </script>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                background-color: #f5f5f5;
+                                text-align: center;
+                                padding-top: 100px;
+                                color: #333;
+                            }
+                            .message-box {
+                                display: inline-block;
+                                padding: 20px;
+                                background-color: #fff;
+                                border: 1px solid #ddd;
+                                border-radius: 10px;
+                                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='message-box'>
+                            <h2>Пароль был успешно сброшен</h2>
+                            <p>Вы можете закрыть эту страницу.</p>
+                        </div>
+                    </body>
+                </html>"
+        ];
+        
+        if($lang == "en") return $languageReturn['en'];
+        else if ($lang == "sr") return $languageReturn['sr'];
+        else if ($lang == "ru") return $languageReturn['ru'];
+        else return $languageReturn['en'];
+    }
     /*
      * $merchant_key = "TREESRS";
      * $authenticity_token = "";
