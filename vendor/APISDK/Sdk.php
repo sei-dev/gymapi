@@ -1452,7 +1452,11 @@ class Sdk extends Api
             throw new ApiException("There is no such user");
         }
         
-        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash;
+        $lang = $this->getAppLanguage($user['id']);
+        
+        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "language=" . $lang;
+        
+        //Ovde sam stao lang
         
         $mail = new PHPMailer();
         
@@ -1520,7 +1524,8 @@ class Sdk extends Api
     private function forgotPassword()
     {
         $request = $this->filterParams([
-            'hash'
+            'hash',
+            'lang'
         ]);
         // $request = $this->filterParams(['email']);
 
@@ -1537,7 +1542,7 @@ class Sdk extends Api
 
         $userModel->forgotPassword($user['id'], $password_hash);
         
-        $lang = $userModel->getAppLanguage($this->user_id);
+        $lang = $request['lang'];
         
         $mail = new PHPMailer();
         
@@ -2911,6 +2916,20 @@ class Sdk extends Api
         else if ($lang == "sr") return $languageReturn['sr'];
         else if ($lang == "ru") return $languageReturn['ru'];
         else return $languageReturn['en'];
+    }
+    
+    private function getPasswordCheckMail(string $lang){
+        $languageReturn = [
+            "en" => "",
+            "sr" => "",
+            "ru" => ""
+        ];
+        
+        if($lang == "en") return $languageReturn['en'];
+        else if ($lang == "sr") return $languageReturn['sr'];
+        else if ($lang == "ru") return $languageReturn['ru'];
+        else return $languageReturn['en'];
+        
     }
     /*
      * $merchant_key = "TREESRS";
