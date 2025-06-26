@@ -1525,7 +1525,7 @@ class Sdk extends Api
     {
         $request = $this->filterParams([
             'hash',
-            'lang'
+            'language'
         ]);
         // $request = $this->filterParams(['email']);
 
