@@ -681,8 +681,11 @@ class Users extends ModelAbstract implements ModelInterface
         return $this->getDbAdapter()->query($sQuery);
     }
     
-    public function getAppLanguage(String $id, String $language)
+    public function getAppLanguage(String $id = NULL)
     {
+        if($id==NULL){
+            return "en";
+        }
         $sQuery = "SELECT app_language FROM users
 				   WHERE id = '{$id}'
 				";
