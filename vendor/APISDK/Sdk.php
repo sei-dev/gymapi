@@ -1452,11 +1452,11 @@ class Sdk extends Api
             throw new ApiException("There is no such user");
         }
         
-        $lang = $this->getAppLanguage($user['id']);
+        $lang = $userModel->getAppLanguage($user['id']);
+        //die(var_dump($lang));
         
         $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "&language=" . $lang;
         
-        //Ovde sam stao lang
         
         $mail = new PHPMailer();
         
@@ -1464,7 +1464,7 @@ class Sdk extends Api
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'ptrenersrb@gmail.com';
-        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->Password   = 'dlvw rdak ejtk yqlm';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port       = 587;
         
@@ -1475,45 +1475,7 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = "
-                            <html>
-                                <head>
-                                    <style>
-                                        .container {
-                                            font-family: Arial, sans-serif;
-                                            padding: 20px;
-                                            background-color: #f9f9f9;
-                                            border-radius: 10px;
-                                            color: #333;
-                                        }
-                                        .button {
-                                            display: inline-block;
-                                            padding: 10px 20px;
-                                            margin-top: 20px;
-                                            font-size: 16px;
-                                            color: white;
-                                            background-color: #211951;
-                                            text-decoration: none;
-                                            border-radius: 5px;
-                                        }
-                                        .footer {
-                                            margin-top: 30px;
-                                            font-size: 12px;
-                                            color: #777;
-                                        }
-                                    </style>
-                                </head>
-                                <body>
-                                    <div class='container'>
-                                        <h2>Zahtev za promenu lozinke</h2>
-                                        <p>Dobili smo zahtev za resetovanje lozinke vašeg naloga.</p>
-                                        <p>Ako ste vi zatražili novu lozinku, kliknite na dugme ispod da nastavite:</p>
-                                        <a href='{$generated_link}' class='button'>Promeni lozinku</a>
-                                        <p class='footer'>Ako niste Vi podneli zahtev, slobodno ignorišite ovu poruku.</p>
-                                    </div>
-                                </body>
-                            </html>
-                        ";
+        $mail->Body = $this->getPasswordCheckMail($lang);
         
         
         $mail->send();
@@ -2920,9 +2882,119 @@ class Sdk extends Api
     
     private function getPasswordCheckMail(string $lang){
         $languageReturn = [
-            "en" => "",
-            "sr" => "",
-            "ru" => ""
+            "en" => "<html>
+                        <head>
+                            <style>
+                                .container {
+                                    font-family: Arial, sans-serif;
+                                    padding: 20px;
+                                    background-color: #f9f9f9;
+                                    border-radius: 10px;
+                                    color: #333;
+                                }
+                                .button {
+                                    display: inline-block;
+                                    padding: 10px 20px;
+                                    margin-top: 20px;
+                                    font-size: 16px;
+                                    color: white;
+                                    background-color: #211951;
+                                    text-decoration: none;
+                                    border-radius: 5px;
+                                }
+                                .footer {
+                                    margin-top: 30px;
+                                    font-size: 12px;
+                                    color: #777;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h2>Password Reset Request</h2>
+                                <p>We received a request to reset the password for your account.</p>
+                                <p>If you requested a new password, click the button below to continue:</p>
+                                <a href='{$generated_link}' class='button'>Reset Password</a>
+                                <p class='footer'>If you didn’t make this request, feel free to ignore this message.</p>
+                            </div>
+                        </body>
+                    </html>",
+            "sr" => "
+                            <html>
+                                <head>
+                                    <style>
+                                        .container {
+                                            font-family: Arial, sans-serif;
+                                            padding: 20px;
+                                            background-color: #f9f9f9;
+                                            border-radius: 10px;
+                                            color: #333;
+                                        }
+                                        .button {
+                                            display: inline-block;
+                                            padding: 10px 20px;
+                                            margin-top: 20px;
+                                            font-size: 16px;
+                                            color: white;
+                                            background-color: #211951;
+                                            text-decoration: none;
+                                            border-radius: 5px;
+                                        }
+                                        .footer {
+                                            margin-top: 30px;
+                                            font-size: 12px;
+                                            color: #777;
+                                        }
+                                    </style>
+                                </head>
+                                <body>
+                                    <div class='container'>
+                                        <h2>Zahtev za promenu lozinke</h2>
+                                        <p>Dobili smo zahtev za resetovanje lozinke vašeg naloga.</p>
+                                        <p>Ako ste vi zatražili novu lozinku, kliknite na dugme ispod da nastavite:</p>
+                                        <a href='{$generated_link}' class='button'>Promeni lozinku</a>
+                                        <p class='footer'>Ako niste Vi podneli zahtev, slobodno ignorišite ovu poruku.</p>
+                                    </div>
+                                </body>
+                            </html>
+                        ",
+            "ru" => "<html>
+                        <head>
+                            <style>
+                                .container {
+                                    font-family: Arial, sans-serif;
+                                    padding: 20px;
+                                    background-color: #f9f9f9;
+                                    border-radius: 10px;
+                                    color: #333;
+                                }
+                                .button {
+                                    display: inline-block;
+                                    padding: 10px 20px;
+                                    margin-top: 20px;
+                                    font-size: 16px;
+                                    color: white;
+                                    background-color: #211951;
+                                    text-decoration: none;
+                                    border-radius: 5px;
+                                }
+                                .footer {
+                                    margin-top: 30px;
+                                    font-size: 12px;
+                                    color: #777;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <h2>Запрос на изменение пароля</h2>
+                                <p>Мы получили запрос на сброс пароля для вашего аккаунта.</p>
+                                <p>Если вы действительно запрашивали новый пароль, нажмите кнопку ниже, чтобы продолжить:</p>
+                                <a href='{$generated_link}' class='button'>Сбросить пароль</a>
+                                <p class='footer'>Если вы не отправляли этот запрос, просто проигнорируйте это сообщение.</p>
+                            </div>
+                        </body>
+                    </html>"
         ];
         
         if($lang == "en") return $languageReturn['en'];
