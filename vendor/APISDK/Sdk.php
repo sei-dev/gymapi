@@ -1453,7 +1453,7 @@ class Sdk extends Api
         }
         
         $lang = $userModel->getAppLanguage($user['id']);
-        die(var_dump($lang));
+        //die(var_dump($lang));
         
         $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "&language=" . $lang;
         
