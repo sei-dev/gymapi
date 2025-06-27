@@ -690,8 +690,8 @@ class Users extends ModelAbstract implements ModelInterface
         $row = $this->getDbAdapter()
         ->query($sQuery)
         ->fetchAll(\PDO::FETCH_ASSOC);
-        if (isset($row[0]["app_language"])) {
-            return $row[0]["app_language"];
+        if (isset($row[0]["app_lang"])) {
+            return $row[0]["app_lang"];
         }
         return false;
     }
