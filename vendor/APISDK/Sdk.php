@@ -1453,7 +1453,7 @@ class Sdk extends Api
         }
         
         $lang = $userModel->getAppLanguage($user['id']);
-        //die(var_dump($lang));
+        die(var_dump($lang));
         
         $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "&language=" . $lang;
         
@@ -1475,7 +1475,7 @@ class Sdk extends Api
         $mail->Subject = 'Zahtev za promenu lozinke';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = $this->getPasswordCheckMail($lang);
+        $mail->Body = $this->getPasswordCheckMail($lang, $generated_link);
         
         
         $mail->send();
@@ -2880,7 +2880,7 @@ class Sdk extends Api
         else return $languageReturn['en'];
     }
     
-    private function getPasswordCheckMail(string $lang){
+    private function getPasswordCheckMail(string $lang, string $generated_link){
         $languageReturn = [
             "en" => "<html>
                         <head>
