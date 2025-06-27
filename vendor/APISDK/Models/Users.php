@@ -686,7 +686,7 @@ class Users extends ModelAbstract implements ModelInterface
         if($id==NULL){
             return "en";
         }
-        $sQuery = "SELECT app_language FROM users
+        $sQuery = "SELECT app_lang FROM users
 				   WHERE id = '{$id}'
 				";
         
