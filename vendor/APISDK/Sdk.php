@@ -1173,7 +1173,15 @@ class Sdk extends Api
             'country_id'
         ]);
         
-        
+        if ($request['en'] == "1") {
+            $lang = "en";
+        } elseif ($request['ru'] == "1" && $request['rs'] != "1") {
+            $lang = "ru";
+        } elseif ($request['rs'] == "1") {
+            $lang = "sr";
+        } else {
+            $lang = "en"; // fallback/default language
+        }
         
         $users_model = new Users($this->dbAdapter);
 
@@ -1207,24 +1215,7 @@ class Sdk extends Api
         $mail->Subject = 'Potvrda naloga';
         // Set HTML
         $mail->isHTML(TRUE);
-        $mail->Body = '
-                    <html>
-                      <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
-                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
-                          <h2 style="color: #211951;">Potvrda naloga</h2>
-                          <p>Hvala što ste se registrovali! Da biste aktivirali svoj nalog, molimo kliknite na sledeći link:</p>
-                          <p style="margin: 30px 0;">
-                            <a href="https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/' . $hash . '"
-                               style="display: inline-block; padding: 12px 24px; background-color: #211951; color: #ffffff; text-decoration: none; border-radius: 5px;">
-                              Aktiviraj nalog
-                            </a>
-                          </p>
-                          <p>Ako niste vi zatražili registraciju, slobodno ignorišite ovu poruku.</p>
-                          <br>
-                          <p style="font-size: 12px; color: #888;">Personalni Trener Team</p>
-                        </div>
-                      </body>
-                    </html>';
+        $mail->Body = $this->getRegisterMail($lang, $hash);
         
         $mail->send();
         
@@ -2997,6 +2988,71 @@ class Sdk extends Api
                         </body>
                     </html>"
         ];
+        
+        if($lang == "en") return $languageReturn['en'];
+        else if ($lang == "sr") return $languageReturn['sr'];
+        else if ($lang == "ru") return $languageReturn['ru'];
+        else return $languageReturn['en'];
+        
+    }
+    
+    private function getRegisterMail(string $lang, string $hash){
+        $languageReturn = [
+            "en" => '
+                    <html>
+                      <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                          <h2 style="color: #211951;">Account Confirmation</h2>
+                          <p>Thank you for registering! To activate your account, please click the link below:</p>
+                          <p style="margin: 30px 0;">
+                            <a href="https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/' . $hash . '"
+                               style="display: inline-block; padding: 12px 24px; background-color: #211951; color: #ffffff; text-decoration: none; border-radius: 5px;">
+                              Activate Account
+                            </a>
+                          </p>
+                          <p>If you did not request this registration, you can safely ignore this message.</p>
+                          <br>
+                          <p style="font-size: 12px; color: #888;">Personal Trainer Team</p>
+                        </div>
+                      </body>
+                    </html>',
+            "sr" => '
+                    <html>
+                      <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                          <h2 style="color: #211951;">Potvrda naloga</h2>
+                          <p>Hvala što ste se registrovali! Da biste aktivirali svoj nalog, molimo kliknite na sledeći link:</p>
+                          <p style="margin: 30px 0;">
+                            <a href="https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/' . $hash . '"
+                               style="display: inline-block; padding: 12px 24px; background-color: #211951; color: #ffffff; text-decoration: none; border-radius: 5px;">
+                              Aktiviraj nalog
+                            </a>
+                          </p>
+                          <p>Ako niste vi zatražili registraciju, slobodno ignorišite ovu poruku.</p>
+                          <br>
+                          <p style="font-size: 12px; color: #888;">Personalni Trener Tim</p>
+                        </div>
+                      </body>
+                    </html>',
+            "ru" => '
+                    <html>
+                      <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                          <h2 style="color: #211951;">Подтверждение аккаунта</h2>
+                          <p>Спасибо за регистрацию! Чтобы активировать ваш аккаунт, пожалуйста, нажмите на ссылку ниже:</p>
+                          <p style="margin: 30px 0;">
+                            <a href="https://phpstack-1301327-4732761.cloudwaysapps.com/log/activate/' . $hash . '"
+                               style="display: inline-block; padding: 12px 24px; background-color: #211951; color: #ffffff; text-decoration: none; border-radius: 5px;">
+                              Активировать аккаунт
+                            </a>
+                          </p>
+                          <p>Если вы не отправляли этот запрос, просто проигнорируйте это сообщение.</p>
+                          <br>
+                          <p style="font-size: 12px; color: #888;">Команда Personalni Trener</p>
+                        </div>
+                      </body>
+                    </html>'
+                    ];
         
         if($lang == "en") return $languageReturn['en'];
         else if ($lang == "sr") return $languageReturn['sr'];
