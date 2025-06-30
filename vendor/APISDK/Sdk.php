@@ -1177,10 +1177,12 @@ class Sdk extends Api
             $lang = "en";
         } elseif ($request['ru'] == "1" && $request['rs'] != "1") {
             $lang = "ru";
-        } elseif ($request['rs'] == "1") {
+        } elseif ($request['ru'] == "1" && $request['rs'] == "1") {
+            $lang = "sr";
+        }elseif ($request['rs'] == "1") {
             $lang = "sr";
         } else {
-            $lang = "en"; // fallback/default language
+            $lang = "en";
         }
         
         $users_model = new Users($this->dbAdapter);
