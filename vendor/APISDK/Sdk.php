@@ -2382,7 +2382,8 @@ class Sdk extends Api
 
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
-        if ($iosToken = $this->getIOSToken($device_token) !== false) {
+        $iosToken = $this->getIOSToken($device_token);
+        if ($iosToken != false) {
             return $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
             //return;
         }
