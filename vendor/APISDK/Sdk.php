@@ -2606,7 +2606,7 @@ class Sdk extends Api
         if ($response === false) {
             return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
-            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}", []);
+            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}, Device Token: {$deviceToken}", []);
         }
         
     }
