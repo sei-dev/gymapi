@@ -2567,7 +2567,7 @@ class Sdk extends Api
     
     private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = []){
             
-        return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
+        //return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
         $jwtToken = $this->generateJwtToken();
