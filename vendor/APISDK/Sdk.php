@@ -1112,9 +1112,9 @@ class Sdk extends Api
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
 
-        //return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
+        return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, var_dump($trainer), $trainer);
+        //return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function acceptConnectionTrainer()
@@ -2566,6 +2566,7 @@ class Sdk extends Api
     
     private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = []){
             
+        return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
         $jwtToken = $this->generateJwtToken();
