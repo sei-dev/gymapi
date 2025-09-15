@@ -1110,9 +1110,9 @@ class Sdk extends Api
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
 
-        $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
+        return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
+        //return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function acceptConnectionTrainer()
@@ -1384,6 +1384,7 @@ class Sdk extends Api
         if (! $user) {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
+        
 
         if (password_verify($request['password'], $user["password"])) {
             unset($user["password"]);
@@ -2380,8 +2381,8 @@ class Sdk extends Api
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         if ($iosToken = $this->getIOSToken($device_token) !== false) {
-            $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
-            return;
+            return $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
+            //return;
         }
         
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
@@ -2407,6 +2408,9 @@ class Sdk extends Api
             $client->build($recipient, $notification);
             $client->fire();
         }
+        
+       
+         return $this->formatResponse(self::STATUS_SUCCESS, "Android", []);
 
         /* $client = new Client($filePath);
 
