@@ -1114,7 +1114,7 @@ class Sdk extends Api
 
         //return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainer);
+        return $this->formatResponse(self::STATUS_SUCCESS, var_dump($trainer), $trainer);
     }
 
     private function acceptConnectionTrainer()

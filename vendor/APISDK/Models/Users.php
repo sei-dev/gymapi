@@ -29,7 +29,7 @@ class Users extends ModelAbstract implements ModelInterface
         $sQuery = "SELECT users.*, cities.city as location FROM users LEFT JOIN cities ON users.city_id = cities.id
 				   WHERE users.id = '{$id}'
 				   LIMIT 1";
-        $row = (array)$this->getDbAdapter()
+        $row = $this->getDbAdapter()
             ->query($sQuery)
             ->fetch(\PDO::FETCH_ASSOC);
         if (isset($row)) {
