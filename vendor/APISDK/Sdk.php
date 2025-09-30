@@ -2590,7 +2590,8 @@ class Sdk extends Api
                 ],
                 'sound' => 'default',
                 'badge' => 1
-            ]
+            ],
+            'type' => $dataPayload['type']
         ]);
         
         // Slanje push notifikacije pomoću curl
