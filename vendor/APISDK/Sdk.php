@@ -1387,6 +1387,9 @@ class Sdk extends Api
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
         
+        if($user['email_confirmed']=='0'){
+            return $this->formatResponse(self::STATUS_FAILED, "-1");
+        }
 
         if (password_verify($request['password'], $user["password"])) {
             unset($user["password"]);
