@@ -1130,7 +1130,8 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
         $trainer = $users_model->getTrainerByConnectionId($request['id']);
-
+        
+        
         $dataPayload = [
             'type' => 'accepted_request',
             'date' => "",
@@ -1138,7 +1139,7 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"], $dataPayload);
+        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
