@@ -791,9 +791,9 @@ class Sdk extends Api
 
     private function getMeasurementsByClientId()
     {
-        $request = $this->filterParams([
-            'client_id'
-        ]);
+//         $request = $this->filterParams([
+//             'client_id'
+//         ]);
 
         $mes_model = new Measurements($this->dbAdapter);
 
