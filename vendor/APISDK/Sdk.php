@@ -1131,7 +1131,6 @@ class Sdk extends Api
         $client = $users_model->getClientByConnectionId($request['id']);
         $trainer = $users_model->getTrainerByConnectionId($request['id']);
         
-        die(var_dump($client));
         
         $dataPayload = [
             'type' => 'accepted_request',
