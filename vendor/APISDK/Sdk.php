@@ -797,7 +797,7 @@ class Sdk extends Api
 
         $mes_model = new Measurements($this->dbAdapter);
 
-        $measurements = $mes_model->getMeasurementsByClientId($request['client_id']);
+        $measurements = $mes_model->getMeasurementsByClientId($this->user_id);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
     }
@@ -1593,6 +1593,7 @@ class Sdk extends Api
         $request['token'] = str_replace(' ', '+', $request['token']);
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+        //OVDE ALLSECURE MENJAJ prod
         $connector_api_key = "personal-simulator";
         $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
