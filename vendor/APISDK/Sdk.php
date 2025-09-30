@@ -2386,7 +2386,6 @@ class Sdk extends Api
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         $iosToken = $this->getIOSToken($device_token);
-        //die(var_dump($iosToken));
         if ($iosToken != false) {
             return $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
             //return;
@@ -2439,7 +2438,7 @@ class Sdk extends Api
     }
     
     function getIOSToken($string) {
-        //die(var_dump($string));
+        // Provjeri jesu li prva 4 karaktera "ios_"
         if (substr($string, 0, 4) === "ios_") {
             // Izvuci ostatak stringa nakon "ios_"
             return substr($string, 4);
