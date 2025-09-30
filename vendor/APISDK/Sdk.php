@@ -2439,7 +2439,7 @@ class Sdk extends Api
     }
     
     function getIOSToken($string) {
-        // Provjeri jesu li prva 4 karaktera "ios_"
+        die(var_dump($string));
         if (substr($string, 0, 4) === "ios_") {
             // Izvuci ostatak stringa nakon "ios_"
             return substr($string, 4);
