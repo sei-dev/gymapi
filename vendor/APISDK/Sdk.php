@@ -1658,7 +1658,9 @@ class Sdk extends Api
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
+                $errors = $result->getErrors();
                 $response['status'] = "error";
+                $response['errors'] = $errors;
 
                 return $this->formatResponse(self::STATUS_FAILED, "", $response);
 
