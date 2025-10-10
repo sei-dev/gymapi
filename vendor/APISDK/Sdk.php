@@ -1759,8 +1759,8 @@ class Sdk extends Api
         
         $result = $client->deregister($deregister);
         
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: $result\n", FILE_APPEND);
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: $client\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: ".json_encode($result) . "\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: ".json_encode($client) . "\n", FILE_APPEND);
         
         if($result->isSuccess()){
             return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
