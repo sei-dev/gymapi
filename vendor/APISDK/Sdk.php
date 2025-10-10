@@ -16,6 +16,7 @@ use Exchange\Client\Client as ExchangeClient;
 use Exchange\Client\Data\Customer;
 use Exchange\Client\Transaction\Debit;
 use Exchange\Client\Transaction\Result;
+use Exchange\Client\Transaction\Deregister;
 use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
 use APISDK\Models\Invoices;
@@ -1740,32 +1741,36 @@ class Sdk extends Api
     }
     
     private function deregisterCard(){
-        $request = $this->filterParams([
-            'merchantTransactionId',
-            'referenceUuid'
-        ]);
-        
-        $logFile = __DIR__ . '/deregister_error_log.txt';
-        
-        $api_user = "personal-api";
-        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-        //OVDE ALLSECURE MENJAJ prod
-        $connector_api_key = "personal-simulator";
-        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
-        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        
-        $deregister = new Deregister();
-        $deregister->setTransactionToken($request['referenceUuid']);
-        
-        $result = $client->deregister($deregister);
-        
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: ".json_encode($result) . "\n", FILE_APPEND);
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: ".json_encode($client) . "\n", FILE_APPEND);
-        
-        if($result->isSuccess()){
-            return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
-        }else{
-            return $this->formatResponse(self::STATUS_FAILED, "", []);
+        try{
+            $request = $this->filterParams([
+                'merchantTransactionId',
+                'referenceUuid'
+            ]);
+            
+            $logFile = __DIR__ . '/deregister_error_log.txt';
+            
+            $api_user = "personal-api";
+            $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+            //OVDE ALLSECURE MENJAJ prod
+            $connector_api_key = "personal-simulator";
+            $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+            $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+            
+            $deregister = new Deregister();
+            $deregister->setTransactionToken($request['referenceUuid']);
+            
+            $result = $client->deregister($deregister);
+            
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: ".json_encode($result) . "\n", FILE_APPEND);
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: ".json_encode($client) . "\n", FILE_APPEND);
+            
+            if($result->isSuccess()){
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+            }else{
+                return $this->formatResponse(self::STATUS_FAILED, "", []);
+            }
+        }catch (Exception $e){
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: ". $e . "\n", FILE_APPEND);
         }
     }
 
