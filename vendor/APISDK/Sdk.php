@@ -1682,9 +1682,9 @@ class Sdk extends Api
         
         $result = $client->debit($debit);
         
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: $result\n", FILE_APPEND);
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: $client\n", FILE_APPEND);
-        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Debit: $debit\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result:".json_encode($result) . "\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: ".json_encode($client) . "\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Debit: ".json_encode($debit) . "\n", FILE_APPEND);
         
         if ($result->isSuccess()) {
 
