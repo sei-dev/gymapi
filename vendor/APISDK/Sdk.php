@@ -1625,8 +1625,8 @@ class Sdk extends Api
             ->setEmail($request['email'])
             ->setIdentification($request['id'])
             ->setIsMonthly($request['is_monthly'])
-            ->setBillingCity($city)
-            ->setBillingCountry($country);
+            ->setBillingCity($city['city'])
+            ->setBillingCountry($country['country']);
         // add further customer details if necessary
 
         // define your transaction ID
