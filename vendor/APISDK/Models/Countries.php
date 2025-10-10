@@ -30,7 +30,7 @@ class Countries extends ModelAbstract implements ModelInterface
 
     public function getCountryById(string $id)
     {
-        $sQuery = "SELECT * FROM countries WHERE id = = '{$id}'
+        $sQuery = "SELECT * FROM countries WHERE id = '{$id}'
 				";
 
         $row = $this->getDbAdapter()

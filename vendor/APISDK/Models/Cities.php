@@ -33,7 +33,7 @@ class Cities extends ModelAbstract implements ModelInterface
 	
 	public function getCityById(string $id)
 	{
-	    $sQuery = "SELECT * FROM cities WHERE id = = '{$id}'
+	    $sQuery = "SELECT * FROM cities WHERE id ='{$id}'
 				";
 	    
 	    $row = $this->getDbAdapter()
