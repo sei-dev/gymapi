@@ -31,6 +31,20 @@ class Cities extends ModelAbstract implements ModelInterface
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	}
 	
+	public function getCityById(string $id)
+	{
+	    $sQuery = "SELECT * FROM cities WHERE id = = '{$id}'
+				";
+	    
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery)
+	    ->fetch(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
+	
 	/**
 	 *
 	 * @param array $data

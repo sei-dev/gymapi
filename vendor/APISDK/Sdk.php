@@ -1587,7 +1587,12 @@ class Sdk extends Api
             'name',
             'surname',
             'email',
-            'is_monthly'
+            'is_monthly',
+            'to_save',
+            'uuid',
+            'country_id',
+            'city_id',
+            'merchant_transaction_id'
         ]);
 
         $request['token'] = str_replace(' ', '+', $request['token']);
@@ -1602,6 +1607,12 @@ class Sdk extends Api
          * $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
          * EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w"
          */
+        
+        $country_model = new Countries($this->dbAdapter);
+        $country = $country_model->getCountryById($request['country_id']);
+        
+        $city_model = new Cities($this->dbAdapter);
+        $city = $city_model->getCityById($request['country_id']);
 
         $price = "0";
 
@@ -1611,12 +1622,14 @@ class Sdk extends Api
             ->setLastName($request['surname'])
             ->setEmail($request['email'])
             ->setIdentification($request['id'])
-            ->setIsMonthly($request['is_monthly']);
+            ->setIsMonthly($request['is_monthly'])
+            ->setBillingCity($city)
+            ->setBillingCountry($country);
         // add further customer details if necessary
 
         // define your transaction ID
         // must be unique! e.g.
-        $merchantTransactionId = "Trener-" . uniqid('myId', true) . '-' . date('YmdHis');
+        $merchantTransactionId = $request['merchant_transaction_id'];
 
         // define transaction relevant object
 
@@ -1633,6 +1646,26 @@ class Sdk extends Api
         }
 
         $debit = new Debit();
+        
+        if($request['to_save'] == "1" && $request['uuid'] == "0"){
+            $debit->setWithRegister(true);
+            $debit->setTransactionIndicator('SINGLE');
+            if (isset($request['token'])) {
+                $debit->setTransactionToken($request['token']);
+            }
+            
+        }
+        if($request['uuid']!="0"){
+            $debit->setWithRegister(false);
+            $debit->setTransactionIndicator('CARDONFILE');
+            $debit->setReferenceUuid($request['uuid']);
+        }
+        
+        if($request['to_save'] == "0" && $request['uuid'] == "0"){
+            if (isset($request['token'])) {
+                $debit->setTransactionToken($request['token']);
+            }
+        }
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
             ->setCurrency('RSD')
@@ -1643,11 +1676,7 @@ class Sdk extends Api
             ->setErrorUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/error')
             ->setDescription('Subscription')
             ->setCustomer($customer);
-
-
-        if (isset($request['token'])) {
-            $debit->setTransactionToken($request['token']);
-        }
+        
         
         $result = $client->debit($debit);
         
@@ -1670,6 +1699,7 @@ class Sdk extends Api
 
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
+                $response['uuid'] = $gatewayReferenceId;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
@@ -1690,17 +1720,42 @@ class Sdk extends Api
                 // ovde sam stao nesto
 
                 $response['status'] = "success";
+                $response['uuid'] = $gatewayReferenceId;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 die();
             }
         } else {
 
-            // handle error
             $errors = $result->getErrors();
         }
 
         return $this->formatResponse(self::STATUS_FAILED, "", $errors);
+    }
+    
+    private function deregisterCard(){
+        $request = $this->filterParams([
+            'merchantTransactionId',
+            'referenceUuid'
+        ]);
+        
+        $api_user = "personal-api";
+        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+        //OVDE ALLSECURE MENJAJ prod
+        $connector_api_key = "personal-simulator";
+        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+        
+        $deregister = new Deregister();
+        $deregister->setTransactionToken($request['referenceUuid']);
+        
+        $result = $client->deregister($deregister);
+        
+        if($result->isSuccess()){
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+        }else{
+            return $this->formatResponse(self::STATUS_FAILED, "", []);
+        }
     }
 
     /* private function callback()
@@ -1890,6 +1945,27 @@ class Sdk extends Api
                     $callbackResult->getAdapterCode()
                     );
                 $this->logError($errorDetails, $logFile);
+                
+                $mail = new PHPMailer();
+                
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'ptrenersrb@gmail.com';
+                $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port       = 587;
+                
+                $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+                $mail->addAddress($request['email']);
+                $mail->addAddress('nikola.bojovic9@gmail.com');
+                $mail->addCC('arsen.leontijevic@gmail.com');
+                $mail->Subject = 'Personalni trener - transakcija';
+                // Set HTML
+                $mail->isHTML(TRUE);
+                $mail->Body = $this->getRegisterMail($lang, $hash);
+                
+                $mail->send();
             }
         } catch (Exception $e) {
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
@@ -3078,6 +3154,145 @@ class Sdk extends Api
         else return $languageReturn['en'];
         
     }
+    
+    private function getTransactionRejectedMail(string $lang, string $error_code){
+        // Error code messages in all three languages
+        $errorMessages = [
+            'sr' => [
+                '2003' => 'Transakcija je odbijena od strane banke.',
+                '2019' => 'Transakcija je odbijena. Podaci sa kartice koji ste uneli nisu validni.',
+                '2021' => 'Vaša 3DSecure autentifikacija nije uspela. Molimo pozovite banku koja vam je izdala karticu.',
+                '2016' => 'Transakcija je odbijena. Molimo pozovite svoju banku.'
+            ],
+            'en' => [
+                '2003' => 'The transaction was declined by the bank.',
+                '2019' => 'The transaction was rejected. The card information you entered is not valid.',
+                '2021' => 'Your 3DSecure authentication has failed. Please contact the bank that issued your card.',
+                '2016' => 'The transaction was rejected. Please contact your bank.'
+            ],
+            'ru' => [
+                '2003' => 'Транзакция отклонена банком.',
+                '2019' => 'Транзакция отклонена. Введенные данные карты недействительны.',
+                '2021' => 'Ваша 3DSecure аутентификация не удалась. Пожалуйста, свяжитесь с банком, выпустившим вашу карту.',
+                '2016' => 'Транзакция отклонена. Пожалуйста, свяжитесь со своим банком.'
+            ]
+        ];
+        
+        // Fallback in case of unknown error code
+        $message_sr = $errorMessages['sr'][$error_code] ?? 'Došlo je do greške prilikom obrade transakcije.';
+        $message_en = $errorMessages['en'][$error_code] ?? 'An error occurred while processing your transaction.';
+        $message_ru = $errorMessages['ru'][$error_code] ?? 'Произошла ошибка при обработке транзакции.';
+        
+        $mails = [
+            'sr' => "
+            <html>
+                <head>
+                    <style>
+                        .container {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                            border-radius: 10px;
+                            color: #333;
+                        }
+                        .code {
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #211951;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            font-size: 12px;
+                            color: #777;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h2>Transakcija odbijena</h2>
+                        <p>Kod greške: <span class='code'>{$error_code}</span></p>
+                        <p>Poruka: {$message_sr}</p>
+                        <p>Žao nam je zbog neprijatnosti. Molimo pokušajte ponovo ili kontaktirajte svoju banku.</p>
+                        <p class='footer'>Hvala što koristite aplikaciju Personalni Trener.</p>
+                    </div>
+                </body>
+            </html>
+        ",
+        'en' => "
+            <html>
+                <head>
+                    <style>
+                        .container {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                            border-radius: 10px;
+                            color: #333;
+                        }
+                        .code {
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #211951;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            font-size: 12px;
+                            color: #777;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h2>Transaction Rejected</h2>
+                        <p>Error Code: <span class='code'>{$error_code}</span></p>
+                        <p>Message: {$message_en}</p>
+                        <p>Sorry for the inconvenience. Please try again or contact your bank.</p>
+                        <p class='footer'>Thank you for using the Personal Trainer app.</p>
+                    </div>
+                </body>
+            </html>
+        ",
+        'ru' => "
+            <html>
+                <head>
+                    <style>
+                        .container {
+                            font-family: Arial, sans-serif;
+                            padding: 20px;
+                            background-color: #f9f9f9;
+                            border-radius: 10px;
+                            color: #333;
+                        }
+                        .code {
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #211951;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            font-size: 12px;
+                            color: #777;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h2>Транзакция отклонена</h2>
+                        <p>Код ошибки: <span class='code'>{$error_code}</span></p>
+                        <p>Сообщение: {$message_ru}</p>
+                        <p>Извините за неудобства. Пожалуйста, попробуйте еще раз или свяжитесь со своим банком.</p>
+                        <p class='footer'>Спасибо за использование приложения Персональный Тренер.</p>
+                    </div>
+                </body>
+            </html>
+        "
+        ];
+        
+        if ($lang == "sr") return $mails['sr'];
+        else if ($lang == "ru") return $mails['ru'];
+        else return $mails['en'];
+    }
+    
     /*
      * $merchant_key = "TREESRS";
      * $authenticity_token = "";
