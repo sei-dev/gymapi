@@ -1594,6 +1594,8 @@ class Sdk extends Api
             'city_id',
             'merchant_transaction_id'
         ]);
+        
+        $logFile = __DIR__ . '/init_error_log.txt';
 
         $request['token'] = str_replace(' ', '+', $request['token']);
         $api_user = "personal-api";
@@ -1680,6 +1682,10 @@ class Sdk extends Api
         
         $result = $client->debit($debit);
         
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: $result\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: $client\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Debit: $debit\n", FILE_APPEND);
+        
         if ($result->isSuccess()) {
 
             $gatewayReferenceId = $result->getUuid();
@@ -1739,6 +1745,8 @@ class Sdk extends Api
             'referenceUuid'
         ]);
         
+        $logFile = __DIR__ . '/deregister_error_log.txt';
+        
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
         //OVDE ALLSECURE MENJAJ prod
@@ -1750,6 +1758,9 @@ class Sdk extends Api
         $deregister->setTransactionToken($request['referenceUuid']);
         
         $result = $client->deregister($deregister);
+        
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: $result\n", FILE_APPEND);
+        file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: $client\n", FILE_APPEND);
         
         if($result->isSuccess()){
             return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
