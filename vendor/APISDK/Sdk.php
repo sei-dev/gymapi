@@ -1901,9 +1901,11 @@ class Sdk extends Api
         $request = $this->filterParams([
             'id',
             'is_monthly',
-            'email',
-            'lang'
+            'email'
         ]);
+        
+        $user_model = new Users($this->dbAdapter);
+        $lang = $user_model->getAppLanguage($request['id']);
         
         try {
             $valid = $client->validateCallbackWithGlobals();
@@ -1988,7 +1990,7 @@ class Sdk extends Api
                 $mail->Subject = 'Personalni trener - transakcija';
                 // Set HTML
                 $mail->isHTML(TRUE);
-                $mail->Body = $this->getTransactionRejectedMail("en", $callbackResult->getErrorCode());
+                $mail->Body = $this->getTransactionRejectedMail($lang, $callbackResult->getErrorCode());
                 
                 $mail->send();
             }
