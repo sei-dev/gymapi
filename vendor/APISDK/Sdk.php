@@ -1764,7 +1764,7 @@ class Sdk extends Api
             
             $deregister = new Deregister();
             $deregister->setReferenceUuid($request['referenceUuid']);
-            $deregister->setMerchantTransactionId($request['merchantTransactionId']);
+            $deregister->setMerchantTransactionId("Trener-" . md5(time()));
             
             $result = $client->deregister($deregister);
             
