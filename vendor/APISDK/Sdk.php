@@ -1769,9 +1769,11 @@ class Sdk extends Api
             }else{
                 return $this->formatResponse(self::STATUS_FAILED, "", []);
             }
-        }catch (Exception $e){
-            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: ". $e . "\n", FILE_APPEND);
-        }
+            }catch (Exception $e){
+                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: ". $e . "\n", FILE_APPEND);
+            }
+        
+            
     }
 
     /* private function callback()
