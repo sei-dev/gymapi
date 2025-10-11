@@ -1749,7 +1749,6 @@ class Sdk extends Api
     private function deregisterCard(){
         try{
             $request = $this->filterParams([
-                'merchantTransactionId',
                 'referenceUuid'
             ]);
             
@@ -1902,7 +1901,8 @@ class Sdk extends Api
         $request = $this->filterParams([
             'id',
             'is_monthly',
-            'email'
+            'email',
+            'lang'
         ]);
         
         try {
@@ -1988,7 +1988,7 @@ class Sdk extends Api
                 $mail->Subject = 'Personalni trener - transakcija';
                 // Set HTML
                 $mail->isHTML(TRUE);
-                $mail->Body = $this->getRegisterMail($lang, $hash);
+                $mail->Body = $this->getTransactionRejectedMail("en", $callbackResult->getErrorCode());
                 
                 $mail->send();
             }
