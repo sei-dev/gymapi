@@ -1618,6 +1618,8 @@ class Sdk extends Api
         $city = $city_model->getCityById($request['country_id']);
 
         $price = "0";
+        
+        $flag = "";
 
         // define relevant objects
         $customer = new Customer();
@@ -1656,18 +1658,20 @@ class Sdk extends Api
             if (isset($request['token'])) {
                 $debit->setTransactionToken($request['token']);
             }
-            
+            $flag = "REGISTER to_save=1 i uuid=0";
         }
         if($request['uuid']!="0"){
             $debit->setWithRegister(false);
             $debit->setTransactionIndicator('CARDONFILE');
             $debit->setReferenceUuid($request['uuid']);
+            $flag = "CARDONFILE uuid!=0";
         }
         
         if($request['to_save'] == "0" && $request['uuid'] == "0"){
             if (isset($request['token'])) {
                 $debit->setTransactionToken($request['token']);
             }
+            $flag = "BEZ CUVANJA";
         }
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
@@ -1707,6 +1711,7 @@ class Sdk extends Api
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
+                $response['flag'] = $flag;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
@@ -1728,6 +1733,7 @@ class Sdk extends Api
 
                 $response['status'] = "success";
                 $response['uuid'] = $gatewayReferenceId;
+                $response['flag'] = $flag;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 die();
