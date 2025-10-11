@@ -1972,6 +1972,7 @@ class Sdk extends Api
                     $callbackResult->getAdapterCode()
                     );
                 $this->logError($errorDetails, $logFile);
+                $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
                 
                 $mail = new PHPMailer();
                 
@@ -1990,7 +1991,7 @@ class Sdk extends Api
                 $mail->Subject = 'Personalni trener - transakcija';
                 // Set HTML
                 $mail->isHTML(TRUE);
-                $mail->Body = $this->getTransactionRejectedMail($lang, $callbackResult->getErrorCode());
+                $mail->Body = $this->getTransactionRejectedMail($lang, $error_code);
                 
                 $mail->send();
             }
