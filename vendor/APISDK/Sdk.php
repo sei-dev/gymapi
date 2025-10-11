@@ -1763,7 +1763,8 @@ class Sdk extends Api
             $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
             
             $deregister = new Deregister();
-            $deregister->setTransactionToken($request['referenceUuid']);
+            $deregister->setReferenceUuid($request['referenceUuid']);
+            $deregister->setMerchantTransactionId($request['merchantTransactionId']);
             
             $result = $client->deregister($deregister);
             
