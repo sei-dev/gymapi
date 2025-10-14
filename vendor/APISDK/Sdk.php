@@ -1694,7 +1694,8 @@ class Sdk extends Api
         if ($result->isSuccess()) {
 
             $gatewayReferenceId = $result->getUuid();
-            die(var_dump($result));
+            $creditcardData = $result->getReturnData();
+            $extraData = $result->getExtraData();
 
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
@@ -1714,8 +1715,8 @@ class Sdk extends Api
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
-                $response['card_type'] = $result->getBinType();
-                $response['bank_code'] = "XXXX";
+                $response['card_type'] = $creditcardData->getBinType();
+                $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
@@ -1740,8 +1741,8 @@ class Sdk extends Api
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
-                $response['card_type'] = $result->getBinType();
-                $response['bank_code'] = "XXXX";
+                $response['card_type'] = $creditcardData->getBinType();
+                $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
