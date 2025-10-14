@@ -1711,7 +1711,7 @@ class Sdk extends Api
                 $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
-                $response['merchant_transaction_id'] = $result->getMerchantTransactionId();
+                $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
                 $response['card_type'] = $result->getBinType();
                 $response['bank_code'] = "XXXX";
@@ -1737,7 +1737,7 @@ class Sdk extends Api
 
                 $response['status'] = "success";
                 $response['uuid'] = $gatewayReferenceId;
-                $response['merchant_transaction_id'] = $result->getMerchantTransactionId();
+                $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
                 $response['card_type'] = $result->getBinType();
                 $response['bank_code'] = "XXXX";
