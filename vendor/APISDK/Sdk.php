@@ -1694,6 +1694,7 @@ class Sdk extends Api
         if ($result->isSuccess()) {
 
             $gatewayReferenceId = $result->getUuid();
+            die(var_dump($result));
 
             // handle result based on it's returnType
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
