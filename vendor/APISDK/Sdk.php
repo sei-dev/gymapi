@@ -1714,7 +1714,7 @@ class Sdk extends Api
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
-                $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
+                $response['price_full'] = $price . " RSD";
                 $response['card_type'] = $creditcardData->getBinType();
                 $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
