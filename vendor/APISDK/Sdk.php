@@ -2063,13 +2063,13 @@ class Sdk extends Api
     }
 
     private function sandboxReceiptMonthly(string $email, array $transactionData){
-        $logFile = __DIR__ . '/mail_error_log.txt';
+        //$logFile = __DIR__ . '/mail_error_log.txt';
         // Validate required transaction data
         if (empty($transactionData['transaction_id']) || empty($transactionData['status'])) {
             throw new Exception('Transaction data is incomplete');
         }
         
-        $debug_td = var_export($transactionData, true);
+        //$debug_td = var_export($transactionData, true);
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
@@ -2077,7 +2077,7 @@ class Sdk extends Api
         $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
         
-        $this->logError($debug_td, $logFile);
+        //$this->logError($debug_td, $logFile);
         
         //OVDE
         $items = [
@@ -2208,7 +2208,7 @@ class Sdk extends Api
         }
     }
     
-    private function sandboxReceiptYearly(string $email){
+    private function sandboxReceiptYearly(string $email, array $transactionData){
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
@@ -2240,6 +2240,18 @@ class Sdk extends Api
         
         $rawReceipt = $invoice['journal'];
         
+        $transactionInfo = "
+        <div style='background-color: #e8f5e8; padding: 15px; border-left: 4px solid #28a745; margin-bottom: 20px;'>
+            <h3 style='margin: 0 0 10px 0; color: #155724;'>✅ " . htmlspecialchars($transactionData['status']) . "</h3>
+            <p><strong>ID Transakcije:</strong> " . htmlspecialchars($transactionData['transaction_id']) . "</p>
+            <p><strong>Datum obrađivanja:</strong> " . htmlspecialchars($transactionData['processed_date']) . "</p>
+            <p><strong>Iznos:</strong> {$transactionData['amount']} {$transactionData['currency']}</p>
+            <p><strong>Način plaćanja:</strong> {$transactionData['payment_method']} ({$transactionData['card_type']})</p>
+            <p><strong>Bank Code:</strong> {$transactionData['bank_code']}</p>
+            <p><strong>Purchase ID:</strong> " . htmlspecialchars($transactionData['purchase_id']) . "</p>
+        </div>
+    ";
+        
         // Normalize newlines (in case API uses \n or \r\n)
         $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
         
@@ -2267,48 +2279,54 @@ class Sdk extends Api
             $mail->Subject = 'Sandbox Invoice Yearly';
             $mail->Body = "
                 <html>
-                  <head>
-                    <style>
-                      body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f5f5f5;
-                        padding: 40px;
-                        color: #333;
-                      }
-                      .container {
-                        max-width: 600px;
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        padding: 30px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                      }
-                      .receipt-box {
-                        background-color: #fafafa;
-                        border: 1px solid #ddd;
-                        padding: 20px;
-                        font-family: monospace;
-                        white-space: pre-wrap;
-                        border-radius: 6px;
-                      }
-                      .button {
-                        display: inline-block;
-                        margin-top: 20px;
-                        padding: 12px 20px;
-                        background-color: #211951;
-                        color: #ffffff;
-                        text-decoration: none;
-                        border-radius: 6px;
-                        font-weight: bold;
-                      }
-                      .button:hover {
-                        background-color: #3b2c73;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <div class='container'>
-                      <h2>Hvala na kupovini!</h2>
+              <head>
+                <style>
+                  body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    padding: 40px;
+                    color: #333;
+                  }
+                  .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                  }
+                  .receipt-box {
+                    background-color: #fafafa;
+                    border: 1px solid #ddd;
+                    padding: 20px;
+                    font-family: monospace;
+                    white-space: pre-wrap;
+                    border-radius: 6px;
+                  }
+                  .button {
+                    display: inline-block;
+                    margin-top: 20px;
+                    padding: 12px 20px;
+                    background-color: #211951;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                  }
+                  .button:hover {
+                    background-color: #3b2c73;
+                  }
+                  .success-box {
+                    background-color: #e8f5e8;
+                    border-left: 4px solid #28a745;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class='container'>
+                  <h2>Hvala na kupovini!</h2>
+                  
+                  $transactionInfo
                       <p>Vaša potvrda uplate izgleda ovako:</p>
                       <div class='receipt-box'>$receiptHtml</div>
                       <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
