@@ -2006,7 +2006,7 @@ class Sdk extends Api
                     $this->sandboxReceiptMonthly($email, $transactionData);
                 } else {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
-                    $this->sandboxReceiptYearly($email);
+                    $this->sandboxReceiptYearly($email, $transactionData);
                 }
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
