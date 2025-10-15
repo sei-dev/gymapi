@@ -2035,24 +2035,22 @@ class Sdk extends Api
         exit;
     }
 
-    private function sandboxReceiptMonthly(string $email, array $transactionData) {
+    private function sandboxReceiptMonthly(string $email, array $transactionData){
+        
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
+        $invoice_model = new Invoices($this->dbAdapter);
+        $item = $invoice_model->getMonthlyItem();
+        $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
         
-        // Use amount from transactionData
-        $price = $transactionData['amount'] ?? null;
-        if (is_null($price)) {
-            // Log error if price is missing
-            file_put_contents(__DIR__ . '/callback_error_log.txt', "[" . date('Y-m-d H:i:s') . "] Missing amount in transactionData for monthly receipt\n", FILE_APPEND);
-            return;
-        }
-        
-        // Prepare items for invoice
+        //OVDE
         $items = [
             "items" => [
                 [
                     "name" => "Mesečna pretplata",
-                    "taxLabels" => ["Ж"],
+                    "taxLabels" => [
+                        "Ж"
+                    ],
                     "unit" => "KOM",
                     "quantity" => 1,
                     "price" => $price
@@ -2064,32 +2062,27 @@ class Sdk extends Api
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
         
-        $rawReceipt = $invoice['journal'];
-        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
-        $receiptHtml = nl2br($receiptFormatted);
-        
-        // Prepare transaction details
-        $transactionDetails = sprintf(
-            "Status: %s\nBroj porudžbine: %s\nIznos i valuta: %s %s\nTip kartice: %s\nAutorizacioni kod banke: %s\nVreme transakcije: %s",
-            "OK",
-            $transactionData['transaction_id'] ?? 'N/A',
-            $transactionData['amount'] ?? 'N/A',
-            $transactionData['currency'] ?? 'N/A',
-            $transactionData['payment_method'] ?? 'N/A',
-            $transactionData['purchase_id'] ?? 'N/A',
-            date('Y-m-d H:i:s') // Fallback for transaction time
-            );
+        $array['invoice_url'] = $invoiceUrl;
+        $array['invoice'] = $invoice;
         
         $mail = new PHPMailer(true);
         
+        $rawReceipt = $invoice['journal'];
+        
+        // Normalize newlines (in case API uses \n or \r\n)
+        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
+        
+        // Insert <br> tags for HTML formatting
+        $receiptHtml = nl2br($receiptFormatted);
+        
         try {
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'ptrenersrb@gmail.com';
-            $mail->Password = 'dlvw rdak ejtk yqlm';
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ptrenersrb@gmail.com';
+            $mail->Password   = 'dlvw rdak ejtk yqlm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
+            $mail->Port       = 587;
             
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
@@ -2100,63 +2093,57 @@ class Sdk extends Api
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Monthly';
             $mail->Body = "
-            <html>
-              <head>
-                <style>
-                  body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f5f5f5;
-                    padding: 40px;
-                    color: #333;
-                  }
-                  .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background-color: #ffffff;
-                    padding: 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                  }
-                  .receipt-box {
-                    background-color: #fafafa;
-                    border: 1px solid #ddd;
-                    padding: 20px;
-                    font-family: monospace;
-                    white-space: pre-wrap;
-                    border-radius: 6px;
-                  }
-                  .button {
-                    display: inline-block;
-                    margin-top: 20px;
-                    padding: 12px 20px;
-                    background-color: #211951;
-                    color: #ffffff;
-                    text-decoration: none;
-                    border-radius: 6px;
-                    font-weight: bold;
-                  }
-                  .button:hover {
-                    background-color: #3b2c73;
-                  }
-                  .transaction-details {
-                    font-family: monospace;
-                    margin-bottom: 20px;
-                    white-space: pre-wrap;
-                  }
-                </style>
-              </head>
-              <body>
-                <div class='container'>
-                  <h2>Hvala na kupovini!</h2>
-                  <div class='transaction-details'>" . nl2br($transactionDetails) . "</div>
-                  <p>Vaša potvrda uplate izgleda ovako:</p>
-                  <div class='receipt-box'>$receiptHtml</div>
-                  <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
-                </div>
-              </body>
-            </html>
-        ";
-            $mail->AltBody = "Status: OK\nBroj porudžbine: {$transactionData['transaction_id']}\nIznos i valuta: {$transactionData['amount']} {$transactionData['currency']}\nTip kartice: {$transactionData['payment_method']}\nAutorizacioni kod banke: {$transactionData['purchase_id']}\nVreme transakcije: " . date('Y-m-d H:i:s');
+                <html>
+                  <head>
+                    <style>
+                      body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f5f5f5;
+                        padding: 40px;
+                        color: #333;
+                      }
+                      .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #ffffff;
+                        padding: 30px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                      }
+                      .receipt-box {
+                        background-color: #fafafa;
+                        border: 1px solid #ddd;
+                        padding: 20px;
+                        font-family: monospace;
+                        white-space: pre-wrap;
+                        border-radius: 6px;
+                      }
+                      .button {
+                        display: inline-block;
+                        margin-top: 20px;
+                        padding: 12px 20px;
+                        background-color: #211951;
+                        color: #ffffff;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: bold;
+                      }
+                      .button:hover {
+                        background-color: #3b2c73;
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <div class='container'>
+                      <h2>Hvala na kupovini!</h2>
+                      <p>Vaša potvrda uplate izgleda ovako:</p>
+                      <div class='receipt-box'>$receiptHtml</div>
+                      <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
+                    </div>
+                  </body>
+                </html>
+                ";
+            $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
             echo 'Message has been sent';
@@ -2165,24 +2152,22 @@ class Sdk extends Api
         }
     }
     
-    private function sandboxReceiptYearly(string $email, array $transactionData) {
+    private function sandboxReceiptYearly(string $email, array $transactionData){
+        
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
+        $invoice_model = new Invoices($this->dbAdapter);
+        $item = $invoice_model->getYearlyItem();
+        $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
         
-        // Use amount from transactionData
-        $price = $transactionData['amount'] ?? null;
-        if (is_null($price)) {
-            // Log error if price is missing
-            file_put_contents(__DIR__ . '/callback_error_log.txt', "[" . date('Y-m-d H:i:s') . "] Missing amount in transactionData for yearly receipt\n", FILE_APPEND);
-            return;
-        }
-        
-        // Prepare items for invoice
+        //NetRacunResponse
         $items = [
             "items" => [
                 [
                     "name" => "Godišnja pretplata",
-                    "taxLabels" => ["Ж"],
+                    "taxLabels" => [
+                        "Ж"
+                    ],
                     "unit" => "KOM",
                     "quantity" => 1,
                     "price" => $price
@@ -2194,32 +2179,27 @@ class Sdk extends Api
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
         
-        $rawReceipt = $invoice['journal'];
-        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
-        $receiptHtml = nl2br($receiptFormatted);
+        $array['invoice_url'] = $invoiceUrl;
+        $array['invoice'] = $invoice;
         
-        // Prepare transaction details
-        $transactionDetails = sprintf(
-            "Status: %s\nBroj porudžbine: %s\nIznos i valuta: %s %s\nTip kartice: %s\nAutorizacioni kod banke: %s\nVreme transakcije: %s",
-            "OK",
-            $transactionData['transaction_id'] ?? 'N/A',
-            $transactionData['amount'] ?? 'N/A',
-            $transactionData['currency'] ?? 'N/A',
-            $transactionData['payment_method'] ?? 'N/A',
-            $transactionData['purchase_id'] ?? 'N/A',
-            date('Y-m-d H:i:s') // Fallback for transaction time
-            );
+        $rawReceipt = $invoice['journal'];
+        
+        // Normalize newlines (in case API uses \n or \r\n)
+        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
+        
+        // Insert <br> tags for HTML formatting
+        $receiptHtml = nl2br($receiptFormatted);
         
         $mail = new PHPMailer(true);
         
         try {
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
-            $mail->SMTPAuth = true;
-            $mail->Username = 'ptrenersrb@gmail.com';
-            $mail->Password = 'dlvw rdak ejtk yqlm';
+            $mail->Host       = 'smtp.gmail.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'ptrenersrb@gmail.com';
+            $mail->Password   = 'dlvw rdak ejtk yqlm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
+            $mail->Port       = 587;
             
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
@@ -2230,69 +2210,64 @@ class Sdk extends Api
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Yearly';
             $mail->Body = "
-            <html>
-              <head>
-                <style>
-                  body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f5f5f5;
-                    padding: 40px;
-                    color: #333;
-                  }
-                  .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background-color: #ffffff;
-                    padding: 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                  }
-                  .receipt-box {
-                    background-color: #fafafa;
-                    border: 1px solid #ddd;
-                    padding: 20px;
-                    font-family: monospace;
-                    white-space: pre-wrap;
-                    border-radius: 6px;
-                  }
-                  .button {
-                    display: inline-block;
-                    margin-top: 20px;
-                    padding: 12px 20px;
-                    background-color: #211951;
-                    color: #ffffff;
-                    text-decoration: none;
-                    border-radius: 6px;
-                    font-weight: bold;
-                  }
-                  .button:hover {
-                    background-color: #3b2c73;
-                  }
-                  .transaction-details {
-                    font-family: monospace;
-                    margin-bottom: 20px;
-                    white-space: pre-wrap;
-                  }
-                </style>
-              </head>
-              <body>
-                <div class='container'>
-                  <h2>Hvala na kupovini!</h2>
-                  <div class='transaction-details'>" . nl2br($transactionDetails) . "</div>
-                  <p>Vaša potvrda uplate izgleda ovako:</p>
-                  <div class='receipt-box'>$receiptHtml</div>
-                  <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
-                </div>
-              </body>
-            </html>
-        ";
-            $mail->AltBody = "Status: OK\nBroj porudžbine: {$transactionData['transaction_id']}\nIznos i valuta: {$transactionData['amount']} {$transactionData['currency']}\nTip kartice: {$transactionData['payment_method']}\nAutorizacioni kod banke: {$transactionData['purchase_id']}\nVreme transakcije: " . date('Y-m-d H:i:s');
+                <html>
+                  <head>
+                    <style>
+                      body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f5f5f5;
+                        padding: 40px;
+                        color: #333;
+                      }
+                      .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background-color: #ffffff;
+                        padding: 30px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                      }
+                      .receipt-box {
+                        background-color: #fafafa;
+                        border: 1px solid #ddd;
+                        padding: 20px;
+                        font-family: monospace;
+                        white-space: pre-wrap;
+                        border-radius: 6px;
+                      }
+                      .button {
+                        display: inline-block;
+                        margin-top: 20px;
+                        padding: 12px 20px;
+                        background-color: #211951;
+                        color: #ffffff;
+                        text-decoration: none;
+                        border-radius: 6px;
+                        font-weight: bold;
+                      }
+                      .button:hover {
+                        background-color: #3b2c73;
+                      }
+                    </style>
+                  </head>
+                  <body>
+                    <div class='container'>
+                      <h2>Hvala na kupovini!</h2>
+                      <p>Vaša potvrda uplate izgleda ovako:</p>
+                      <div class='receipt-box'>$receiptHtml</div>
+                      <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
+                    </div>
+                  </body>
+                </html>
+                ";
+            $mail->AltBody = 'Hello! This is a test email.';
             
             $mail->send();
             echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
+        
     }
 
     private function saveImage()
