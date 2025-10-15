@@ -1929,20 +1929,6 @@ class Sdk extends Api
             
             $callbackResult = $client->readCallback($callbackInput);
             $transactionId = $callbackResult->getMerchantTransactionId();
-            $amount = $callbackResult->getAmount();
-            $currency = $callbackResult->getCurrency();
-            $paymentMethod = $callbackResult->getPaymentMethod();
-            $purchaseId = $callbackResult->getPurchaseId();
-            
-            $transactionData = [
-                'customer_id' => $customer_id,
-                'subscription_end_date' => $new_date,
-                'transaction_id' => $transactionId,
-                'amount' => $amount,
-                'currency' => $currency,
-                'payment_method' => $paymentMethod,
-                'purchase_id' => $purchaseId
-            ];
             
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
@@ -1975,11 +1961,11 @@ class Sdk extends Api
                 
                 // Save invoice and mark transaction as handled
                 if ($is_monthly == "1") {
-                    $invoice_model->addInvoiceMonthly($transactionData);
-                    $this->sandboxReceiptMonthly($email, $transactionData);
+                    $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
+                    $this->sandboxReceiptMonthly($email);
                 } else {
-                    $invoice_model->addInvoiceYearly($transactionData);
-                    $this->sandboxReceiptYearly($email, $transactionData);
+                    $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
+                    $this->sandboxReceiptYearly($email);
                 }
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
@@ -2035,7 +2021,7 @@ class Sdk extends Api
         exit;
     }
 
-    private function sandboxReceiptMonthly(string $email, array $transactionData){
+    private function sandboxReceiptMonthly(string $email){
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
@@ -2152,7 +2138,7 @@ class Sdk extends Api
         }
     }
     
-    private function sandboxReceiptYearly(string $email, array $transactionData){
+    private function sandboxReceiptYearly(string $email){
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
