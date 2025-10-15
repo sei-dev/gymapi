@@ -1942,8 +1942,12 @@ class Sdk extends Api
                 'purchase_id' => $purchaseId
             ];
             
-            $this->logError($transactionData, $varDumpFile);
-            $this->logError($callbackResult, $varDumpFile);
+            $debug_cb = var_export($callbackResult, true);
+            $debug_td = var_export($transactionData, true);
+            
+            $this->logError($debug_cb, $logFile);
+            $this->logError($debug_td, $logFile);
+            
             
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
