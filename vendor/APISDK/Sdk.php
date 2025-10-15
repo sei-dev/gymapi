@@ -1711,7 +1711,7 @@ class Sdk extends Api
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $price . " RSD";
-                $response['card_type'] = $creditcardData->getBinType();
+                $response['card_type'] = $creditcardData->getBinBrand();
                 $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
 
@@ -1737,7 +1737,7 @@ class Sdk extends Api
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
-                $response['card_type'] = $creditcardData->getBinType();
+                $response['card_type'] = $creditcardData->getBinBrand();
                 $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
 
@@ -1933,20 +1933,42 @@ class Sdk extends Api
             $currency = $callbackResult->getCurrency();
             $paymentMethod = $callbackResult->getPaymentMethod();
             $purchaseId = $callbackResult->getPurchaseId();
+            $extraData = $callbackResult->getExtraData();
+            
+            // Get card type from returnData (CreditcardData)
+            $returnData = $callbackResult->getReturnData();
+            $cardType = null;
+            if ($returnData && method_exists($returnData, 'getBinBrand')) {
+                $cardType = $returnData->getBinBrand(); // 'VISA' from your log
+            } elseif ($returnData && method_exists($returnData, 'getType')) {
+                $cardType = $returnData->getType(); // 'visa' from your log
+            }
+            
+            // Alternative: Check binBrand first as it's more standardized
+            if (!$cardType && $returnData && isset($returnData->binBrand)) {
+                $cardType = $returnData->binBrand;
+            }
+            
+            // Current date in dd.mm.yyyy format
+            $currentDate = date('d.m.Y');
             
             $transactionData = [
                 'transaction_id' => $transactionId,
+                'status' => 'Success',
                 'amount' => $amount,
                 'currency' => $currency,
                 'payment_method' => $paymentMethod,
-                'purchase_id' => $purchaseId
+                'purchase_id' => $purchaseId,
+                'card_type' => $cardType ?: 'Unknown', // Fallback if not available
+                'processed_date' => $currentDate,
+                'bank_code' => isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX"
             ];
             
-            $debug_cb = var_export($callbackResult, true);
-            $debug_td = var_export($transactionData, true);
+            //$debug_cb = var_export($callbackResult, true);
+            //$debug_td = var_export($transactionData, true);
             
-            $this->logError($debug_cb, $logFile);
-            $this->logError($debug_td, $logFile);
+            //$this->logError($debug_cb, $logFile);
+            //$this->logError($debug_td, $logFile);
             
             
             $customer_id = $request['id'];
@@ -2040,13 +2062,22 @@ class Sdk extends Api
         exit;
     }
 
-    private function sandboxReceiptMonthly(string $email){
+    private function sandboxReceiptMonthly(string $email, array $transactionData){
+        $logFile = __DIR__ . '/mail_error_log.txt';
+        // Validate required transaction data
+        if (empty($transactionData['transaction_id']) || empty($transactionData['status'])) {
+            throw new Exception('Transaction data is incomplete');
+        }
+        
+        $debug_td = var_export($transactionData, true);
         
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
         $item = $invoice_model->getMonthlyItem();
         $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
+        
+        $this->logError($debug_td, $logFile);
         
         //OVDE
         $items = [
@@ -2080,6 +2111,19 @@ class Sdk extends Api
         // Insert <br> tags for HTML formatting
         $receiptHtml = nl2br($receiptFormatted);
         
+        // Format transaction info for email
+        $transactionInfo = "
+        <div style='background-color: #e8f5e8; padding: 15px; border-left: 4px solid #28a745; margin-bottom: 20px;'>
+            <h3 style='margin: 0 0 10px 0; color: #155724;'>✅ " . htmlspecialchars($transactionData['status']) . "</h3>
+            <p><strong>ID Transakcije:</strong> " . htmlspecialchars($transactionData['transaction_id']) . "</p>
+            <p><strong>Datum obrađivanja:</strong> " . htmlspecialchars($transactionData['processed_date']) . "</p>
+            <p><strong>Iznos:</strong> {$transactionData['amount']} {$transactionData['currency']}</p>
+            <p><strong>Način plaćanja:</strong> {$transactionData['payment_method']} ({$transactionData['card_type']})</p>
+            <p><strong>Bank Code:</strong> {$transactionData['bank_code']}</p>
+            <p><strong>Purchase ID:</strong> " . htmlspecialchars($transactionData['purchase_id']) . "</p>
+        </div>
+    ";
+        
         try {
             $mail->isSMTP();
             $mail->Host       = 'smtp.gmail.com';
@@ -2096,62 +2140,69 @@ class Sdk extends Api
             
             // Content
             $mail->isHTML(true);
-            $mail->Subject = 'Sandbox Invoice Monthly';
+            $mail->Subject = 'Sandbox Invoice Monthly - ' . $transactionData['status'];
             $mail->Body = "
-                <html>
-                  <head>
-                    <style>
-                      body {
-                        font-family: Arial, sans-serif;
-                        background-color: #f5f5f5;
-                        padding: 40px;
-                        color: #333;
-                      }
-                      .container {
-                        max-width: 600px;
-                        margin: 0 auto;
-                        background-color: #ffffff;
-                        padding: 30px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-                      }
-                      .receipt-box {
-                        background-color: #fafafa;
-                        border: 1px solid #ddd;
-                        padding: 20px;
-                        font-family: monospace;
-                        white-space: pre-wrap;
-                        border-radius: 6px;
-                      }
-                      .button {
-                        display: inline-block;
-                        margin-top: 20px;
-                        padding: 12px 20px;
-                        background-color: #211951;
-                        color: #ffffff;
-                        text-decoration: none;
-                        border-radius: 6px;
-                        font-weight: bold;
-                      }
-                      .button:hover {
-                        background-color: #3b2c73;
-                      }
-                    </style>
-                  </head>
-                  <body>
-                    <div class='container'>
-                      <h2>Hvala na kupovini!</h2>
-                      <p>Vaša potvrda uplate izgleda ovako:</p>
-                      <div class='receipt-box'>$receiptHtml</div>
-                      <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
-                    </div>
-                  </body>
-                </html>
-                ";
-            $mail->AltBody = 'Hello! This is a test email.';
-            
-            $mail->send();
-            echo 'Message has been sent';
+            <html>
+              <head>
+                <style>
+                  body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f5f5f5;
+                    padding: 40px;
+                    color: #333;
+                  }
+                  .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background-color: #ffffff;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                  }
+                  .receipt-box {
+                    background-color: #fafafa;
+                    border: 1px solid #ddd;
+                    padding: 20px;
+                    font-family: monospace;
+                    white-space: pre-wrap;
+                    border-radius: 6px;
+                  }
+                  .button {
+                    display: inline-block;
+                    margin-top: 20px;
+                    padding: 12px 20px;
+                    background-color: #211951;
+                    color: #ffffff;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    font-weight: bold;
+                  }
+                  .button:hover {
+                    background-color: #3b2c73;
+                  }
+                  .success-box {
+                    background-color: #e8f5e8;
+                    border-left: 4px solid #28a745;
+                  }
+                </style>
+              </head>
+              <body>
+                <div class='container'>
+                  <h2>Hvala na kupovini!</h2>
+                  
+                  $transactionInfo
+                  
+                  <p>Vaša potvrda uplate izgleda ovako:</p>
+                  <div class='receipt-box'>$receiptHtml</div>
+                  <a class='button' href='$invoiceUrl' target='_blank'>Preuzmi PDF fakturu</a>
+                </div>
+              </body>
+            </html>
+            ";
+                  $mail->AltBody = 'Hello! This is a test email with transaction confirmation.';
+                  
+                  $mail->send();
+                  echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
