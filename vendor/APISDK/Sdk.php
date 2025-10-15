@@ -1929,6 +1929,20 @@ class Sdk extends Api
             
             $callbackResult = $client->readCallback($callbackInput);
             $transactionId = $callbackResult->getMerchantTransactionId();
+            $amount = $callbackResult->getAmount();
+            $currency = $callbackResult->getCurrency();
+            $paymentMethod = $callbackResult->getPaymentMethod();
+            $purchaseId = $callbackResult->getPurchaseId();
+            
+            $transactionData = [
+                'transaction_id' => $transactionId,
+                'amount' => $amount,
+                'currency' => $currency,
+                'payment_method' => $paymentMethod,
+                'purchase_id' => $purchaseId
+            ];
+            
+            $this->logError(var_dump($transactionData), $varDumpFile);
             
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
