@@ -2003,7 +2003,7 @@ class Sdk extends Api
                 // Save invoice and mark transaction as handled
                 if ($is_monthly == "1") {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
-                    $this->sandboxReceiptMonthly($email);
+                    $this->sandboxReceiptMonthly($email, $transactionData);
                 } else {
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                     $this->sandboxReceiptYearly($email);
