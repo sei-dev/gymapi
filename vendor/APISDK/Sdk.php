@@ -2011,15 +2011,29 @@ class Sdk extends Api
                 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
-                $errorDetails = sprintf(
-                    "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
-                    $callbackResult->getErrorMessage(),
-                    $callbackResult->getErrorCode(),
-                    $callbackResult->getAdapterMessage(),
-                    $callbackResult->getAdapterCode()
-                    );
+                $error = $callbackResult->getFirstError();
+                $error_code = "";
+                if ($error) {
+                    $errorDetails = sprintf(
+                        "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+                        $error->getErrorMessage(),
+                        $error->getErrorCode(),
+                        $error->getAdapterMessage(),
+                        $error->getAdapterCode()
+                        );
+                    $error_code = $error->getErrorCode();
+                } else {
+                    $errorDetails = sprintf(
+                        "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+                        $callbackResult->getErrorMessage(),
+                        $callbackResult->getErrorCode(),
+                        $callbackResult->getAdapterMessage(),
+                        $callbackResult->getAdapterCode()
+                        );
+                    $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
+                }
+                
                 $this->logError($errorDetails, $logFile);
-                $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
                 
                 $mail = new PHPMailer();
                 
