@@ -2013,7 +2013,6 @@ class Sdk extends Api
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
                 //$debug_td = var_export($error, true);
-                $error_code = "";
                 $this->logError($error->getCode(), $logFile);
                 if ($error) {
                     $errorDetails = sprintf(
@@ -2034,8 +2033,9 @@ class Sdk extends Api
                         );
                     $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
                 }
+                $code = strval($error_code);
                 
-                $this->logError($errorDetails, $logFile);
+                $this->logError("CODE:" . $code, $logFile);
                 
                 $mail = new PHPMailer();
                 
@@ -2054,7 +2054,7 @@ class Sdk extends Api
                 $mail->Subject = 'Personalni trener - transakcija';
                 // Set HTML
                 $mail->isHTML(TRUE);
-                $mail->Body = $this->getTransactionRejectedMail($lang, $error_code);
+                $mail->Body = $this->getTransactionRejectedMail($lang, $code);
                 
                 $mail->send();
             }
