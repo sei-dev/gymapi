@@ -1430,7 +1430,8 @@ class Sdk extends Api
             'language'
         ]);
         
-        if($request['language'] == "sr-Latn") $request['language'] = 'sr'
+        if($request['language'] == "sr-Latn") $request['language'] = 'sr';
+        
 
         $users_model = new Users($this->dbAdapter);
         $users_model->setAppLanguage($this->user_id, $request['language']);
