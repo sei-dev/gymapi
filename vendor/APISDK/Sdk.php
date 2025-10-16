@@ -1949,8 +1949,9 @@ class Sdk extends Api
                 $cardType = $returnData->binBrand;
             }
 
+            $time = date('H:i', strtotime($time));
             // Current date in dd.mm.yyyy format
-            $currentDate = date('d.m.Y'). " " . time();
+            $currentDate = date('d.m.Y'). " " . $time;
 
             $transactionData = [
                 'transaction_id' => $transactionId,
