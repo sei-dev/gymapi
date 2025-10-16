@@ -1183,9 +1183,9 @@ class Sdk extends Api
         } elseif ($request['ru'] == "1" && $request['rs'] != "1") {
             $lang = "ru";
         } elseif ($request['ru'] == "1" && $request['rs'] == "1") {
-            $lang = "sr-Latn";
+            $lang = "sr";
         } elseif ($request['rs'] == "1") {
-            $lang = "sr-Latn";
+            $lang = "sr";
         } else {
             $lang = "en";
         }
@@ -1429,6 +1429,8 @@ class Sdk extends Api
         $request = $this->filterParams([
             'language'
         ]);
+        
+        if($request['language'] == "sr-Latn") $request['language'] = 'sr'
 
         $users_model = new Users($this->dbAdapter);
         $users_model->setAppLanguage($this->user_id, $request['language']);
@@ -2943,7 +2945,7 @@ class Sdk extends Api
                             </body>
                         </html>
                         ",
-            'sr-Latn' => "
+            'sr' => "
                         <html>
                             <head>
                                 <style>
@@ -2982,8 +2984,8 @@ class Sdk extends Api
 
         if ($lang == "en")
             return $forgotpassmail['en'];
-        else if ($lang == "sr-Latn")
-            return $forgotpassmail['sr-Latn'];
+        else if ($lang == "sr")
+            return $forgotpassmail['sr'];
         else if ($lang == "ru")
             return $forgotpassmail['ru'];
         else
@@ -2993,7 +2995,7 @@ class Sdk extends Api
     private function getForgotPassEcho(string $lang)
     {
         $languageReturn = [
-            "sr-Latn" => "
+            "sr" => "
                 <html>
                     <head>
                         <title>Reset uspešan</title>
@@ -3098,8 +3100,8 @@ class Sdk extends Api
 
         if ($lang == "en")
             return $languageReturn['en'];
-        else if ($lang == "sr-Latn")
-            return $languageReturn['sr-Latn'];
+        else if ($lang == "sr")
+            return $languageReturn['sr'];
         else if ($lang == "ru")
             return $languageReturn['ru'];
         else
@@ -3146,7 +3148,7 @@ class Sdk extends Api
                             </div>
                         </body>
                     </html>",
-            "sr-Latn" => "
+            "sr" => "
                             <html>
                                 <head>
                                     <style>
@@ -3226,8 +3228,8 @@ class Sdk extends Api
 
         if ($lang == "en")
             return $languageReturn['en'];
-        else if ($lang == "sr-Latn")
-            return $languageReturn['sr-Latn'];
+        else if ($lang == "sr")
+            return $languageReturn['sr'];
         else if ($lang == "ru")
             return $languageReturn['ru'];
         else
@@ -3255,7 +3257,7 @@ class Sdk extends Api
                         </div>
                       </body>
                     </html>',
-            "sr-Latn" => '
+            "sr" => '
                     <html>
                       <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
                         <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -3295,8 +3297,8 @@ class Sdk extends Api
 
         if ($lang == "en")
             return $languageReturn['en'];
-        else if ($lang == "sr-Latn")
-            return $languageReturn['sr-Latn'];
+        else if ($lang == "sr")
+            return $languageReturn['sr'];
         else if ($lang == "ru")
             return $languageReturn['ru'];
         else
@@ -3307,33 +3309,177 @@ class Sdk extends Api
     {
         // Error code messages in all three languages
         $errorMessages = [
-            'sr-Latn' => [
-                '2003' => 'Transakcija je odbijena od strane banke.',
-                '2019' => 'Transakcija je odbijena. Podaci sa kartice koji ste uneli nisu validni.',
-                '2021' => 'Vaša 3DSecure autentifikacija nije uspela. Molimo pozovite banku koja vam je izdala karticu.',
-                '2016' => 'Transakcija je odbijena. Molimo pozovite svoju banku.'
+            "sr" => [
+                "General Errors & Validation Errors" => "",
+                "1000" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1001" => "Nestandardan odgovor banke. Molimo pozovite trgovca.",
+                "1002" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1003" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1004" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1005" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1006" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1007" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "1008" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "9999" => "Tehnički problem prilikom slanja zahteva. Molimo pozovite trgovca.",
+                "Payment Errors" => "",
+                "2001" => "Kartica koju ste uneli ne može biti prihvacena. Molimo pokušajte drugom karticom.",
+                "2002" => "Transakcija je otkazana od strane kupca.",
+                "2003" => "Vaša transakcija nije odobrena. Pokušajte ponovo ili promenite karticu.",
+                "2004" => "Kartica koju ste uneli je premašila limit. Molimo izaberite drugu karticu.",
+                "2005" => "Korisnik nije u predviđenom roku završio transakciju",
+                "2006" => "Kartica koju ste uneli je premašila limit. Molimo izaberite drugu karticu.",
+                "2007" => "Uneti podaci o platnoj kartici nisu tacni. Proverite podatke i pokušajte ponovo.",
+                "2008" => "Kartica koju ste uneli ne može biti prihvacena. Molimo pokušajte drugom karticom.",
+                "2009" => "Kartica koju ste uneli je istekla. Molimo izaberite drugu karticu.",
+                "2010" => "Vaša transakcija nije odobrena. Molimo izaberite drugu karticu ili proverite sa bankom koja vam je izdala karticu.",
+                "2011" => "Kartica koju ste uneli ne može biti prihvacena. Molimo pokušajte drugom karticom.",
+                "2012" => "Transakcija je otkazana.",
+                "2013" => "Vaša transakcija nije odobrena. Molimo izaberite drugu karticu ili proverite sa bankom koja vam je izdala karticu.",
+                "2014" => "Vaša transakcija nije odobrena. Molimo izaberite drugu karticu ili proverite sa bankom koja vam je izdala karticu.",
+                "2015" => "Vaša transakcija nije odobrena. Molimo izaberite drugu karticu ili proverite sa bankom koja vam je izdala karticu.",
+                "2016" => "Vaša transakcija nije odobrena. Molimo izaberite drugu karticu ili proverite sa bankom koja vam je izdala karticu.",
+                "2017" => "IBAN nije validan. Proverite podatke i pokušajte ponovo.",
+                "2018" => "BIC nije validan. Proverite podatke i pokušajte ponovo.",
+                "2019" => "Podaci o korisniku nisu validni. Proverite podatke i pokušajte ponovo.",
+                "2020" => "CVV kod je obavezan. Proverite podatke i pokušajte ponovo",
+                "2021" => "Vaša 3D Secure autentifikacija nije uspela. Molimo pozovite banku koja vam je izdala karticu ili koristite karticu koja nije 3D-Secure.",
+                "Network Errors" => "",
+                "3001" => "Transakcija je istekla. Napravite pauzu i pokušajte nešto kasnije.",
+                "3002" => "Transakcija nije dozvoljena.",
+                "3003" => "Sistem privremeno nedostupan. Napravite pauzu i pokušajte nešto kasnije.",
+                "3004" => "ID Transakcije mora već korišćen.",
+                "3005" => "Transakcija nije odobrena usled problema u komunikaciji sa bankom. Pokušajte ponovo nešto kasnije.",
+                "Schedule API Errors" => "",
+                "7001" => "Zahtev za planiranjem transakcije nije validan.",
+                "7002" => "Zahtev za planiranjem transakcije nije prihvaćen.",
+                "7005" => "Planirana transakcija nije validna.",
+                "7010" => "RegistrationId je neophodan.",
+                "7020" => "RegistrationId nije validan.",
+                "7030" => "RegistrationId nema odgovarajuću referencu.",
+                "7035" => "Inicijalna transakcija kojom započinju planirana ponavljajuća plaćanja mora biti \"register\", \"debit+register\" ili \"preuth+register\".",
+                "7036" => "Period između inicijalne i sledeće transakcije mora biti duži od 24 sata.",
+                "7040" => "ScheduleId (id planirane transakcije) nije validan ili nije povezan na ovaj kanal plaćanja.",
+                "7050" => "Planirana početna transakcija nije validnog formata ili je starija od 24h.",
+                "7060" => "Planirana naredna transakcija  nije validnog formata ili je starija od 24h.",
+                "7070" => "Status planirane transakcije nije validnog formata za zahtevanu operaciju.",
             ],
-            'en' => [
-                '2003' => 'The transaction was declined by the bank.',
-                '2019' => 'The transaction was rejected. The card information you entered is not valid.',
-                '2021' => 'Your 3DSecure authentication has failed. Please contact the bank that issued your card.',
-                '2016' => 'The transaction was rejected. Please contact your bank.'
+            "en" => [
+                "General Errors & Validation Errors" => "",
+                "1000" => "CONFIG ERROR. Some fundamental error in your request.",
+                "1001" => "CONFIG ERROR. The upstream system responded with an unknown response.",
+                "1002" => "CONFIG ERROR. Request data are malformed or missing.",
+                "1003" => "CONFIG ERROR. Transaction could not be processed.",
+                "1004" => "CONFIG ERROR. The request signature you provided was wrong.",
+                "1005" => "CONFIG ERROR. The XML you provided was malformed or invalid.",
+                "1006" => "CONFIG ERROR. Preconditions failed, e.g. capture on a failed authorize.",
+                "1007" => "CONFIG ERROR. Something is wrong your configuration, please contact your integration engineer.",
+                "1008" => "CONFIG ERROR. Unexpected system error.",
+                "9999" => "We received an error which is not (yet) mapped to a better error code.",
+                "Payment Errors" => "",
+                "2001" => "The customer cancelled permission for his payment instrument externally. Please try with another card.",
+                "2002" => "Transaction was cancelled by customer.",
+                "2003" => "Transaction declined by the bank. Please try with another card.",
+                "2004" => "Some limit reached. Please try with another card.",
+                "2005" => "Transaction expired. Customer took to long to submit his payment info.",
+                "2006" => "Insufficient funds/Card limit reached. Please try with another card.",
+                "2007" => "Incorrect payment info. Please check and try again.",
+                "2008" => "Invalid card. Please try with another card.",
+                "2009" => "Expired card. Please try with another card.",
+                "2010" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2011" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2012" => "Transaction cancelled.",
+                "2013" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2014" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2015" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2016" => "Your card cannot be accepted. Please try with another card or contact your issuing bank.",
+                "2017" => "IBAN not valid. Please check and try again.",
+                "2018" => "BIC invalid. Please check and try again.",
+                "2019" => "Customer data invalid. Please check and try again.",
+                "2020" => "CVV required. Please check and try again.",
+                "2021" => "3D-Secure Verification failed. Please with non 3D-Secure card or contact your issuing bank.",
+                "Network Errors" => "",
+                "3001" => "COMMUNICATION ERROR: Timeout. Please try again later.",
+                "3002" => "COMMUNICATION ERROR: Transaction not Allowed.",
+                "3003" => "COMMUNICATION ERROR: System temporary unavailable. Please try again later.",
+                "3004" => "Duplicate transaction ID.",
+                "3005" => "COMMUNICATION ERROR: Please try again later.",
+                "Schedule API Errors" => "",
+                "7001" => "Schedule request is invalid.",
+                "7002" => "Schedule request failed.",
+                "7005" => "ScheduleAction is not valid.",
+                "7010" => "RegistrationId is required.",
+                "7020" => "RegistrationId is not valid.",
+                "7030" => "Reference transaction not a register.The registrationId must point to a register or a debit-with-register or a preauthorize-with-register.",
+                "7035" => "Initial transaction is not a register.The transaction for starting a schedule must be a register, a debit-with-register or a preauthorize-with-register.",
+                "7036" => "Invalid initial period. The period between the initial and second transaction must be greater than 24 hours.",
+                "7040" => "The scheduleId is not valid or does not match to the connector.",
+                "7050" => "The startDateTime is invalid or older than 24 hours.",
+                "7060" => "The continueDateTime is invalid or older than 24 hours.",
+                "7070" => "The status of the schedule is not valid for the requested operation.",
             ],
-            'ru' => [
-                '2003' => 'Транзакция отклонена банком.',
-                '2019' => 'Транзакция отклонена. Введенные данные карты недействительны.',
-                '2021' => 'Ваша 3DSecure аутентификация не удалась. Пожалуйста, свяжитесь с банком, выпустившим вашу карту.',
-                '2016' => 'Транзакция отклонена. Пожалуйста, свяжитесь со своим банком.'
-            ]
-        ];
+            "ru" => [
+                "General Errors & Validation Errors" => "",
+                "1000" => "ОШИБКА КОНФИГУРАЦИИ. Произошла фундаментальная ошибка в вашем запросе.",
+                "1001" => "ОШИБКА КОНФИГУРАЦИИ. Система ответила неизвестным ответом.",
+                "1002" => "ОШИБКА КОНФИГУРАЦИИ. Данные запроса повреждены или отсутствуют.",
+                "1003" => "ОШИБКА КОНФИГУРАЦИИ. Транзакция не может быть обработана.",
+                "1004" => "ОШИБКА КОНФИГУРАЦИИ. Неверная подпись запроса.",
+                "1005" => "ОШИБКА КОНФИГУРАЦИИ. Некорректный или повреждённый XML.",
+                "1006" => "ОШИБКА КОНФИГУРАЦИИ. Нарушены предварительные условия (например, попытка захвата при неудачной авторизации).",
+                "1007" => "ОШИБКА КОНФИГУРАЦИИ. Проблема в вашей конфигурации. Свяжитесь с инженером интеграции.",
+                "1008" => "ОШИБКА КОНФИГУРАЦИИ. Неожиданная системная ошибка.",
+                "9999" => "Получена ошибка, которая пока не сопоставлена с известным кодом ошибки.",
+                "Payment Errors" => "",
+                "2001" => "Клиент отменил разрешение на использование платёжного инструмента. Попробуйте другую карту.",
+                "2002" => "Транзакция отменена клиентом.",
+                "2003" => "Транзакция отклонена банком. Попробуйте другую карту.",
+                "2004" => "Превышен лимит. Попробуйте другую карту.",
+                "2005" => "Истекло время выполнения транзакции. Клиент слишком долго вводил платёжные данные.",
+                "2006" => "Недостаточно средств или превышен лимит карты. Попробуйте другую карту.",
+                "2007" => "Некорректные платёжные данные. Проверьте и повторите попытку.",
+                "2008" => "Неверная карта. Попробуйте другую карту.",
+                "2009" => "Срок действия карты истёк. Попробуйте другую карту.",
+                "2010" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2011" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2012" => "Транзакция отменена.",
+                "2013" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2014" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2015" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2016" => "Ваша карта не может быть принята. Попробуйте другую карту или свяжитесь с банком-эмитентом.",
+                "2017" => "Неверный IBAN. Проверьте и повторите попытку.",
+                "2018" => "Неверный BIC. Проверьте и повторите попытку.",
+                "2019" => "Некорректные данные клиента. Проверьте и повторите попытку.",
+                "2020" => "CVV обязателен. Проверьте и повторите попытку.",
+                "2021" => "Ошибка 3D-Secure аутентификации. Используйте карту без 3D-Secure или обратитесь в ваш банк.",
+                "Network Errors" => "",
+                "3001" => "ОШИБКА СВЯЗИ: Тайм-аут. Попробуйте позже.",
+                "3002" => "ОШИБКА СВЯЗИ: Транзакция не разрешена.",
+                "3003" => "ОШИБКА СВЯЗИ: Система временно недоступна. Попробуйте позже.",
+                "3004" => "Дубликат идентификатора транзакции.",
+                "3005" => "ОШИБКА СВЯЗИ: Попробуйте позже.",
+                "Schedule API Errors" => "",
+                "7001" => "Неверный запрос расписания.",
+                "7002" => "Ошибка при обработке запроса расписания.",
+                "7005" => "Недопустимое действие расписания.",
+                "7010" => "Необходимо указать RegistrationId.",
+                "7020" => "Недопустимый RegistrationId.",
+                "7030" => "Референсная транзакция не является регистрацией. RegistrationId должен ссылаться на 'register', 'debit-with-register' или 'preauthorize-with-register'.",
+                "7035" => "Начальная транзакция не является регистрацией. Для начала расписания должна использоваться транзакция типа 'register', 'debit-with-register' или 'preauthorize-with-register'.",
+                "7036" => "Неверный начальный период. Интервал между первой и второй транзакцией должен быть более 24 часов.",
+                "7040" => "Неверный scheduleId или он не связан с данным платёжным каналом.",
+                "7050" => "Недопустимое время начала или оно старше 24 часов.",
+                "7060" => "Недопустимое время следующей транзакции или оно старше 24 часов.",
+                "7070" => "Недопустимый статус расписания для запрошенной операции.",
+                ],
+                ];
 
         // Fallback in case of unknown error code
-        $message_sr = $errorMessages['sr-Latn'][$error_code] ?? 'Došlo je do greške prilikom obrade transakcije.';
+        $message_sr = $errorMessages['sr'][$error_code] ?? 'Došlo je do greške prilikom obrade transakcije.';
         $message_en = $errorMessages['en'][$error_code] ?? 'An error occurred while processing your transaction.';
         $message_ru = $errorMessages['ru'][$error_code] ?? 'Произошла ошибка при обработке транзакции.';
 
         $mails = [
-            'sr-Latn' => "
+            'sr' => "
             <html>
                 <head>
                     <style>
@@ -3437,8 +3583,8 @@ class Sdk extends Api
         "
         ];
 
-        if ($lang == "sr-Latn")
-            return $mails['sr-Latn'];
+        if ($lang == "sr")
+            return $mails['sr'];
         else if ($lang == "ru")
             return $mails['ru'];
         else
