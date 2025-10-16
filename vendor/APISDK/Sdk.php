@@ -2013,24 +2013,11 @@ class Sdk extends Api
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
                 //$debug_td = var_export($error, true);
-                $this->logError($error->getCode(), $logFile);
+                
+                $error_code = 0;
                 if ($error) {
-                    $errorDetails = sprintf(
-                        "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
-                        $error->getErrorMessage(),
-                        $error->getErrorCode(),
-                        $error->getAdapterMessage(),
-                        $error->getAdapterCode()
-                        );
                     $error_code = $error->getCode() ?: "Unexpected error or sandbox";
                 } else {
-                    $errorDetails = sprintf(
-                        "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
-                        $callbackResult->getErrorMessage(),
-                        $callbackResult->getErrorCode(),
-                        $callbackResult->getAdapterMessage(),
-                        $callbackResult->getAdapterCode()
-                        );
                     $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
                 }
                 $code = strval($error_code);
