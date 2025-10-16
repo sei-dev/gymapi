@@ -2023,7 +2023,7 @@ class Sdk extends Api
                         $error->getAdapterMessage(),
                         $error->getAdapterCode()
                         );
-                    $error_code = $error->getErrorCode();
+                    $error_code = $error->getCode() ?: "Unexpected error or sandbox";
                 } else {
                     $errorDetails = sprintf(
                         "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
