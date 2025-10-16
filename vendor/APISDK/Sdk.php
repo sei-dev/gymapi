@@ -2012,8 +2012,9 @@ class Sdk extends Api
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
+                $debug_td = var_export($error, true);
                 $error_code = "";
-                $this->logError($error->getErrorCode(), $logFile);
+                $this->logError($debug_td, $logFile);
                 if ($error) {
                     $errorDetails = sprintf(
                         "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
