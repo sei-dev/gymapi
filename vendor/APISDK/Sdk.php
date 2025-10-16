@@ -1950,7 +1950,7 @@ class Sdk extends Api
             }
 
             // Current date in dd.mm.yyyy format
-            $currentDate = echo date('Y-m-d H:i:s', time());
+            $currentDate = date('Y-m-d H:i:s', time());
 
             $transactionData = [
                 'transaction_id' => $transactionId,
