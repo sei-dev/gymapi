@@ -39,7 +39,6 @@ class Sdk extends Api
     const DIR_UPLOADS = __DIR__ . "/../../images/";
 
     const DIR_USERS = "users";
-    
 
     /*
      * const DIR_BAITS = "baits";
@@ -151,14 +150,15 @@ class Sdk extends Api
      */
 
     // Preradi
-    /* private function isFileExists($dir, $id)
-    {
-        return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
-    } */
-    
+    /*
+     * private function isFileExists($dir, $id)
+     * {
+     * return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
+     * }
+     */
     private function isFileExists($dir, $id)
     {
-       return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
+        return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
     }
 
     private function getTodayTrainingsByTrainerId()
@@ -169,7 +169,6 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getTodayTrainingsByTrainerId($request['trainer_id']);
-        
 
         array_walk($trainings, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["client_ids"])) {
@@ -224,15 +223,14 @@ class Sdk extends Api
 
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
-        
+
         $user_model = new Users($this->dbAdapter);
-        
-        foreach ($trainings as &$one){
+
+        foreach ($trainings as &$one) {
             $users = $user_model->getUsersByTrainingId($one['id']);
             $count = sizeof($users);
             $one['count'] = strval($count);
         }
-        
 
         array_walk($trainings, function (&$a) {
             if ($this->isFileExists(self::DIR_USERS, $a["trainer_id"])) {
@@ -257,7 +255,7 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
-    
+
     private function insertRepeatedTraining()
     {
         $request = $this->filterParams([
@@ -267,31 +265,33 @@ class Sdk extends Api
             'time',
             'is_group',
             'training_plan'
-        ],['mon',
+        ], [
+            'mon',
             'tue',
             'wed',
             'thu',
             'fri',
             'sat',
             'sun',
-            'end_date']);
-        
+            'end_date'
+        ]);
+
         $start_date = new \DateTimeImmutable($request['start_date']);
         $end_date = new \DateTimeImmutable($request['end_date']);
         $training_model = new Trainings($this->dbAdapter);
-        
+
         $trainings = [];
-        
+
         $i = 0;
-        
-        if($start_date == $end_date){
+
+        if ($start_date == $end_date) {
             return $this->formatResponse(self::STATUS_SUCCESS, "", []);
         }
-        
+
         var_dump($start_date);
         var_dump($end_date);
         die();
-        
+
         do {
             if ($start_date->format('N') == 1 && $request['mon'] == "1") {
                 $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
@@ -314,11 +314,11 @@ class Sdk extends Api
             if ($start_date->format('N') == 7 && $request['sun'] == "1") {
                 $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
             }
-            
+
             $i ++;
             $start_date = $start_date->modify('+1 day');
         } while ($end_date != $start_date);
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
@@ -333,41 +333,43 @@ class Sdk extends Api
             'training_plan',
             'repeated',
             'clients'
-        ],['mon',
+        ], [
+            'mon',
             'tue',
             'wed',
             'thu',
             'fri',
             'sat',
             'sun',
-            'end_date']);
+            'end_date'
+        ]);
 
         $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
-        
-        if($request['repeated']=='0'){
+
+        if ($request['repeated'] == '0') {
             $training_model = new Trainings($this->dbAdapter);
             $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan']);
-            
-            foreach ($clients as $one){
+
+            foreach ($clients as $one) {
                 $user_model = new Users($this->dbAdapter);
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
             }
-            
+
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-        }else if($request['repeated']=='1'){
-            
+        } else if ($request['repeated'] == '1') {
+
             $start_date = new \DateTimeImmutable($request['date']);
             $end_date = new \DateTimeImmutable($request['end_date']);
             $training_model = new Trainings($this->dbAdapter);
-            
+
             $trainings = [];
-            
+
             if ($end_date < $start_date) {
                 return $this->formatResponse(self::STATUS_FAILED, "End date before start date.", $trainings);
             }
-            
-            if($start_date == $end_date){
+
+            if ($start_date == $end_date) {
                 if ($start_date->format('N') == 1 && $request['mon'] == "1") {
                     $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
                 }
@@ -389,14 +391,16 @@ class Sdk extends Api
                 if ($start_date->format('N') == 7 && $request['sun'] == "1") {
                     $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
                 }
-                
+
                 return $this->formatResponse(self::STATUS_SUCCESS, "", []);
             }
-            
-            /* var_dump($start_date);
-            var_dump($end_date);
-            die(); */
-            
+
+            /*
+             * var_dump($start_date);
+             * var_dump($end_date);
+             * die();
+             */
+
             $i = 0;
             do {
                 if ($start_date->format('N') == 1 && $request['mon'] == "1") {
@@ -420,17 +424,15 @@ class Sdk extends Api
                 if ($start_date->format('N') == 7 && $request['sun'] == "1") {
                     $trainings = array_merge($trainings, $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $start_date->format('Y-m-d'), $request['time'], $request['training_plan']));
                 }
-                
+
                 $i ++;
                 $start_date = $start_date->modify('+1 day');
-                
-                
             } while ($end_date != $start_date);
-            
-            //die(var_dump($trainings));
-            
+
+            // die(var_dump($trainings));
+
             foreach ($trainings as $training) {
-                foreach ($clients as $client_id){
+                foreach ($clients as $client_id) {
                     $user_model = new Users($this->dbAdapter);
                     $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $client_id);
                     $this->addClientToTraining($training['id'], $client_id, $price, $request['trainer_id']);
@@ -444,13 +446,14 @@ class Sdk extends Api
 
     private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)
     {
-        /* $request = $this->filterParams([
-            'training_id',
-            'client_id',
-            'price',
-            'trainer_id'
-        ]); */
-
+        /*
+         * $request = $this->filterParams([
+         * 'training_id',
+         * 'client_id',
+         * 'price',
+         * 'trainer_id'
+         * ]);
+         */
         $training_model = new Trainings($this->dbAdapter);
         $trainings = $training_model->insertClientToTraining($training_id, $client_id, $price);
         // $training_model->addDebtConnection($request['trainer_id'], $request['client_id'], $request['price']);
@@ -565,7 +568,7 @@ class Sdk extends Api
             'time' => $time,
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
-        
+
         $moreTokens = [
             $client['device_token']
         ];
@@ -632,65 +635,68 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
-    
-    private function updateFitnessCenters(){
+
+    private function updateFitnessCenters()
+    {
         $request = $this->filterParams([
             'added',
             'removed'
         ]);
-        
+
         $user_id = $this->user_id;
-        
+
         $added = isset($request['added']) ? json_decode($request['added'], true) : [];
         $removed = isset($request['removed']) ? json_decode($request['removed'], true) : [];
-        
-        foreach ($added as $gym){
+
+        foreach ($added as $gym) {
             $this->addFitnessCenterNew($user_id, $gym);
         }
-        
-        foreach ($removed as $gone){
+
+        foreach ($removed as $gone) {
             $this->removeFitnessCenterNew($user_id, $gone);
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
-    
+
     private function addFitnessCenterNew(string $user_id, string $gym_id)
     {
-        /* $request = $this->filterParams([
-            'user_id',
-            'gym_id'
-        ]); */
-        
+        /*
+         * $request = $this->filterParams([
+         * 'user_id',
+         * 'gym_id'
+         * ]);
+         */
         $gyms_model = new Gyms($this->dbAdapter);
         $result = $gyms_model->addFitnessCenter($user_id, $gym_id);
-        
+
         // Check if $result indicates success
         if ($result) {
             return true;
         } else {
             return false;
         }
-        
-        //return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+
+        // return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
-    
+
     private function removeFitnessCenterNew(string $user_id, string $gym_id)
     {
-/*         $request = $this->filterParams([
-            'user_id',
-            'gym_id'
-        ]); */
-        
+        /*
+         * $request = $this->filterParams([
+         * 'user_id',
+         * 'gym_id'
+         * ]);
+         */
         $gyms_model = new Gyms($this->dbAdapter);
         $result = $gyms_model->removeFitnessCenter($user_id, $gym_id);
-        
+
         if ($result) {
             return true;
         } else {
             return false;
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
 
@@ -792,10 +798,9 @@ class Sdk extends Api
 
     private function getMeasurementsByClientId()
     {
-//         $request = $this->filterParams([
-//             'client_id'
-//         ]);
-
+        // $request = $this->filterParams([
+        // 'client_id'
+        // ]);
         $mes_model = new Measurements($this->dbAdapter);
 
         $measurements = $mes_model->getMeasurementsByClientId($this->user_id);
@@ -913,27 +918,26 @@ class Sdk extends Api
             $users_model->changePassword($request['id'], $newPassHash);
         }
 
-        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'],
-            $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'],
-            $request['ru'], $request['country_id'], $request['nationality']);
+        $users = $users_model->updateInfo($request['id'], $request['name'], $request['surname'], $request['age'], $request['phone'], $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['country_id'], $request['nationality']);
 
         $user = $this->getUpdatedUser();
         return $this->formatResponse(self::STATUS_SUCCESS, "", $user);
     }
-    
+
     private function getUpdatedUser()
     {
         $users_model = new Users($this->dbAdapter);
         $training_model = new Trainings($this->dbAdapter);
-        
+
         $user = $users_model->getUserById($this->user_id);
         return $this->populateUserModel($user);
     }
-    
+
     /**
      * Populate user model with expected properties
      */
-    private function populateUserModel(array $user){
+    private function populateUserModel(array $user)
+    {
         $users_model = new Users($this->dbAdapter);
         $training_model = new Trainings($this->dbAdapter);
         if ($this->isFileExists(self::DIR_USERS, $user["id"])) {
@@ -941,7 +945,7 @@ class Sdk extends Api
         } else {
             $user['image'] = $this->domain . "/images/users/logo.png";
         }
-        
+
         $user['active_clients'] = $users_model->getActiveClients($user["id"]);
         $user['active_trainers'] = $users_model->getActiveTrainers($user["id"]);
         $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($user["id"]);
@@ -1104,8 +1108,6 @@ class Sdk extends Api
 
         $client = $users_model->getUserById($request['client_id']);
 
-        
-        
         $dataPayload = [
             'type' => 'new_request',
             'date' => "",
@@ -1115,7 +1117,7 @@ class Sdk extends Api
 
         return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
 
-        //return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+        // return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function acceptConnectionTrainer()
@@ -1131,8 +1133,7 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
         $trainer = $users_model->getTrainerByConnectionId($request['id']);
-        
-        
+
         $dataPayload = [
             'type' => 'accepted_request',
             'date' => "",
@@ -1176,44 +1177,43 @@ class Sdk extends Api
             'nationality',
             'country_id'
         ]);
-        
+
         if ($request['en'] == "1") {
             $lang = "en";
         } elseif ($request['ru'] == "1" && $request['rs'] != "1") {
             $lang = "ru";
         } elseif ($request['ru'] == "1" && $request['rs'] == "1") {
-            $lang = "sr";
-        }elseif ($request['rs'] == "1") {
-            $lang = "sr";
+            $lang = "sr-Latn";
+        } elseif ($request['rs'] == "1") {
+            $lang = "sr-Latn";
         } else {
             $lang = "en";
         }
-        
+
         $users_model = new Users($this->dbAdapter);
 
         $user = $users_model->getUserByEmail($request['email']);
-       
 
         if ($user) {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
-        
+
         $hash = md5(time());
 
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
-        
+
         $mail = new PHPMailer();
-        
+
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'ptrenersrb@gmail.com';
-        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ptrenersrb@gmail.com';
+        $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
-        
+        $mail->Port = 587;
+
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
         $mail->addAddress($request['email']);
         $mail->addAddress('nikola.bojovic9@gmail.com');
@@ -1222,9 +1222,9 @@ class Sdk extends Api
         // Set HTML
         $mail->isHTML(TRUE);
         $mail->Body = $this->getRegisterMail($lang, $hash);
-        
+
         $mail->send();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
     }
 
@@ -1388,8 +1388,8 @@ class Sdk extends Api
         if (! $user) {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
-        
-        if($user['email_confirmed']=='0'){
+
+        if ($user['email_confirmed'] == '0') {
             return $this->formatResponse(self::STATUS_FAILED, "-1");
         }
 
@@ -1402,74 +1402,73 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_FAILED, "-1");
     }
-    
+
     private function getMyAccount()
     {
         $users_model = new Users($this->dbAdapter);
         $training_model = new Trainings($this->dbAdapter);
-        
+
         $user = $users_model->getUserById($this->user_id);
-        
+
         unset($user["password"]);
-        
+
         $toReturn = $this->populateUserModel($user);
         return $this->formatResponse(self::STATUS_SUCCESS, "", $toReturn);
     }
-    
+
     private function getAppLanguage()
     {
         $users_model = new Users($this->dbAdapter);
         $language = $users_model->getAppLanguage($this->user_id);
-        
+
         return $language;
     }
-    
-    private function setAppLanguage(){
+
+    private function setAppLanguage()
+    {
         $request = $this->filterParams([
             'language'
         ]);
-        
+
         $users_model = new Users($this->dbAdapter);
         $users_model->setAppLanguage($this->user_id, $request['language']);
-     
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
-    
+
     private function forgotPasswordCheck()
     {
         $request = $this->filterParams([
             'email'
         ]);
-        
+
         $hash = md5(time());
-        
-        
+
         $userModel = new Users($this->dbAdapter);
         $user = (array) $userModel->getUserByEmail($request["email"]);
-        
+
         $userModel->setMailHash($user['id'], $hash);
-        
+
         if (! isset($user['id'])) {
             throw new ApiException("There is no such user");
         }
-        
+
         $lang = $userModel->getAppLanguage($user['id']);
-        //var_dump($user);
-        //die(var_dump($lang));
-        
-        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=". $hash . "&language=" . $lang;
-        
-        
+        // var_dump($user);
+        // die(var_dump($lang));
+
+        $generated_link = $this->getBaseUrl() . "/?action=forgotPassword&hash=" . $hash . "&language=" . $lang;
+
         $mail = new PHPMailer();
-        
+
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'ptrenersrb@gmail.com';
-        $mail->Password   = 'dlvw rdak ejtk yqlm';
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ptrenersrb@gmail.com';
+        $mail->Password = 'dlvw rdak ejtk yqlm';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
-        
+        $mail->Port = 587;
+
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
         $mail->addAddress($user['email']);
         $mail->addCC('nikola.bojovic9@gmail.com');
@@ -1478,10 +1477,9 @@ class Sdk extends Api
         // Set HTML
         $mail->isHTML(TRUE);
         $mail->Body = $this->getPasswordCheckMail($lang, $generated_link);
-        
-        
+
         $mail->send();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
@@ -1505,19 +1503,19 @@ class Sdk extends Api
         }
 
         $userModel->forgotPassword($user['id'], $password_hash);
-        
+
         $lang = $request['language'];
-        
+
         $mail = new PHPMailer();
-        
+
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'ptrenersrb@gmail.com';
-        $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ptrenersrb@gmail.com';
+        $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = 587;
-        
+        $mail->Port = 587;
+
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
         $mail->addAddress($user['email']);
         $mail->addCC('nikola.bojovic9@gmail.com');
@@ -1526,11 +1524,11 @@ class Sdk extends Api
         // Set HTML
         $mail->isHTML(TRUE);
         $mail->Body = $this->getForgotPassLanguageMail($lang, $generated_pass);
-        
+
         $mail->send();
 
         echo $this->getForgotPassEcho($lang);
-        exit;
+        exit();
     }
 
     private function changePassword()
@@ -1595,13 +1593,13 @@ class Sdk extends Api
             'city_id',
             'merchant_transaction_id'
         ]);
-        
+
         $logFile = __DIR__ . '/init_error_log.txt';
 
         $request['token'] = str_replace(' ', '+', $request['token']);
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-        //OVDE ALLSECURE MENJAJ prod
+        // OVDE ALLSECURE MENJAJ prod
         $connector_api_key = "personal-simulator";
         $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
@@ -1610,15 +1608,15 @@ class Sdk extends Api
          * $token = "IEta5qtej1cxZ1tBgKIotb+Owt+/yotP3COmU9ZCzAJpBeTqENIaNHyel2Uh4yCZQlFoOzOVLrhtYVvF10V31ge
          * EUSvqH3T70xvJCGF6XNBGnTr8t2UP9nv48gl1Mh7//86m8gNJEbtLIJvM99PsJv+aIF0jdOjekC6InyxthWd9w"
          */
-        
+
         $country_model = new Countries($this->dbAdapter);
         $country = $country_model->getCountryById($request['country_id']);
-        
+
         $city_model = new Cities($this->dbAdapter);
         $city = $city_model->getCityById($request['country_id']);
 
         $price = "0";
-        
+
         $flag = "";
 
         // define relevant objects
@@ -1651,8 +1649,8 @@ class Sdk extends Api
         }
 
         $debit = new Debit();
-        
-        if($request['to_save'] == "1" && $request['uuid'] == "0"){
+
+        if ($request['to_save'] == "1" && $request['uuid'] == "0") {
             $debit->setWithRegister(true);
             $debit->setTransactionIndicator('SINGLE');
             if (isset($request['token'])) {
@@ -1660,14 +1658,14 @@ class Sdk extends Api
             }
             $flag = "REGISTER to_save=1 i uuid=0";
         }
-        if($request['uuid']!="0"){
+        if ($request['uuid'] != "0") {
             $debit->setWithRegister(false);
             $debit->setTransactionIndicator('CARDONFILE');
             $debit->setReferenceUuid($request['uuid']);
             $flag = "CARDONFILE uuid!=0";
         }
-        
-        if($request['to_save'] == "0" && $request['uuid'] == "0"){
+
+        if ($request['to_save'] == "0" && $request['uuid'] == "0") {
             if (isset($request['token'])) {
                 $debit->setTransactionToken($request['token']);
             }
@@ -1676,17 +1674,16 @@ class Sdk extends Api
         $debit->setMerchantTransactionId($merchantTransactionId)
             ->setAmount($price)
             ->setCurrency('RSD')
-            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly']
-                            . '&email=' . $request['email'] . '')
-            //->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callbackDebug')
-            ->setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
+            ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callback&id=' . $request['id'] . '&is_monthly=' . $request['is_monthly'] . '&email=' . $request['email'] . '')
+            ->
+        // ->setCallbackUrl('https://phpstack-1301327-4919665.cloudwaysapps.com/?action=callbackDebug')
+        setSuccessUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/success')
             ->setErrorUrl('https://phpstack-1301327-4732761.cloudwaysapps.com/log/error')
             ->setDescription('Subscription')
             ->setCustomer($customer);
-        
-        
+
         $result = $client->debit($debit);
-        
+
         if ($result->isSuccess()) {
 
             $gatewayReferenceId = $result->getUuid();
@@ -1751,182 +1748,182 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_FAILED, "", $errors);
     }
-    
-    private function deregisterCard(){
-        try{
+
+    private function deregisterCard()
+    {
+        try {
             $request = $this->filterParams([
                 'referenceUuid'
             ]);
-            
+
             $logFile = __DIR__ . '/deregister_error_log.txt';
-            
+
             $api_user = "personal-api";
             $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-            //OVDE ALLSECURE MENJAJ prod
+            // OVDE ALLSECURE MENJAJ prod
             $connector_api_key = "personal-simulator";
             $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
             $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-            
+
             $deregister = new Deregister();
             $deregister->setReferenceUuid($request['referenceUuid']);
             $deregister->setMerchantTransactionId("Trener-" . md5(time()));
-            
+
             $result = $client->deregister($deregister);
-            
-            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: ".json_encode($result) . "\n", FILE_APPEND);
-            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: ".json_encode($client) . "\n", FILE_APPEND);
-            
-            if($result->isSuccess()){
+
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Result: " . json_encode($result) . "\n", FILE_APPEND);
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Client: " . json_encode($client) . "\n", FILE_APPEND);
+
+            if ($result->isSuccess()) {
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
-            }else{
+            } else {
                 return $this->formatResponse(self::STATUS_FAILED, "", []);
             }
-            }catch (Exception $e){
-                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: ". $e . "\n", FILE_APPEND);
-            }
-        
-            
+        } catch (Exception $e) {
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: " . $e . "\n", FILE_APPEND);
+        }
     }
 
-    /* private function callback()
-    {
-        $logFile = __DIR__ . '/callback_error_log.txt';
-        $varDumpFile = __DIR__ . '/var_dump_log.txt';
-        
-        $api_user = "personal-api";
-        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-        $connector_api_key = "personal-simulator";
-        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
-        $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        
-        $request = $this->filterParams([
-            'id',
-            'is_monthly',
-            'email'
-        ]);
-        
-        try {
-            $valid = $client->validateCallbackWithGlobals();
-            
-            if (!$valid) {
-                $this->logError("Callback validation failed.", $logFile);
-                http_response_code(200);
-                echo "OK";
-                file_put_contents($logFile, print_r("Exit not valid", true), FILE_APPEND);
-                die();
-            }
-            
-            $callbackInput = file_get_contents('php://input');
-            if (!$callbackInput) {
-                $this->logError("Empty callback input received.", $logFile);
-                http_response_code(200);
-                echo "OK";
-                file_put_contents($logFile, print_r("input not valid", true), FILE_APPEND);
-                die();
-            }
-            
-            $callbackResult = $client->readCallback($callbackInput);
-            $transactionId = $callbackResult->getMerchantTransactionId();
-            
-            $customer_id = $request['id'];
-            $is_monthly = $request['is_monthly'];
-            $email = $request['email'];
-            
-            
-            $user_model = new Users($this->dbAdapter);
-            $invoice_model = new Invoices($this->dbAdapter);
-            
-            // Avoid duplicate processing
-            if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
-                file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
-                http_response_code(200);
-                echo "OK";
-                file_put_contents($logFile, print_r("Transaction already handled", true), FILE_APPEND);
-                die();
-            }
-            
-            if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
-                $current_sub_date = $user_model->getSubLength($customer_id);
-                $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
-                
-                $current_date = new \DateTimeImmutable();
-                $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
-                
-                if (!$date || $date < $current_date) {
-                    $date = $current_date;
-                }
-                
-                $new_date = $date->modify($period_to_add)->format('Y-m-d');
-                
-                // Update user subscription
-                $user_model->updateSub($customer_id, $new_date);
-                
-                // Save invoice and mark transaction as handled
-                if ($is_monthly == "1") {
-                    $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
-                    $this->sandboxReceiptMonthly($email);
-                } else {
-                    $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
-                }
-                
-                http_response_code(200);
-                echo "OK";
-                file_put_contents($logFile, print_r("200 OK", true), FILE_APPEND);
-                die();
-            } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
-                $errorDetails = sprintf(
-                    "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
-                    $callbackResult->getErrorMessage(),
-                    $callbackResult->getErrorCode(),
-                    $callbackResult->getAdapterMessage(),
-                    $callbackResult->getAdapterCode()
-                    );
-                $this->logError($errorDetails, $logFile);
-            }
-        } catch (Exception $e) {
-            $this->logError("Exception caught: " . $e->getMessage(), $logFile);
-        }
-        
-        http_response_code(200);
-        echo "OK";
-        file_put_contents($logFile, print_r("200 OK End", true), FILE_APPEND);
-        die();
-    } */
-    
+    /*
+     * private function callback()
+     * {
+     * $logFile = __DIR__ . '/callback_error_log.txt';
+     * $varDumpFile = __DIR__ . '/var_dump_log.txt';
+     *
+     * $api_user = "personal-api";
+     * $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+     * $connector_api_key = "personal-simulator";
+     * $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+     * $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+     *
+     * $request = $this->filterParams([
+     * 'id',
+     * 'is_monthly',
+     * 'email'
+     * ]);
+     *
+     * try {
+     * $valid = $client->validateCallbackWithGlobals();
+     *
+     * if (!$valid) {
+     * $this->logError("Callback validation failed.", $logFile);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("Exit not valid", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * $callbackInput = file_get_contents('php://input');
+     * if (!$callbackInput) {
+     * $this->logError("Empty callback input received.", $logFile);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("input not valid", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * $callbackResult = $client->readCallback($callbackInput);
+     * $transactionId = $callbackResult->getMerchantTransactionId();
+     *
+     * $customer_id = $request['id'];
+     * $is_monthly = $request['is_monthly'];
+     * $email = $request['email'];
+     *
+     *
+     * $user_model = new Users($this->dbAdapter);
+     * $invoice_model = new Invoices($this->dbAdapter);
+     *
+     * // Avoid duplicate processing
+     * if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
+     * file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("Transaction already handled", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
+     * $current_sub_date = $user_model->getSubLength($customer_id);
+     * $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
+     *
+     * $current_date = new \DateTimeImmutable();
+     * $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
+     *
+     * if (!$date || $date < $current_date) {
+     * $date = $current_date;
+     * }
+     *
+     * $new_date = $date->modify($period_to_add)->format('Y-m-d');
+     *
+     * // Update user subscription
+     * $user_model->updateSub($customer_id, $new_date);
+     *
+     * // Save invoice and mark transaction as handled
+     * if ($is_monthly == "1") {
+     * $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
+     * $this->sandboxReceiptMonthly($email);
+     * } else {
+     * $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
+     * }
+     *
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("200 OK", true), FILE_APPEND);
+     * die();
+     * } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
+     * $errorDetails = sprintf(
+     * "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+     * $callbackResult->getErrorMessage(),
+     * $callbackResult->getErrorCode(),
+     * $callbackResult->getAdapterMessage(),
+     * $callbackResult->getAdapterCode()
+     * );
+     * $this->logError($errorDetails, $logFile);
+     * }
+     * } catch (Exception $e) {
+     * $this->logError("Exception caught: " . $e->getMessage(), $logFile);
+     * }
+     *
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("200 OK End", true), FILE_APPEND);
+     * die();
+     * }
+     */
     private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
         $varDumpFile = __DIR__ . '/var_dump_log.txt';
-        
+
         $api_user = "personal-api";
         $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
         $connector_api_key = "personal-simulator";
         $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
-        
+
         $request = $this->filterParams([
             'id',
             'is_monthly',
             'email'
         ]);
-        
+
         $user_model = new Users($this->dbAdapter);
         $lang = $user_model->getAppLanguage($request['id']);
-        
+
         try {
             $valid = $client->validateCallbackWithGlobals();
-            
-            if (!$valid) {
+
+            if (! $valid) {
                 $this->logError("Callback validation failed.", $logFile);
                 $this->respondOk(); // Exit safely
             }
-            
+
             $callbackInput = file_get_contents('php://input');
-            if (!$callbackInput) {
+            if (! $callbackInput) {
                 $this->logError("Empty callback input received.", $logFile);
                 $this->respondOk();
             }
-            
+
             $callbackResult = $client->readCallback($callbackInput);
             $transactionId = $callbackResult->getMerchantTransactionId();
             $amount = $callbackResult->getAmount();
@@ -1934,7 +1931,7 @@ class Sdk extends Api
             $paymentMethod = $callbackResult->getPaymentMethod();
             $purchaseId = $callbackResult->getPurchaseId();
             $extraData = $callbackResult->getExtraData();
-            
+
             // Get card type from returnData (CreditcardData)
             $returnData = $callbackResult->getReturnData();
             $cardType = null;
@@ -1943,15 +1940,15 @@ class Sdk extends Api
             } elseif ($returnData && method_exists($returnData, 'getType')) {
                 $cardType = $returnData->getType(); // 'visa' from your log
             }
-            
+
             // Alternative: Check binBrand first as it's more standardized
-            if (!$cardType && $returnData && isset($returnData->binBrand)) {
+            if (! $cardType && $returnData && isset($returnData->binBrand)) {
                 $cardType = $returnData->binBrand;
             }
-            
+
             // Current date in dd.mm.yyyy format
             $currentDate = date('d.m.Y');
-            
+
             $transactionData = [
                 'transaction_id' => $transactionId,
                 'status' => 'Success',
@@ -1963,43 +1960,42 @@ class Sdk extends Api
                 'processed_date' => $currentDate,
                 'bank_code' => isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX"
             ];
-            
-            //$debug_cb = var_export($callbackResult, true);
-            //$debug_td = var_export($transactionData, true);
-            
-            //$this->logError($debug_cb, $logFile);
-            //$this->logError($debug_td, $logFile);
-            
-            
+
+            // $debug_cb = var_export($callbackResult, true);
+            // $debug_td = var_export($transactionData, true);
+
+            // $this->logError($debug_cb, $logFile);
+            // $this->logError($debug_td, $logFile);
+
             $customer_id = $request['id'];
             $is_monthly = $request['is_monthly'];
             $email = $request['email'];
-            
+
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
-            
+
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
                 $this->respondOk();
             }
-            
+
             if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
                 $current_sub_date = $user_model->getSubLength($customer_id);
                 $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
-                
+
                 $current_date = new \DateTimeImmutable();
                 $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
-                
-                if (!$date || $date < $current_date) {
+
+                if (! $date || $date < $current_date) {
                     $date = $current_date;
                 }
-                
+
                 $new_date = $date->modify($period_to_add)->format('Y-m-d');
-                
+
                 // Update user subscription
                 $user_model->updateSub($customer_id, $new_date);
-                
+
                 // Save invoice and mark transaction as handled
                 if ($is_monthly == "1") {
                     $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
@@ -2008,12 +2004,12 @@ class Sdk extends Api
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                     $this->sandboxReceiptYearly($email, $transactionData);
                 }
-                
+
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
-                //$debug_td = var_export($error, true);
-                
+                // $debug_td = var_export($error, true);
+
                 $error_code = 0;
                 if ($error) {
                     $error_code = $error->getCode() ?: "Unexpected error or sandbox";
@@ -2021,19 +2017,19 @@ class Sdk extends Api
                     $error_code = $callbackResult->getErrorCode() ?: "Unexpected error or sandbox";
                 }
                 $code = strval($error_code);
-                
+
                 $this->logError("CODE:" . $code, $logFile);
-                
+
                 $mail = new PHPMailer();
-                
+
                 $mail->isSMTP();
-                $mail->Host       = 'smtp.gmail.com';
-                $mail->SMTPAuth   = true;
-                $mail->Username   = 'ptrenersrb@gmail.com';
-                $mail->Password   = 'dlvw rdak ejtk yqlm'; // use the App Password
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'ptrenersrb@gmail.com';
+                $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port       = 587;
-                
+                $mail->Port = 587;
+
                 $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
                 $mail->addAddress($request['email']);
                 $mail->addAddress('nikola.bojovic9@gmail.com');
@@ -2042,47 +2038,48 @@ class Sdk extends Api
                 // Set HTML
                 $mail->isHTML(TRUE);
                 $mail->Body = $this->getTransactionRejectedMail($lang, $code);
-                
+
                 $mail->send();
             }
         } catch (Exception $e) {
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
         }
-        
+
         // Always respond OK at the end
         $this->respondOk();
     }
-    
+
     private function respondOk()
     {
         if (ob_get_length()) {
             ob_end_clean();
         }
-        
+
         http_response_code(200);
         header('Content-Type: text/plain');
         echo "OK";
-        exit;
+        exit();
     }
 
-    private function sandboxReceiptMonthly(string $email, array $transactionData){
-        //$logFile = __DIR__ . '/mail_error_log.txt';
+    private function sandboxReceiptMonthly(string $email, array $transactionData)
+    {
+        // $logFile = __DIR__ . '/mail_error_log.txt';
         // Validate required transaction data
         if (empty($transactionData['transaction_id']) || empty($transactionData['status'])) {
             throw new Exception('Transaction data is incomplete');
         }
-        
-        //$debug_td = var_export($transactionData, true);
-        
+
+        // $debug_td = var_export($transactionData, true);
+
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
         $item = $invoice_model->getMonthlyItem();
         $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
-        
-        //$this->logError($debug_td, $logFile);
-        
-        //OVDE
+
+        // $this->logError($debug_td, $logFile);
+
+        // OVDE
         $items = [
             "items" => [
                 [
@@ -2096,24 +2093,27 @@ class Sdk extends Api
                 ]
             ]
         ];
-        
+
         $result = $netRacuni->createInvoice($items);
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
-        
+
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
-        
+
         $mail = new PHPMailer(true);
-        
+
         $rawReceipt = $invoice['journal'];
-        
+
         // Normalize newlines (in case API uses \n or \r\n)
-        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
-        
+        $receiptFormatted = str_replace([
+            "\r\n",
+            "\r"
+        ], "\n", $rawReceipt);
+
         // Insert <br> tags for HTML formatting
         $receiptHtml = nl2br($receiptFormatted);
-        
+
         // Format transaction info for email
         $transactionInfo = "
         <div style='background-color: #e8f5e8; padding: 15px; border-left: 4px solid #28a745; margin-bottom: 20px;'>
@@ -2126,21 +2126,21 @@ class Sdk extends Api
             <p><strong>Purchase ID:</strong> " . htmlspecialchars($transactionData['purchase_id']) . "</p>
         </div>
     ";
-        
+
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'ptrenersrb@gmail.com';
-            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ptrenersrb@gmail.com';
+            $mail->Password = 'dlvw rdak ejtk yqlm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            
+            $mail->Port = 587;
+
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
             $mail->addCC('arsen.leontijevic@gmail.com');
-            
+
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Monthly - ' . $transactionData['status'];
@@ -2202,24 +2202,24 @@ class Sdk extends Api
               </body>
             </html>
             ";
-                  $mail->AltBody = 'Hello! This is a test email with transaction confirmation.';
-                  
-                  $mail->send();
-                  echo 'Message has been sent';
+            $mail->AltBody = 'Hello! This is a test email with transaction confirmation.';
+
+            $mail->send();
+            echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
     }
-    
-    private function sandboxReceiptYearly(string $email, array $transactionData){
-        
+
+    private function sandboxReceiptYearly(string $email, array $transactionData)
+    {
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $invoice_model = new Invoices($this->dbAdapter);
         $item = $invoice_model->getYearlyItem();
         $price = $item ? $item["price"] : null;
         $netRacuni->sandbox();
-        
-        //NetRacunResponse
+
+        // NetRacunResponse
         $items = [
             "items" => [
                 [
@@ -2233,16 +2233,16 @@ class Sdk extends Api
                 ]
             ]
         ];
-        
+
         $result = $netRacuni->createInvoice($items);
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
-        
+
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
-        
+
         $rawReceipt = $invoice['journal'];
-        
+
         $transactionInfo = "
         <div style='background-color: #e8f5e8; padding: 15px; border-left: 4px solid #28a745; margin-bottom: 20px;'>
             <h3 style='margin: 0 0 10px 0; color: #155724;'>✅ " . htmlspecialchars($transactionData['status']) . "</h3>
@@ -2254,29 +2254,32 @@ class Sdk extends Api
             <p><strong>Purchase ID:</strong> " . htmlspecialchars($transactionData['purchase_id']) . "</p>
         </div>
     ";
-        
+
         // Normalize newlines (in case API uses \n or \r\n)
-        $receiptFormatted = str_replace(["\r\n", "\r"], "\n", $rawReceipt);
-        
+        $receiptFormatted = str_replace([
+            "\r\n",
+            "\r"
+        ], "\n", $rawReceipt);
+
         // Insert <br> tags for HTML formatting
         $receiptHtml = nl2br($receiptFormatted);
-        
+
         $mail = new PHPMailer(true);
-        
+
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'ptrenersrb@gmail.com';
-            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ptrenersrb@gmail.com';
+            $mail->Password = 'dlvw rdak ejtk yqlm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            
+            $mail->Port = 587;
+
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress($email);
             $mail->addCC('nikola.bojovic9@gmail.com');
             $mail->addCC('arsen.leontijevic@gmail.com');
-            
+
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Sandbox Invoice Yearly';
@@ -2338,13 +2341,12 @@ class Sdk extends Api
                 </html>
                 ";
             $mail->AltBody = 'Hello! This is a test email.';
-            
+
             $mail->send();
             echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
-        
     }
 
     private function saveImage()
@@ -2388,51 +2390,51 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
-    
+
     private function saveImageNew()
     {
         $request = $this->filterParams([
             'base_64',
             'user_id'
         ]);
-        
+
         $base64_string = $request['base_64'];
         $file_name = $request['user_id'];
-        
+
         if (! $base64_string) {
             throw new \Exception("base64_string is empty");
         }
-        
+
         // Remove the base64 URL prefix if it exists
         $base64_string = preg_replace('#^data:image/\w+;base64,#i', '', $base64_string);
         $base64_string = str_replace(' ', '+', $base64_string);
         $decoded_data = base64_decode($base64_string);
-        
+
         if ($decoded_data === false) {
             throw new \Exception("Failed to decode base64 string");
         }
-        
+
         // Define the upload directory
         $upload_dir = $_SERVER['DOCUMENT_ROOT'] . "/images/users/";
         $upload_path = $upload_dir . $file_name . ".png";
-        
+
         // Create directory if it does not exist
         if (! is_dir($upload_dir)) {
             if (! mkdir($upload_dir, 0777, true) && ! is_dir($upload_dir)) {
                 throw new \Exception("Failed to create directory: " . $upload_dir);
             }
         }
-        
+
         // Save the decoded image data to a file
         if (file_put_contents($upload_path, $decoded_data) === false) {
             throw new \Exception("Failed to save the image to: " . $upload_path);
         }
-        
+
         $image_url = "https://" . $_SERVER['HTTP_HOST'] . "/images/users/" . $file_name . ".png";
-        
+
         var_dump($image_url);
         die();
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
@@ -2495,32 +2497,33 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
 
-    /* private function test(){
-
-        $device_token = "dvqJzYkfRXKZsVsrqS6uiW:APA91bHUyvgSt9QYev8HcuIJ4NX8mVbSl2KvhD87q8NFAN5xWmEP6INPzWpYMyhxzXZ2P6sYw8uHSYZzopIS-xxQxpWNJFxoQpb1mUOfRZPvzP8PeEpeFAU";
-    
-        $dataPayload = [
-            'type' => 'new_request',
-            'date' => "",
-            'time' => "",
-            'user' => "Test Test"
-        ];
-        
-        $this->sendNotification("Novi zahtev", "Funkcija", $device_token, $dataPayload);
-   
-        
-        return $this->formatResponse(self::STATUS_SUCCESS, []);
-    } */
-    
-    private function testDateTime() {
+    /*
+     * private function test(){
+     *
+     * $device_token = "dvqJzYkfRXKZsVsrqS6uiW:APA91bHUyvgSt9QYev8HcuIJ4NX8mVbSl2KvhD87q8NFAN5xWmEP6INPzWpYMyhxzXZ2P6sYw8uHSYZzopIS-xxQxpWNJFxoQpb1mUOfRZPvzP8PeEpeFAU";
+     *
+     * $dataPayload = [
+     * 'type' => 'new_request',
+     * 'date' => "",
+     * 'time' => "",
+     * 'user' => "Test Test"
+     * ];
+     *
+     * $this->sendNotification("Novi zahtev", "Funkcija", $device_token, $dataPayload);
+     *
+     *
+     * return $this->formatResponse(self::STATUS_SUCCESS, []);
+     * }
+     */
+    private function testDateTime()
+    {
         /**
          * Retrieves and formats the server's current date and time.
          *
          * @return array An array containing the status, message, and date/time data.
          */
-        
         $currentTime = new DateTime(); // Get the current date and time
-        
+
         $dateTimeData = [
             'date' => $currentTime->format('Y-m-d'), // Format as YYYY-MM-DD
             'time' => $currentTime->format('H:i:s'), // Format as HH:MM:SS
@@ -2528,37 +2531,36 @@ class Sdk extends Api
             'timestamp' => $currentTime->getTimestamp(), // Unix timestamp
             'timezone' => $currentTime->getTimezone()->getName() // server timezone
         ];
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $dateTimeData);
     }
-    
-    private function testPing(){
-    
+
+    private function testPing()
+    {
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $netRacuni->sandbox();
-        
+
         $result = $netRacuni->ping();
-    
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
-    
-    private function testTaxLabels(){
-        
+
+    private function testTaxLabels()
+    {
         $netRacuni = new NetRacun('net_racuni_e3gOhLmkSIeL5WtW18PGlkfZxwIfK2upy1HDvMNL378aaffe');
-        //$netRacuni->sandbox();
-        
+        // $netRacuni->sandbox();
+
         $result = $netRacuni->getTaxLabels();
-        
-        
-        return $this->formatResponse(self::STATUS_SUCCESS, "",  $result);
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
-    
-    private function testInvoiceCheck(){
-        
+
+    private function testInvoiceCheck()
+    {
         $netRacuni = new NetRacun('net_racuni_staging_YgbuxF1Le0Y9KavjUnKoHeCGivlnXlCY4p5iHGju8480dec3');
         $netRacuni->sandbox();
-        
-        //NetRacunResponse
+
+        // NetRacunResponse
         $items = [
             "items" => [
                 [
@@ -2572,77 +2574,81 @@ class Sdk extends Api
                 ]
             ]
         ];
-        
+
         $result = $netRacuni->createInvoice($items);
         $invoiceUrl = $result->getInvoicePdfUrl();
         $invoice = $result->getInvoice();
-        
+
         $array['result'] = $result;
         $array['invoice_url'] = $invoiceUrl;
         $array['invoice'] = $invoice;
-        
+
         var_dump($array);
         die();
-        
-        return $this->formatResponse(self::STATUS_SUCCESS, "",  $array);
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $array);
     }
-    
 
     private function sendNotification(string $title, string $body, string $device_token, array $dataPayload = [], array $more_tokens = [])
     {
         $iosToken = $this->getIOSToken($device_token);
         if ($iosToken != false) {
             return $this->sendIOSPushNotification($iosToken, $title, $body, $dataPayload);
-            //return;
+            // return;
         }
-        
+
         $filePath = '/home/1301327.cloudwaysapps.com/xvvfqaxdrz/public_html/vendor/APISDK/personalni-trener-440e6-firebase-adminsdk-vjod3-044775a4e4.json';
-        
+
         $client = new Client($filePath);
         $notification = new Notification();
-        $notification->setNotification($title, $body);
-        
-        if (!empty($dataPayload)) {
-            $notification->setDataPayload($dataPayload);
-        }
-        
-        $allTokens = array_merge([$device_token], $more_tokens);
-        
-        /* var_dump($notification);
-        var_dump($client);
-        die(); */
-
-        foreach ($allTokens as $token) {
-            $recipient = new Recipient();
-            $recipient->setSingleRecipient($token);
-            
-            $client->build($recipient, $notification);
-            $client->fire();
-        }
-        
-       
-         return $this->formatResponse(self::STATUS_SUCCESS, "Android", []);
-
-        /* $client = new Client($filePath);
-
-        $recipient = new Recipient();
-        $notification = new Notification();
-
-        $recipient->setSingleRecipient($device_token);
-        
-
         $notification->setNotification($title, $body);
 
         if (! empty($dataPayload)) {
             $notification->setDataPayload($dataPayload);
         }
 
-        $client->build($recipient, $notification);
-        $client->fire(); */
- 
+        $allTokens = array_merge([
+            $device_token
+        ], $more_tokens);
+
+        /*
+         * var_dump($notification);
+         * var_dump($client);
+         * die();
+         */
+
+        foreach ($allTokens as $token) {
+            $recipient = new Recipient();
+            $recipient->setSingleRecipient($token);
+
+            $client->build($recipient, $notification);
+            $client->fire();
+        }
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "Android", []);
+
+        /*
+         * $client = new Client($filePath);
+         *
+         * $recipient = new Recipient();
+         * $notification = new Notification();
+         *
+         * $recipient->setSingleRecipient($device_token);
+         *
+         *
+         * $notification->setNotification($title, $body);
+         *
+         * if (! empty($dataPayload)) {
+         * $notification->setDataPayload($dataPayload);
+         * }
+         *
+         * $client->build($recipient, $notification);
+         * $client->fire();
+         */
     }
-    
-    function getIOSToken($string) {
+
+    function getIOSToken($string)
+    {
         // Provjeri jesu li prva 4 karaktera "ios_"
         if (substr($string, 0, 4) === "ios_") {
             // Izvuci ostatak stringa nakon "ios_"
@@ -2665,48 +2671,48 @@ class Sdk extends Api
     private function testMail()
     {
         $mail = new PHPMailer(true);
-        
+
         try {
             $mail->isSMTP();
-            $mail->Host       = 'smtp.gmail.com';
-            $mail->SMTPAuth   = true;
-            $mail->Username   = 'ptrenersrb@gmail.com';
-            $mail->Password   = 'dlvw rdak ejtk yqlm';
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'ptrenersrb@gmail.com';
+            $mail->Password = 'dlvw rdak ejtk yqlm';
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port       = 587;
-            
+            $mail->Port = 587;
+
             // Recipients
             $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
             $mail->addAddress('nikola.bojovic9@gmail.com');
             $mail->addCC('arsen.leontijevic@gmail.com');
-            
+
             // Content
             $mail->isHTML(true);
             $mail->Subject = 'Test email from app';
-            $mail->Body    = '<b>Hello! This is a test email.</b>';
+            $mail->Body = '<b>Hello! This is a test email.</b>';
             $mail->AltBody = 'Hello! This is a test email.';
-            
+
             $mail->send();
             echo 'Message has been sent';
         } catch (Exception $e) {
             echo "Message could not be sent. Error: {$mail->ErrorInfo}";
         }
-         
-         return $this->formatResponse(self::STATUS_SUCCESS, "", $mail);
+
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $mail);
     }
-    
+
     private function testInvoices()
     {
         $invoice_model = new Invoices($this->dbAdapter);
-        
+
         $is_monthly = "0";
-        
+
         if ($is_monthly == "0") {
             $invoice_model->addInvoiceYearly("2", "2025-02-07");
         } else {
             $invoice_model->addInvoiceMonthly("2", "2025-02-07");
         }
-        
+
         return $this->formatResponse(self::STATUS_SUCCESS, "", $err);
     }
 
@@ -2717,11 +2723,11 @@ class Sdk extends Api
         $user->access_token = $this->getAccessToken($userRow);
         return $user;
     }
-    
-    
-    function generateJwtToken() {
+
+    function generateJwtToken()
+    {
         $teamId = 'Y266NUKF5C'; // Zamijeni s tvojim Team ID-om
-        $keyId = 'KFC3Z6HL52';   // Zamijeni s tvojim Key ID-om
+        $keyId = 'KFC3Z6HL52'; // Zamijeni s tvojim Key ID-om
         $p8FilePath = __DIR__ . DIRECTORY_SEPARATOR . 'AuthKey_KFC3Z6HL52.p8';
         try {
             // Učitaj privatni ključ iz .p8 datoteke
@@ -2729,63 +2735,63 @@ class Sdk extends Api
             if ($privateKeyContent === false) {
                 throw new Exception("Ne mogu učitati .p8 datoteku iz putanje: $p8FilePath");
             }
-            
+
             // Parsiraj privatni ključ
             $privateKey = openssl_pkey_get_private($privateKeyContent);
             if ($privateKey === false) {
                 throw new Exception("Ne mogu parsirati privatni ključ: " . openssl_error_string());
             }
-            
+
             $issuedAt = time();
             $expirationTime = $issuedAt + 315360000;
-            
+
             // Pripremi payload za JWT
             $payload = [
-                'iss' => $teamId,       // Issuer (Team ID)
-                'iat' => $issuedAt,        // Issued At (trenutno vrijeme)
+                'iss' => $teamId, // Issuer (Team ID)
+                'iat' => $issuedAt, // Issued At (trenutno vrijeme)
                 'exp' => $expirationTime // Istječe za 1 god otp
             ];
-            
+
             // Pripremi header za JWT
             $header = [
-                'alg' => 'ES256',       // Algoritam za potpisivanje (Apple zahtijeva ES256)
-                'kid' => $keyId         // Key ID
+                'alg' => 'ES256', // Algoritam za potpisivanje (Apple zahtijeva ES256)
+                'kid' => $keyId // Key ID
             ];
-            
+
             // Generiraj JWT token
             $jwtToken = JWT::encode($payload, $privateKey, 'ES256', $keyId, $header);
-            
+
             // Oslobodi resurse
             openssl_free_key($privateKey);
-            //echo $jwtToken;
+            // echo $jwtToken;
             return $jwtToken;
         } catch (Exception $e) {
             error_log("Greška pri generiranju JWT tokena: " . $e->getMessage());
             return null;
         }
     }
-    
-    private function sendIOSPush(){
-        
+
+    private function sendIOSPush()
+    {
         $request = $this->filterParams([
             'device_token'
         ]);
         return $this->sendIOSPushNotification($request["device_token"], "Gym Trainer", "Trening je zakazan za sutra u 10h");
     }
-    
-    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = []){
-            
-        //return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
+
+    private function sendIOSPushNotification($deviceToken, $title, $body, $dataPayload = [])
+    {
+
+        // return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
         $bundleId = 'com.sei.GymTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
         $jwtToken = $this->generateJwtToken();
-        
+
         if (is_null($jwtToken)) {
             return $this->formatResponse(self::STATUS_FAILED, "Failed generating JWT", []);
         }
-        
-        
-        //Payload za push notifikaciju
+
+        // Payload za push notifikaciju
         $payload = json_encode([
             'aps' => [
                 'alert' => [
@@ -2797,7 +2803,7 @@ class Sdk extends Api
             ],
             'type' => $dataPayload['type']
         ]);
-        
+
         // Slanje push notifikacije pomoću curl
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $apnsUrl);
@@ -2811,25 +2817,24 @@ class Sdk extends Api
         curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2_0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_VERBOSE, true);
-        
+
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
+
         curl_close($ch);
         if ($response === false) {
             return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
             return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}, Device Token: {$deviceToken}", []);
         }
-        
     }
-    
+
     private function logError($message, $logFile)
     {
         $timestamp = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         file_put_contents($logFile, "[{$timestamp}] ERROR: {$message}\n", FILE_APPEND);
     }
-    
+
     public function testPaymentInit()
     {
         // Simulate $_POST or filterParams equivalent
@@ -2841,11 +2846,11 @@ class Sdk extends Api
             'email' => 'testuser@example.com',
             'is_monthly' => '1'
         ];
-        
+
         try {
             // Call your initPayment method
             $response = $this->initPayment();
-            
+
             // Dump the response for inspection
             echo "<pre>";
             print_r($response);
@@ -2854,18 +2859,19 @@ class Sdk extends Api
             echo "Exception during test: " . $e->getMessage();
         }
     }
-    
+
     function getBaseUrl(): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
+        $protocol = (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https" : "http";
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $script = $_SERVER['SCRIPT_NAME'] ?? ''; // e.g. /index.php or /api.php
         $path = rtrim(dirname($script), '/\\'); // removes file part
-        
+
         return $protocol . '://' . $host . $path;
     }
-    
-    private function getForgotPassLanguageMail(string $lang, string $generated_pass){
+
+    private function getForgotPassLanguageMail(string $lang, string $generated_pass)
+    {
         $forgotpassmail = [
             'en' => "
                     <html>
@@ -2937,7 +2943,7 @@ class Sdk extends Api
                             </body>
                         </html>
                         ",
-            'sr' => "
+            'sr-Latn' => "
                         <html>
                             <head>
                                 <style>
@@ -2972,17 +2978,22 @@ class Sdk extends Api
                             </body>
                         </html>
                     "
-                    ];
-        
-        if($lang == "en") return $forgotpassmail['en'];
-        else if ($lang == "sr") return $forgotpassmail['sr'];
-        else if ($lang == "ru") return $forgotpassmail['ru'];
-        else return $forgotpassmail['en'];
+        ];
+
+        if ($lang == "en")
+            return $forgotpassmail['en'];
+        else if ($lang == "sr-Latn")
+            return $forgotpassmail['sr-Latn'];
+        else if ($lang == "ru")
+            return $forgotpassmail['ru'];
+        else
+            return $forgotpassmail['en'];
     }
 
-    private function getForgotPassEcho(string $lang){
+    private function getForgotPassEcho(string $lang)
+    {
         $languageReturn = [
-            "sr"=>"
+            "sr-Latn" => "
                 <html>
                     <head>
                         <title>Reset uspešan</title>
@@ -3017,7 +3028,7 @@ class Sdk extends Api
                     </body>
                 </html>
                 ",
-            "en"=>"<html>
+            "en" => "<html>
                 <head>
                     <title>Reset Successful</title>
                     <script>
@@ -3050,7 +3061,7 @@ class Sdk extends Api
                     </div>
                 </body>
             </html>",
-            "ru"=>"<html>
+            "ru" => "<html>
                     <head>
                         <title>Сброс выполнен успешно</title>
                         <script>
@@ -3084,14 +3095,19 @@ class Sdk extends Api
                     </body>
                 </html>"
         ];
-        
-        if($lang == "en") return $languageReturn['en'];
-        else if ($lang == "sr") return $languageReturn['sr'];
-        else if ($lang == "ru") return $languageReturn['ru'];
-        else return $languageReturn['en'];
+
+        if ($lang == "en")
+            return $languageReturn['en'];
+        else if ($lang == "sr-Latn")
+            return $languageReturn['sr-Latn'];
+        else if ($lang == "ru")
+            return $languageReturn['ru'];
+        else
+            return $languageReturn['en'];
     }
-    
-    private function getPasswordCheckMail(string $lang, string $generated_link){
+
+    private function getPasswordCheckMail(string $lang, string $generated_link)
+    {
         $languageReturn = [
             "en" => "<html>
                         <head>
@@ -3130,7 +3146,7 @@ class Sdk extends Api
                             </div>
                         </body>
                     </html>",
-            "sr" => "
+            "sr-Latn" => "
                             <html>
                                 <head>
                                     <style>
@@ -3207,15 +3223,19 @@ class Sdk extends Api
                         </body>
                     </html>"
         ];
-        
-        if($lang == "en") return $languageReturn['en'];
-        else if ($lang == "sr") return $languageReturn['sr'];
-        else if ($lang == "ru") return $languageReturn['ru'];
-        else return $languageReturn['en'];
-        
+
+        if ($lang == "en")
+            return $languageReturn['en'];
+        else if ($lang == "sr-Latn")
+            return $languageReturn['sr-Latn'];
+        else if ($lang == "ru")
+            return $languageReturn['ru'];
+        else
+            return $languageReturn['en'];
     }
-    
-    private function getRegisterMail(string $lang, string $hash){
+
+    private function getRegisterMail(string $lang, string $hash)
+    {
         $languageReturn = [
             "en" => '
                     <html>
@@ -3235,7 +3255,7 @@ class Sdk extends Api
                         </div>
                       </body>
                     </html>',
-            "sr" => '
+            "sr-Latn" => '
                     <html>
                       <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
                         <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -3271,19 +3291,23 @@ class Sdk extends Api
                         </div>
                       </body>
                     </html>'
-                    ];
-        
-        if($lang == "en") return $languageReturn['en'];
-        else if ($lang == "sr") return $languageReturn['sr'];
-        else if ($lang == "ru") return $languageReturn['ru'];
-        else return $languageReturn['en'];
-        
+        ];
+
+        if ($lang == "en")
+            return $languageReturn['en'];
+        else if ($lang == "sr-Latn")
+            return $languageReturn['sr-Latn'];
+        else if ($lang == "ru")
+            return $languageReturn['ru'];
+        else
+            return $languageReturn['en'];
     }
-    
-    private function getTransactionRejectedMail(string $lang, string $error_code){
+
+    private function getTransactionRejectedMail(string $lang, string $error_code)
+    {
         // Error code messages in all three languages
         $errorMessages = [
-            'sr' => [
+            'sr-Latn' => [
                 '2003' => 'Transakcija je odbijena od strane banke.',
                 '2019' => 'Transakcija je odbijena. Podaci sa kartice koji ste uneli nisu validni.',
                 '2021' => 'Vaša 3DSecure autentifikacija nije uspela. Molimo pozovite banku koja vam je izdala karticu.',
@@ -3302,14 +3326,14 @@ class Sdk extends Api
                 '2016' => 'Транзакция отклонена. Пожалуйста, свяжитесь со своим банком.'
             ]
         ];
-        
+
         // Fallback in case of unknown error code
-        $message_sr = $errorMessages['sr'][$error_code] ?? 'Došlo je do greške prilikom obrade transakcije.';
+        $message_sr = $errorMessages['sr-Latn'][$error_code] ?? 'Došlo je do greške prilikom obrade transakcije.';
         $message_en = $errorMessages['en'][$error_code] ?? 'An error occurred while processing your transaction.';
         $message_ru = $errorMessages['ru'][$error_code] ?? 'Произошла ошибка при обработке транзакции.';
-        
+
         $mails = [
-            'sr' => "
+            'sr-Latn' => "
             <html>
                 <head>
                     <style>
@@ -3343,7 +3367,7 @@ class Sdk extends Api
                 </body>
             </html>
         ",
-        'en' => "
+            'en' => "
             <html>
                 <head>
                     <style>
@@ -3377,7 +3401,7 @@ class Sdk extends Api
                 </body>
             </html>
         ",
-        'ru' => "
+            'ru' => "
             <html>
                 <head>
                     <style>
@@ -3412,12 +3436,15 @@ class Sdk extends Api
             </html>
         "
         ];
-        
-        if ($lang == "sr") return $mails['sr'];
-        else if ($lang == "ru") return $mails['ru'];
-        else return $mails['en'];
+
+        if ($lang == "sr-Latn")
+            return $mails['sr-Latn'];
+        else if ($lang == "ru")
+            return $mails['ru'];
+        else
+            return $mails['en'];
     }
-    
+
     /*
      * $merchant_key = "TREESRS";
      * $authenticity_token = "";
