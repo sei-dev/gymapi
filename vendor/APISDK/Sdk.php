@@ -2013,6 +2013,7 @@ class Sdk extends Api
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
                 $error_code = "";
+                $this->logError($error->getErrorCode(), $logFile);
                 if ($error) {
                     $errorDetails = sprintf(
                         "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
