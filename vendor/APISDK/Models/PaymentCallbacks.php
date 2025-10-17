@@ -28,7 +28,7 @@ class PaymentCallbacks extends ModelAbstract implements ModelInterface
 	
 	public function insertItem(string $merchant_transaction_id, string $json){
 	    $sQuery = "INSERT INTO payment_callback (merchant_transaction_id, json_result)
-	    VALUES ('$merchant_transaction_id', '$json',)";
+	    VALUES ('$merchant_transaction_id', '$json')";
 	    
 	    return $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	}
