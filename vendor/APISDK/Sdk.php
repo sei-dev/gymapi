@@ -1872,6 +1872,9 @@ class Sdk extends Api
 
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
+            
+            $callback_model = new PaymentCallbacks($this->dbAdapter);
+            $callback_model->insertItem($transactionId, $callbackInput);
 
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
@@ -1945,8 +1948,6 @@ class Sdk extends Api
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
         }
 
-        $callback_model = new PaymentCallbacks($this->dbAdapter);
-        $callback_model->insertItem($transactionId, $callbackInput);
         // Always respond OK at the end
         $this->respondOk();
     }
