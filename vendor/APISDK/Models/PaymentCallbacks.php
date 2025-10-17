@@ -17,11 +17,12 @@ class PaymentCallbacks extends ModelAbstract implements ModelInterface
 		$this->setDbAdapter($dbAdapter);
 	}
 	
-	public function getItemByMerchantTransactionId(string $merchant_transaction_id){
-	    $sQuery = "SELECT * FROM payment_callback WHERE merchant_transaction_id={$merchant_transaction_id}
-                    LIMIT 1;
-				";
-	        
+	public function getItemByMerchantTransactionId(string $merchant_transaction_id) {
+	    // Escape the value properly
+	    $escapedId = $this->getDbAdapter()->quote($merchant_transaction_id);
+	    
+	    $sQuery = "SELECT * FROM payment_callback WHERE merchant_transaction_id = {$escapedId} LIMIT 1";
+	    
 	    $result = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    return !empty($result) ? $result[0] : null;
 	}
