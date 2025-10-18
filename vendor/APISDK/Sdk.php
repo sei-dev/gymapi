@@ -1698,7 +1698,7 @@ class Sdk extends Api
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
                 $errors = $result->getErrors();
-                $response['status'] = "error";
+                $response['status'] = $result->getReturnType();
                 $response['errors'] = $errors;
 
                 return $this->formatResponse(self::STATUS_FAILED, "", $response);
@@ -1707,7 +1707,7 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
-                $response['status'] = "redirect";
+                $response['status'] = $result->getReturnType();
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
@@ -1719,22 +1719,11 @@ class Sdk extends Api
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
                 die();
-            } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
-                // payment is pending, wait for callback to complete
-
-                $response['status'] = "pending";
-
-                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
-
-                die();
-
-                // handle pending
-                // setCartToPending();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
 
                 // ovde sam stao nesto
 
-                $response['status'] = "success";
+                $response['status'] = $result->getReturnType();
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
@@ -1785,6 +1774,7 @@ class Sdk extends Api
             }
         } catch (Exception $e) {
             file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: " . $e . "\n", FILE_APPEND);
+            return $this->formatResponse(self::STATUS_FAILED, "", []);
         }
     }
 
@@ -1911,7 +1901,6 @@ class Sdk extends Api
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
-                // $debug_td = var_export($error, true);
 
                 $error_code = 0;
                 if ($error) {
@@ -1923,26 +1912,6 @@ class Sdk extends Api
 
                 $this->logError("CODE:" . $code, $logFile);
 
-                $mail = new PHPMailer();
-
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'ptrenersrb@gmail.com';
-                $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-
-                $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-                $mail->addAddress($request['email']);
-                $mail->addAddress('nikola.bojovic9@gmail.com');
-                $mail->addCC('arsen.leontijevic@gmail.com');
-                $mail->Subject = 'Personalni trener - transakcija';
-                // Set HTML
-                $mail->isHTML(TRUE);
-                $mail->Body = $this->getTransactionRejectedMail($lang, $code);
-
-                $mail->send();
             }
         } catch (Exception $e) {
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
