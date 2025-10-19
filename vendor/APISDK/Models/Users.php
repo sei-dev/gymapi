@@ -309,7 +309,8 @@ class Users extends ModelAbstract implements ModelInterface
                    cities.city as location FROM training_clients
                    LEFT JOIN users ON users.id = training_clients.client_id
                    LEFT JOIN cities ON users.city_id = cities.id
-                   WHERE training_clients.training_id = {$training_id};
+                   WHERE training_clients.training_id = {$training_id}
+                    AND training_clients.cancelled = 0;
                 ";
         $row = $this->getDbAdapter()
             ->query($sQuery)
