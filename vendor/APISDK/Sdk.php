@@ -1803,7 +1803,7 @@ class Sdk extends Api
         $result = $callback_model->getItemByMerchantTransactionId($request['merchant_transaction_id']);
         
         if($result==null){
-            return $this->formatResponse(self::STATUS_FAILED, "", $result);
+            return $this->formatResponse(self::STATUS_FAILED, "", json_decode($result, true));
         }
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
