@@ -9,7 +9,6 @@ use APISDK\Models\Trainings;
 use APISDK\Models\Cities;
 use APISDK\Models\Measurements;
 use APISDK\Models\Gyms;
-use APISDK\Models\PaymentCallbacks;
 use phpFCMv1\Client;
 use phpFCMv1\Notification;
 use phpFCMv1\Recipient;
@@ -546,7 +545,8 @@ class Sdk extends Api
         $request = $this->filterParams([
             'training_id',
             'client_id',
-            'trainer_id'
+            'trainer_id',
+            'notification'
         ]);
 
         $training_model = new Trainings($this->dbAdapter);
@@ -1698,7 +1698,7 @@ class Sdk extends Api
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
                 $errors = $result->getErrors();
-                $response['status'] = $result->getReturnType();
+                $response['status'] = "error";
                 $response['errors'] = $errors;
 
                 return $this->formatResponse(self::STATUS_FAILED, "", $response);
@@ -1707,7 +1707,7 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
-                $response['status'] = $result->getReturnType();
+                $response['status'] = "redirect";
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
@@ -1719,11 +1719,22 @@ class Sdk extends Api
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
                 die();
+            } elseif ($result->getReturnType() == Result::RETURN_TYPE_PENDING) {
+                // payment is pending, wait for callback to complete
+
+                $response['status'] = "pending";
+
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
+
+                die();
+
+                // handle pending
+                // setCartToPending();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_FINISHED) {
 
                 // ovde sam stao nesto
 
-                $response['status'] = $result->getReturnType();
+                $response['status'] = "success";
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
@@ -1774,11 +1785,115 @@ class Sdk extends Api
             }
         } catch (Exception $e) {
             file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Error: " . $e . "\n", FILE_APPEND);
-            return $this->formatResponse(self::STATUS_FAILED, "", []);
         }
     }
 
-    
+    /*
+     * private function callback()
+     * {
+     * $logFile = __DIR__ . '/callback_error_log.txt';
+     * $varDumpFile = __DIR__ . '/var_dump_log.txt';
+     *
+     * $api_user = "personal-api";
+     * $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
+     * $connector_api_key = "personal-simulator";
+     * $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+     * $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
+     *
+     * $request = $this->filterParams([
+     * 'id',
+     * 'is_monthly',
+     * 'email'
+     * ]);
+     *
+     * try {
+     * $valid = $client->validateCallbackWithGlobals();
+     *
+     * if (!$valid) {
+     * $this->logError("Callback validation failed.", $logFile);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("Exit not valid", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * $callbackInput = file_get_contents('php://input');
+     * if (!$callbackInput) {
+     * $this->logError("Empty callback input received.", $logFile);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("input not valid", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * $callbackResult = $client->readCallback($callbackInput);
+     * $transactionId = $callbackResult->getMerchantTransactionId();
+     *
+     * $customer_id = $request['id'];
+     * $is_monthly = $request['is_monthly'];
+     * $email = $request['email'];
+     *
+     *
+     * $user_model = new Users($this->dbAdapter);
+     * $invoice_model = new Invoices($this->dbAdapter);
+     *
+     * // Avoid duplicate processing
+     * if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
+     * file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Skipped duplicate callback for $transactionId\n", FILE_APPEND);
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("Transaction already handled", true), FILE_APPEND);
+     * die();
+     * }
+     *
+     * if ($callbackResult->getResult() === CallbackResult::RESULT_OK) {
+     * $current_sub_date = $user_model->getSubLength($customer_id);
+     * $date = $current_sub_date ? \DateTimeImmutable::createFromFormat('Y-m-d', $current_sub_date) : null;
+     *
+     * $current_date = new \DateTimeImmutable();
+     * $period_to_add = $is_monthly == "1" ? '+1 month' : '+1 year';
+     *
+     * if (!$date || $date < $current_date) {
+     * $date = $current_date;
+     * }
+     *
+     * $new_date = $date->modify($period_to_add)->format('Y-m-d');
+     *
+     * // Update user subscription
+     * $user_model->updateSub($customer_id, $new_date);
+     *
+     * // Save invoice and mark transaction as handled
+     * if ($is_monthly == "1") {
+     * $invoice_model->addInvoiceMonthly($customer_id, $new_date, $transactionId);
+     * $this->sandboxReceiptMonthly($email);
+     * } else {
+     * $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
+     * }
+     *
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("200 OK", true), FILE_APPEND);
+     * die();
+     * } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
+     * $errorDetails = sprintf(
+     * "Payment failed. ErrorMessage: %s, ErrorCode: %s, AdapterMessage: %s, AdapterCode: %s",
+     * $callbackResult->getErrorMessage(),
+     * $callbackResult->getErrorCode(),
+     * $callbackResult->getAdapterMessage(),
+     * $callbackResult->getAdapterCode()
+     * );
+     * $this->logError($errorDetails, $logFile);
+     * }
+     * } catch (Exception $e) {
+     * $this->logError("Exception caught: " . $e->getMessage(), $logFile);
+     * }
+     *
+     * http_response_code(200);
+     * echo "OK";
+     * file_put_contents($logFile, print_r("200 OK End", true), FILE_APPEND);
+     * die();
+     * }
+     */
     private function callback()
     {
         $logFile = __DIR__ . '/callback_error_log.txt';
@@ -1862,9 +1977,6 @@ class Sdk extends Api
 
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
-            
-            $callback_model = new PaymentCallbacks($this->dbAdapter);
-            $callback_model->insertItem($transactionId, $callbackInput);
 
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
@@ -1896,11 +2008,11 @@ class Sdk extends Api
                     $invoice_model->addInvoiceYearly($customer_id, $new_date, $transactionId);
                     $this->sandboxReceiptYearly($email, $transactionData);
                 }
-                
 
                 file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] Processed transaction: $transactionId\n", FILE_APPEND);
             } elseif ($callbackResult->getResult() === CallbackResult::RESULT_ERROR) {
                 $error = $callbackResult->getFirstError();
+                // $debug_td = var_export($error, true);
 
                 $error_code = 0;
                 if ($error) {
@@ -1912,6 +2024,26 @@ class Sdk extends Api
 
                 $this->logError("CODE:" . $code, $logFile);
 
+                $mail = new PHPMailer();
+
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'ptrenersrb@gmail.com';
+                $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+                $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+                $mail->addAddress($request['email']);
+                $mail->addAddress('nikola.bojovic9@gmail.com');
+                $mail->addCC('arsen.leontijevic@gmail.com');
+                $mail->Subject = 'Personalni trener - transakcija';
+                // Set HTML
+                $mail->isHTML(TRUE);
+                $mail->Body = $this->getTransactionRejectedMail($lang, $code);
+
+                $mail->send();
             }
         } catch (Exception $e) {
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
@@ -1919,22 +2051,6 @@ class Sdk extends Api
 
         // Always respond OK at the end
         $this->respondOk();
-    }
-    
-    private function fetchPaymentStatus(){
-        
-        $request = $this->filterParams([
-            'merchant_transaction_id'
-        ]);
-        
-        $callback_model = new PaymentCallbacks($this->dbAdapter);
-        $result = $callback_model->getItemByMerchantTransactionId($request['merchant_transaction_id']);
-        
-        if($result==null){
-            return $this->formatResponse(self::STATUS_FAILED, "", $result);
-        }
-        
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function respondOk()
