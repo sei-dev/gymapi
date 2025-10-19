@@ -24,7 +24,7 @@ class PaymentCallbacks extends ModelAbstract implements ModelInterface
 	    $sQuery = "SELECT json_result FROM payment_callback WHERE merchant_transaction_id = {$escapedId} LIMIT 1";
 	    
 	    $result = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    return !empty($result) ? $result[0] : null;
+	    return !empty($result) ? $result[0]['json_result'] : null;
 	}
 	
 	public function insertItem(string $merchant_transaction_id, string $json){
