@@ -1866,7 +1866,7 @@ class Sdk extends Api
             $json = json_decode($callbackInput, true);
             
             $callback_model = new PaymentCallbacks($this->dbAdapter);
-            $callback_model->insertItem($transactionId, json_encode($json));
+            $callback_model->insertItem($transactionId, $json);
 
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
