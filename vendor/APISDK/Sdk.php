@@ -25,6 +25,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use DateTime;
 use WdevRs\NetRacuniPhp\InvoiceResponse as NetRacunResponse;
 use WdevRs\NetRacuniPhp\NetRacuniClient as NetRacun;
+use APISDK\Models\PaymentCallbacks;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -574,8 +575,10 @@ class Sdk extends Api
             $client['device_token']
         ];
 
-        $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload, $moreTokens);
-
+        if($request['notification'] == "1"){
+            $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload, $moreTokens);
+        }
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
@@ -1977,6 +1980,13 @@ class Sdk extends Api
 
             $user_model = new Users($this->dbAdapter);
             $invoice_model = new Invoices($this->dbAdapter);
+
+            
+            $callback_model = new PaymentCallbacks($this->dbAdapter);
+            
+            $data = json_encode(json_decode($callbackInput, true), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $callback_model->insertItem($transactionId, $data);
+            
 
             // Avoid duplicate processing
             if ($invoice_model->wasTransactionAlreadyHandled($transactionId)) {
