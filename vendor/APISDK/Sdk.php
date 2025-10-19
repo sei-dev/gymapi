@@ -1947,26 +1947,7 @@ class Sdk extends Api
 
                 $this->logError("CODE:" . $code, $logFile);
 
-                $mail = new PHPMailer();
-
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';
-                $mail->SMTPAuth = true;
-                $mail->Username = 'ptrenersrb@gmail.com';
-                $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
-
-                $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-                $mail->addAddress($request['email']);
-                $mail->addAddress('nikola.bojovic9@gmail.com');
-                $mail->addCC('arsen.leontijevic@gmail.com');
-                $mail->Subject = 'Personalni trener - transakcija';
-                // Set HTML
-                $mail->isHTML(TRUE);
-                $mail->Body = $this->getTransactionRejectedMail($lang, $code);
-
-                $mail->send();
+                
             }
         } catch (Exception $e) {
             $this->logError("Exception caught: " . $e->getMessage(), $logFile);
