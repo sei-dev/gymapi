@@ -1806,7 +1806,7 @@ class Sdk extends Api
             return $this->formatResponse(self::STATUS_FAILED, "", json_decode($result, true));
         }
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", json_decode($result, true));
     }
 
     
