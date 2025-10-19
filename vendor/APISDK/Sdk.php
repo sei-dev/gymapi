@@ -1701,7 +1701,7 @@ class Sdk extends Api
             if ($result->getReturnType() == Result::RETURN_TYPE_ERROR) {
                 // error handling
                 $errors = $result->getErrors();
-                $response['status'] = "error";
+                $response['status'] = RETURN_TYPE_ERROR;
                 $response['errors'] = $errors;
 
                 return $this->formatResponse(self::STATUS_FAILED, "", $response);
@@ -1710,7 +1710,7 @@ class Sdk extends Api
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
                 // redirect the user
 
-                $response['status'] = "redirect";
+                $response['status'] = RETURN_TYPE_REDIRECT;
                 $response['redirectUrl'] = $result->getRedirectUrl();
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
@@ -1737,7 +1737,7 @@ class Sdk extends Api
 
                 // ovde sam stao nesto
 
-                $response['status'] = "success";
+                $response['status'] = RETURN_TYPE_FINISHED;
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
