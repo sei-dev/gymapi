@@ -177,12 +177,12 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, training.trainer_id as trainer_id,
                    gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group, training.cancelled, training.finished,
                    training.time, training_clients.cancelled as one_cancelled,
-                	    GROUP_CONCAT(DISTINCT client.id) AS client_ids FROM training
+                	    GROUP_CONCAT(DISTINCT client.client_id) AS client_ids FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN gyms ON training.gym_id = gyms.id
                    LEFT JOIN cities ON gyms.city_id = cities.id
                    LEFT JOIN training_clients ON training.id = training_clients.training_id 
-                    LEFT JOIN users client ON (training_clients.client_id = client.id and training_clients.cancelled = 0)
+                    LEFT JOIN training_clients client ON (training.id = client.training_id and client.cancelled = 0)
 				   WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}';
 				    ";
 	    
