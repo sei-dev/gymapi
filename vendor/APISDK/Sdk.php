@@ -1655,13 +1655,13 @@ class Sdk extends Api
             $price = $invoice_item['price'];
         }
         
-        $threeDSecure = new ThreeDSecureData();
+        $threeDSecure = new \Exchange\Client\Data\ThreeDSecureData();
         
         $threeDSecure
         ->setBrowserAcceptHeader($_SERVER['HTTP_ACCEPT'] ?? '/')
         ->setBrowserUserAgent($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown')
-        ->setBrowserScreenHeight(1080)
-        ->setBrowserScreenWidth(1920)
+        ->setBrowserScreenHeight(700)
+        ->setBrowserScreenWidth(500)
         ->setBrowserColorDepth(24)
         ->setBrowserLanguage(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'en', 0, 2))
         ->setBrowserTZ((int)(-date('Z') / 60));
