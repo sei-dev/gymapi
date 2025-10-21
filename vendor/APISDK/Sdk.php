@@ -1604,11 +1604,10 @@ class Sdk extends Api
         $logFile = __DIR__ . '/init_error_log.txt';
 
         $request['token'] = str_replace(' ', '+', $request['token']);
-        $api_user = "personal-api";
-        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-        // OVDE ALLSECURE MENJAJ prod
-        $connector_api_key = "personal-simulator";
-        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+        $api_user = "personal-1025-api";
+        $api_password = "0wZAi#G#4Z@F13dZp3ktaYFeeu*GD";
+        $connector_api_key = "personal-rfb-01";
+        $connector_shared_secret = "9woAbQKFOyIWMrzR518GGtcjeUbG4J";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
         $request['token'] = str_replace(' ', '+', $request['token']);
         /*
@@ -1765,11 +1764,10 @@ class Sdk extends Api
 
             $logFile = __DIR__ . '/deregister_error_log.txt';
 
-            $api_user = "personal-api";
-            $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-            // OVDE ALLSECURE MENJAJ prod
-            $connector_api_key = "personal-simulator";
-            $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+            $api_user = "personal-1025-api";
+            $api_password = "0wZAi#G#4Z@F13dZp3ktaYFeeu*GD";
+            $connector_api_key = "personal-rfb-01";
+            $connector_shared_secret = "9woAbQKFOyIWMrzR518GGtcjeUbG4J";
             $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
 
             $deregister = new Deregister();
@@ -1815,10 +1813,10 @@ class Sdk extends Api
         $logFile = __DIR__ . '/callback_error_log.txt';
         $varDumpFile = __DIR__ . '/var_dump_log.txt';
 
-        $api_user = "personal-api";
-        $api_password = "fvQoizXF7R.@LU#sCUzOj%$=Nm3+a";
-        $connector_api_key = "personal-simulator";
-        $connector_shared_secret = "9VkcsOb0snZRUAxiBeN0KaxPFFqPRb";
+        $api_user = "personal-1025-api";
+        $api_password = "0wZAi#G#4Z@F13dZp3ktaYFeeu*GD";
+        $connector_api_key = "personal-rfb-01";
+        $connector_shared_secret = "9woAbQKFOyIWMrzR518GGtcjeUbG4J";
         $client = new ExchangeClient($api_user, $api_password, $connector_api_key, $connector_shared_secret);
 
         $request = $this->filterParams([
