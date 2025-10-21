@@ -1703,7 +1703,7 @@ class Sdk extends Api
                 $response['status'] = $result->getReturnType();
                 $response['errors'] = $errors;
 
-                return $this->formatResponse(self::STATUS_FAILED, "", $response);
+                return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
 
                 die();
             } elseif ($result->getReturnType() == Result::RETURN_TYPE_REDIRECT) {
@@ -1750,6 +1750,7 @@ class Sdk extends Api
         } else {
 
             $errors = $result->getErrors();
+            $this->logError($errors, $logFile);
         }
 
         return $this->formatResponse(self::STATUS_FAILED, "", $errors);
