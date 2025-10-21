@@ -1756,10 +1756,10 @@ class Sdk extends Api
                 $response['status'] = $result->getReturnType();;
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
-                $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
+                /* $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
                 $response['card_type'] = $creditcardData->getBinBrand();
                 $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
-                $response['flag'] = $flag;
+                $response['flag'] = $flag; */
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
                 die();
