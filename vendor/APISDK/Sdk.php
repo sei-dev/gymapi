@@ -1703,6 +1703,9 @@ class Sdk extends Api
             ->setCustomer($customer);
 
         $result = $client->debit($debit);
+        
+        $debug_result = var_export($result, true);
+        $this->logError($debug_result, $logFile);
 
         if ($result->isSuccess()) {
 
