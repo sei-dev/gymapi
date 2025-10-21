@@ -1768,7 +1768,8 @@ class Sdk extends Api
         }
 
         $errors = $result->getErrors();
-        $this->logError($errors, $logFile);
+        $debug_td = var_export($errors, true);
+        $this->logError($debug_td, $logFile);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $errors);
     }
