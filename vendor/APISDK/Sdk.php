@@ -19,7 +19,7 @@ use Exchange\Client\Transaction\Result;
 use Exchange\Client\Transaction\Deregister;
 use Exchange\Client\StatusApi\StatusRequestData;
 use Exchange\Client\Callback\Result as CallbackResult;
-use Exchange\Client\Transaction\ThreeDSecureData;
+use Exchange\Client\Data\ThreeDSecureData;
 use APISDK\Models\Invoices;
 use APISDK\Models\Countries;
 use PHPMailer\PHPMailer\PHPMailer;
