@@ -1194,6 +1194,8 @@ class Sdk extends Api
         } else {
             $lang = "en";
         }
+        
+        $email = preg_replace('/(?<=\S)\s(?=\S)/', '+', $request['email']);
 
         $users_model = new Users($this->dbAdapter);
 
@@ -1207,7 +1209,7 @@ class Sdk extends Api
 
         $hash = md5(time());
 
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $email, $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
 
         $mail = new PHPMailer();
 
@@ -1220,8 +1222,8 @@ class Sdk extends Api
         $mail->Port = 587;
 
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress($request['email']);
-        $mail->addAddress('nikola.bojovic9@gmail.com');
+        $mail->addAddress($email);
+        $mail->addCC('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Potvrda naloga';
         // Set HTML
@@ -1453,7 +1455,9 @@ class Sdk extends Api
         $hash = md5(time());
 
         $userModel = new Users($this->dbAdapter);
-        $user = (array) $userModel->getUserByEmail($request["email"]);
+        
+        $email = preg_replace('/(?<=\S)\s(?=\S)/', '+', $request['email']);
+        $user = (array) $userModel->getUserByEmail($email);
 
         $userModel->setMailHash($user['id'], $hash);
 
@@ -1478,7 +1482,7 @@ class Sdk extends Api
         $mail->Port = 587;
 
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress($user['email']);
+        $mail->addAddress($email);
         $mail->addCC('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Zahtev za promenu lozinke';
