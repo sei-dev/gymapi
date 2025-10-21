@@ -1748,12 +1748,12 @@ class Sdk extends Api
                 die();
             }
         } else {
-
             $errors = $result->getErrors();
-            $this->logError($errors, $logFile);
+            $debug_td = var_export($errors, true);
+            $this->logError($debug_td, $logFile);
         }
 
-        return $this->formatResponse(self::STATUS_FAILED, "", $errors);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $errors);
     }
 
     private function deregisterCard()
