@@ -1664,7 +1664,7 @@ class Sdk extends Api
         ->setBrowserScreenWidth(500)
         ->setBrowserColorDepth(24)
         ->setBrowserLanguage(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'en', 0, 2))
-        ->setBrowserTZ((int)(-date('Z') / 60));
+        ->setBrowserTimeZone((int)(-date('Z') / 60));
 
         $debit = new Debit();
         
