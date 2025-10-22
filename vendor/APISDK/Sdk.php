@@ -1315,7 +1315,7 @@ class Sdk extends Api
         $users = $users_model->getTrainers($request['is_male'], $request['city_id']);
 
         array_walk($users, function (&$a) {
-            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+            if ($this->isImageExists($a["id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
