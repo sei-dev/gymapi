@@ -158,9 +158,20 @@ class Sdk extends Api
      * return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
      * }
      */
+    
+    
     private function isFileExists($dir, $id)
     {
         return file_exists(self::DIR_UPLOADS . DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $id . ".png");
+    }
+    
+    private function isImageExists($id)
+    {
+        
+        $upload_dir = $_SERVER['DOCUMENT_ROOT'] . "/images/users/";
+        $upload_path = $upload_dir . $id . ".png";
+        
+        return file_exists($upload_path);
     }
 
     private function getTodayTrainingsByTrainerId()
@@ -943,9 +954,13 @@ class Sdk extends Api
      */
     private function populateUserModel(array $user)
     {
+        if(!isset($user["id"])){
+            throw new \Exception("No userID specified");
+        }
+        
         $users_model = new Users($this->dbAdapter);
         $training_model = new Trainings($this->dbAdapter);
-        if ($this->isFileExists(self::DIR_USERS, $user["id"])) {
+        if ($this->isImageExists($user["id"])) {
             $user['image'] = $this->domain . "/images/users/" . $user["id"] . ".png?r=" . rand(0, 100000);
         } else {
             $user['image'] = $this->domain . "/images/users/logo.png";
@@ -1194,8 +1209,6 @@ class Sdk extends Api
         } else {
             $lang = "en";
         }
-        
-        $email = preg_replace('/(?<=\S)\s(?=\S)/', '+', $request['email']);
 
         $users_model = new Users($this->dbAdapter);
 
@@ -1209,7 +1222,7 @@ class Sdk extends Api
 
         $hash = md5(time());
 
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $email, $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
 
         $mail = new PHPMailer();
 
@@ -1222,8 +1235,8 @@ class Sdk extends Api
         $mail->Port = 587;
 
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress($email);
-        $mail->addCC('nikola.bojovic9@gmail.com');
+        $mail->addAddress($request['email']);
+        $mail->addAddress('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Potvrda naloga';
         // Set HTML
@@ -1455,9 +1468,7 @@ class Sdk extends Api
         $hash = md5(time());
 
         $userModel = new Users($this->dbAdapter);
-        
-        $email = preg_replace('/(?<=\S)\s(?=\S)/', '+', $request['email']);
-        $user = (array) $userModel->getUserByEmail($email);
+        $user = (array) $userModel->getUserByEmail($request["email"]);
 
         $userModel->setMailHash($user['id'], $hash);
 
@@ -1482,7 +1493,7 @@ class Sdk extends Api
         $mail->Port = 587;
 
         $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress($email);
+        $mail->addAddress($user['email']);
         $mail->addCC('nikola.bojovic9@gmail.com');
         $mail->addCC('arsen.leontijevic@gmail.com');
         $mail->Subject = 'Zahtev za promenu lozinke';
@@ -1668,7 +1679,7 @@ class Sdk extends Api
         ->setBrowserScreenWidth(500)
         ->setBrowserColorDepth(24)
         ->setBrowserLanguage(substr($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? 'en', 0, 2))
-        ->setBrowserTimeZone((int)(-date('Z') / 60));
+        ->setBrowserTimezone((-date('Z') / 60));
 
         $debit = new Debit();
         
@@ -1707,9 +1718,6 @@ class Sdk extends Api
             ->setCustomer($customer);
 
         $result = $client->debit($debit);
-        
-        $debug_result = var_export($result, true);
-        $this->logError($debug_result, $logFile);
 
         if ($result->isSuccess()) {
 
@@ -1760,9 +1768,9 @@ class Sdk extends Api
                 $response['status'] = $result->getReturnType();;
                 $response['uuid'] = $gatewayReferenceId;
                 $response['merchant_transaction_id'] = $merchantTransactionId;
-//                 $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
-//                 $response['card_type'] = $creditcardData->getBinBrand();
-//                 $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
+                $response['price_full'] = $result->getAmount() . " " . $result->getCurrency();
+                $response['card_type'] = $creditcardData->getBinBrand();
+                $response['bank_code'] = isset($extraData['authCode']) ? $extraData['authCode'] : "XXXX";
                 $response['flag'] = $flag;
 
                 return $this->formatResponse(self::STATUS_SUCCESS, "", $response);
