@@ -2666,9 +2666,9 @@ class Sdk extends Api
 
     function generateJwtToken()
     {
-        $teamId = 'Y266NUKF5C'; // Zamijeni s tvojim Team ID-om
-        $keyId = 'KFC3Z6HL52'; // Zamijeni s tvojim Key ID-om
-        $p8FilePath = __DIR__ . DIRECTORY_SEPARATOR . 'AuthKey_KFC3Z6HL52.p8';
+        $teamId = 'L546VT8SZ5'; // Zamijeni s tvojim Team ID-om
+        $keyId = 'MCFC3D7UC8'; // Zamijeni s tvojim Key ID-om
+        $p8FilePath = __DIR__ . DIRECTORY_SEPARATOR . 'AuthKey_MCFC3D7UC8.p8';
         try {
             // Učitaj privatni ključ iz .p8 datoteke
             $privateKeyContent = file_get_contents($p8FilePath);
