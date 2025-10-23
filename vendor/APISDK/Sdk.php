@@ -494,7 +494,10 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $this->sendNotification($trainer['first_name'] . " je zakazao novi trening.", $date . " u " . $time, $client["device_token"], $dataPayload);
+        $newTrainingMessage = $this->getTranslatedMessage('new_training', $this->getAppLanguage(), [
+            'first_name' => $trainer['first_name'],
+        ]);
+        $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
@@ -531,7 +534,14 @@ class Sdk extends Api
         ];
 
         foreach ($clients as $one) {
-            $this->sendNotification($trainer['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $one["device_token"], $dataPayload);
+            $trainerCancelMessage = $this->getTranslatedMessage('training_canceled_by_trainer', $this->getAppLanguage(), [
+                'first_name' => $trainer['first_name'],
+            ]);
+            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $this->getAppLanguage(), [
+                'date' => $date,
+                'time' => $time,
+            ]);
+            $this->sendNotification($trainerCancelMessage, $cancelInfo, $one['device_token'], $dataPayload);
         }
 
         foreach ($params as $one) {
@@ -592,7 +602,14 @@ class Sdk extends Api
         ];
 
         if($request['notification'] == "1"){
-            $this->sendNotification($client['first_name'] . " je otkazao trening.", "Trening je bio zakazan za " . $date . " u " . $time, $trainer["device_token"], $dataPayload, $moreTokens);
+            $clientCancelMessage = $this->getTranslatedMessage('training_canceled_by_client', $language, [
+                'first_name' => $client['first_name'],
+            ]);
+            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $language, [
+                'date' => $date,
+                'time' => $time,
+            ]);
+            $this->sendNotification($clientCancelMessage, $cancelInfo, $trainer['device_token'], $dataPayload, $moreTokens);
         }
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
@@ -1139,7 +1156,8 @@ class Sdk extends Api
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
 
-        $result = $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
+        $newRequestMessage = $this->getTranslatedMessage('new_request', $this->getAppLanguage());
+        $this->sendNotification($newRequestMessage, $client['first_name'] . ' ' . $client['last_name'], $trainer['device_token'], $dataPayload);
         
         //$this->logError($message, $logFile);
         
@@ -1169,8 +1187,9 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $this->sendNotification("Zahtev prihvaćen", $client["first_name"] . " " . $client["last_name"], $client["device_token"], $dataPayload);
-
+        $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $this->getAppLanguage());
+        $this->sendNotification($requestAcceptedMessage, $client['first_name'] . ' ' . $client['last_name'], $client['device_token'], $dataPayload);
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
 
@@ -3549,6 +3568,48 @@ class Sdk extends Api
         else
             return $mails['en'];
     }
+    
+    private function getTranslatedMessage($key, $language, $params = []) {
+        // Default to English if language is not supported
+        $lang = in_array($language, ['en', 'ru', 'sr']) ? $language : 'en';
+        
+        // Get the message template
+        $message = $this->translations[$lang][$key] ?? $this->translations['en'][$key];
+        
+        // Replace placeholders with actual values
+        foreach ($params as $placeholder => $value) {
+            $message = str_replace('{' . $placeholder . '}', $value, $message);
+        }
+        
+        return $message;
+    }
+    
+    private $translations = [
+        'en' => [
+            'new_training' => '{first_name} has scheduled a new training.',
+            'training_canceled_by_trainer' => '{first_name} has canceled the training.',
+            'training_canceled_by_client' => '{first_name} has canceled the training.',
+            'canceled_training_info' => 'The training was scheduled for {date} at {time}.',
+            'new_request' => 'New request',
+            'request_accepted' => 'Request accepted',
+        ],
+        'ru' => [
+            'new_training' => '{first_name} запланировал(а) новую тренировку.',
+            'training_canceled_by_trainer' => '{first_name} отменил(а) тренировку.',
+            'training_canceled_by_client' => '{first_name} отменил(а) тренировку.',
+            'canceled_training_info' => 'Тренировка была запланирована на {date} в {time}.',
+            'new_request' => 'Новый запрос',
+            'request_accepted' => 'Запрос принят',
+        ],
+        'sr' => [
+            'new_training' => '{first_name} je zakazao novi trening.',
+            'training_canceled_by_trainer' => '{first_name} je otkazao trening.',
+            'training_canceled_by_client' => '{first_name} je otkazao trening.',
+            'canceled_training_info' => 'Trening je bio zakazan za {date} u {time}.',
+            'new_request' => 'Novi zahtev',
+            'request_accepted' => 'Zahtev prihvaćen',
+        ],
+    ];
 
     /*
      * $merchant_key = "TREESRS";
