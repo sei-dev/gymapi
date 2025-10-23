@@ -1212,10 +1212,10 @@ class Sdk extends Api
         
         $request['email'] = preg_replace('/\s/', '+', trim($request['email']));
         
-        if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
+//         if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
             
-            return $this->formatResponse(self::STATUS_FAILED, "INVALID");
-        }
+//             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
+//         }
 
         $users_model = new Users($this->dbAdapter);
 
@@ -1410,10 +1410,10 @@ class Sdk extends Api
         ]);
         $request['email'] = preg_replace('/\s/', '+', trim($request['email']));
         
-        if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
+//         if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
             
-            return $this->formatResponse(self::STATUS_FAILED, "INVALID");
-        }
+//             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
+//         }
 
         $user_model = new Users($this->dbAdapter);
         $user = $user_model->getUserByEmail($request['email']);
