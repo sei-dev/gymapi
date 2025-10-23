@@ -119,7 +119,11 @@ class Sdk extends Api
 
         if (method_exists($this, $request['action'])) {
             $action = $request['action'];
-            $this->setResponse($this->$action());
+            
+            $logFile = __DIR__ . '/api.log';
+            $response = $this->$action();
+            $this->logError(json_encode($request).json_encode($response), $logFile);
+            $this->setResponse($response);
         } else {
             $this->setResponse($this->formatResponse("fail", "Unknown action", array()));
         }
@@ -1135,7 +1139,11 @@ class Sdk extends Api
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
 
-        return $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
+        $result = $this->sendNotification("Novi zahtev", $client["first_name"] . " " . $client["last_name"], $trainer["device_token"], $dataPayload);
+        
+        //$this->logError($message, $logFile);
+        
+        return $result;
 
         // return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
@@ -2778,7 +2786,7 @@ class Sdk extends Api
         if ($response === false) {
             return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . curl_error($ch) . "", []);
         } else {
-            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}, Device Token: {$deviceToken}", []);
+            return $this->formatResponse(self::STATUS_SUCCESS, "Push notifikacija poslana. HTTP kod: " . $httpCode . ". Odgovor: {$response}, Device Token: {$deviceToken}", $dataPayload);
         }
     }
 
