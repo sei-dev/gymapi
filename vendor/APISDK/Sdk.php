@@ -2723,7 +2723,7 @@ class Sdk extends Api
     {
 
         // return $this->formatResponse(self::STATUS_FAILED, "Greška pri slanju push notifikacije: " . $deviceToken . "", []);
-        $bundleId = 'sei.com.PTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
+        $bundleId = 'com.sei.PTrainer'; // Zamijeni s Bundle ID-om tvoje aplikacije
         $apnsUrl = 'https://api.sandbox.push.apple.com:443/3/device/' . $deviceToken; // Koristi api.push.apple.com za produkciju
         $jwtToken = $this->generateJwtToken();
 
