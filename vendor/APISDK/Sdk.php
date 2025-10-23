@@ -494,7 +494,7 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $newTrainingMessage = $this->getTranslatedMessage('new_training', $this->getAppLanguage(), [
+        $newTrainingMessage = $this->getTranslatedMessage('new_training', $this->getAppLanguage() ?: 'en', [
             'first_name' => $trainer['first_name'],
         ]);
         $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
@@ -534,10 +534,10 @@ class Sdk extends Api
         ];
 
         foreach ($clients as $one) {
-            $trainerCancelMessage = $this->getTranslatedMessage('training_canceled_by_trainer', $this->getAppLanguage(), [
+            $trainerCancelMessage = $this->getTranslatedMessage('training_canceled_by_trainer', $this->getAppLanguage() ?: 'en', [
                 'first_name' => $trainer['first_name'],
             ]);
-            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $this->getAppLanguage(), [
+            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $this->getAppLanguage() ?: 'en', [
                 'date' => $date,
                 'time' => $time,
             ]);
@@ -1156,7 +1156,7 @@ class Sdk extends Api
             'user' => $client['first_name'] . " " . $client['last_name']
         ];
 
-        $newRequestMessage = $this->getTranslatedMessage('new_request', $this->getAppLanguage());
+        $newRequestMessage = $this->getTranslatedMessage('new_request', $this->getAppLanguage() ?: 'en');
         $this->sendNotification($newRequestMessage, $client['first_name'] . ' ' . $client['last_name'], $trainer['device_token'], $dataPayload);
         
         //$this->logError($message, $logFile);
@@ -1187,7 +1187,7 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $this->getAppLanguage());
+        $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $ti);
         $this->sendNotification($requestAcceptedMessage, $client['first_name'] . ' ' . $client['last_name'], $client['device_token'], $dataPayload);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
