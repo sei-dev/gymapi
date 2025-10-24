@@ -1358,6 +1358,8 @@ class Sdk extends Api
             
             $sharedSecret = 'c35d802af7c44a44b4f9a3bdd6292219'; // App Store Connect: App-Specific Shared Secret
             
+            $request["receipt_data"] = urldecode($request["receipt_data"] ?? '');
+            
             $postData = json_encode([
                 'receipt-data' => $request["receipt_data"],
                 'password' => $sharedSecret,
