@@ -1374,22 +1374,22 @@ class Sdk extends Api
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             
             if ($response === false) {
-                $this->formatResponse(self::STATUS_FAILED, curl_error($ch), []);
+                return $this->formatResponse(self::STATUS_FAILED, curl_error($ch), []);
             }
             
             curl_close($ch);
             
             $json = json_decode($response, true);
             if ($json === null) {
-                $this->formatResponse(self::STATUS_FAILED, 'Invalid JSON response from Apple', []);
+                return $this->formatResponse(self::STATUS_FAILED, 'Invalid JSON response from Apple', []);
             }
             
             // status 0 = valid receipt
             if (isset($json['status']) && $json['status'] === 0) {
-                $this->formatResponse(self::STATUS_SUCCESS, 'Invalid JSON response from Apple', $json);
+                return $this->formatResponse(self::STATUS_SUCCESS, 'Invalid JSON response from Apple', $json);
             }
             
-            $this->formatResponse(self::STATUS_FAILED, 'Receipt invalid or expired. Status: ' . ($json['status'] ?? 'unknown'), $json);
+            return $this->formatResponse(self::STATUS_FAILED, 'Receipt invalid or expired. Status: ' . ($json['status'] ?? 'unknown'), $json);
     }
     
 
