@@ -1322,7 +1322,7 @@ class Sdk extends Api
         $users = $users_model->searchConnectedTrainers($request['id'], $request['search_param']);
 
         array_walk($users, function (&$a) {
-            if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
+            if ($this->isImageExists($a["id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
@@ -1337,6 +1337,61 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
+    
+    /**
+     * Validate Apple IAP receipt
+     *
+     * @param string $receiptData Base64 encoded receipt
+     * @param bool $isSandbox Set true if validating sandbox receipts
+     * @return array ['success' => bool, 'data' => array, 'error' => string|null]
+     */
+    private function validatePurchase() {
+        
+        $request = $this->filterParams([
+            'receipt_data',
+            'is_sendbox'
+        ]);
+        
+        $endpoint = (bool)$request["is_sendbox"]
+        ? 'https://sandbox.itunes.apple.com/verifyReceipt'
+            : 'https://buy.itunes.apple.com/verifyReceipt';
+            
+            $sharedSecret = 'c35d802af7c44a44b4f9a3bdd6292219'; // App Store Connect: App-Specific Shared Secret
+            
+            $postData = json_encode([
+                'receipt-data' => $request["receipt_data"],
+                'password' => $sharedSecret,
+                'exclude-old-transactions' => true
+            ]);
+            
+            $ch = curl_init($endpoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            if ($response === false) {
+                $this->formatResponse(self::STATUS_FAILED, curl_error($ch), []);
+            }
+            
+            curl_close($ch);
+            
+            $json = json_decode($response, true);
+            if ($json === null) {
+                $this->formatResponse(self::STATUS_FAILED, 'Invalid JSON response from Apple', []);
+            }
+            
+            // status 0 = valid receipt
+            if (isset($json['status']) && $json['status'] === 0) {
+                $this->formatResponse(self::STATUS_SUCCESS, 'Invalid JSON response from Apple', $json);
+            }
+            
+            $this->formatResponse(self::STATUS_FAILED, 'Receipt invalid or expired. Status: ' . ($json['status'] ?? 'unknown'), $json);
+    }
+    
 
     private function getAllTrainers()
     {
