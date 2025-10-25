@@ -1393,13 +1393,11 @@ class Sdk extends Api
                 $callback_model = new PaymentCallbacks($this->dbAdapter);
                 
                 
-                $transactionId =  $json["latest_receipt_info"]["transaction_id"];
+                $transactionId =  isset($json["latest_receipt_info"]["transaction_id"]) ? $json["latest_receipt_info"]["transaction_id"] : md5(time());
                 $is_monthly =  $json["latest_receipt_info"]["product_id"];
                 
                 $new_datestamp = $json["latest_receipt_info"]["expires_date_ms"];
                 $new_date = date("Y-m-d", $new_datestamp);
-                
-                $transactionId = isset($transactionId) ? $transactionId : md5(time());
                 
                 // Update user subscription
                 $user_model->updateSub($this->user_id, $new_date);
@@ -1413,7 +1411,7 @@ class Sdk extends Api
                     //$this->sandboxReceiptYearly($email, $transactionData);
                 }
                 
-                $data = json_encode($decodedResponse, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $data = json_encode($json, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
                 $callback_model->insertItem($transactionId, $data);
                 
                 return $this->formatResponse(self::STATUS_SUCCESS, '', $json);
