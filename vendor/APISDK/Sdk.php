@@ -1394,8 +1394,8 @@ class Sdk extends Api
                 
                 
                 $decodedResponse = json_decode($json, true);
-                $transactionId =  $decodedResponse["result"]["latest_receipt_info"]["transaction_id"];
-                $is_monthly =  $decodedResponse["result"]["latest_receipt_info"]["product_id"];
+                $transactionId =  $decodedResponse["latest_receipt_info"]["transaction_id"];
+                $is_monthly =  $decodedResponse["latest_receipt_info"]["product_id"];
                 
                 $new_datestamp = $decodedResponse["result"]["latest_receipt_info"]["expires_date_ms"];
                 $new_date = date("Y-m-d", $new_datestamp);
