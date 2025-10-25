@@ -1399,7 +1399,8 @@ class Sdk extends Api
                 $is_monthly =  $latestReceiept["product_id"];
                 
                 $new_datestamp = $latestReceiept["expires_date_ms"];
-                $new_date = date("Y-m-d", $new_datestamp);
+                $seconds = $new_datestamp / 1000;
+                $new_date = date("Y-m-d", $seconds);
                 
                 // Update user subscription
                 $user_model->updateSub($this->user_id, $new_date);
