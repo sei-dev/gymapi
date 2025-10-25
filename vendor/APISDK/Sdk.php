@@ -1388,7 +1388,34 @@ class Sdk extends Api
             
             // status 0 = valid receipt
             if (isset($json['status']) && $json['status'] === 0) {
-                return $this->formatResponse(self::STATUS_SUCCESS, 'Invalid JSON response from Apple', $json);
+                $user_model = new Users($this->dbAdapter);
+                $invoice_model = new Invoices($this->dbAdapter);
+                $callback_model = new PaymentCallbacks($this->dbAdapter);
+                
+                
+                $decodedResponse = json_decode($json, true);
+                $transactionId =  $decodedResponse["result"]["latest_receipt_info"]["transaction_id"];
+                $is_monthly =  $decodedResponse["result"]["latest_receipt_info"]["product_id"];
+                
+                $new_datestamp = $decodedResponse["result"]["latest_receipt_info"]["expires_date_ms"];
+                $new_date = date("Y-m-d", $new_datestamp);
+                
+                // Update user subscription
+                $user_model->updateSub($this->user_id, $new_date);
+                
+                // Save invoice and mark transaction as handled
+                if ($is_monthly == "Monthly") {
+                    $invoice_model->addInvoiceMonthly($this->user_id, $new_date, $transactionId);
+                    //$this->sandboxReceiptMonthly($email, $transactionData);
+                } else {
+                    $invoice_model->addInvoiceYearly($this->user_id, $new_date, $transactionId);
+                    //$this->sandboxReceiptYearly($email, $transactionData);
+                }
+                
+                $data = json_encode($decodedResponse, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $callback_model->insertItem($transactionId, $data);
+                
+                return $this->formatResponse(self::STATUS_SUCCESS, '', $json);
             }
             
             return $this->formatResponse(self::STATUS_FAILED, 'Receipt invalid or expired. Status: ' . ($json['status'] ?? 'unknown'), $json);
