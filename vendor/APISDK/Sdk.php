@@ -1393,10 +1393,12 @@ class Sdk extends Api
                 $callback_model = new PaymentCallbacks($this->dbAdapter);
                 
                 
-                $transactionId =  isset($json["latest_receipt_info"]["transaction_id"]) ? $json["latest_receipt_info"]["transaction_id"] : md5(time());
-                $is_monthly =  $json["latest_receipt_info"]["product_id"];
+                $latestReceiept = $json["latest_receipt_info"][0];
                 
-                $new_datestamp = $json["latest_receipt_info"]["expires_date_ms"];
+                $transactionId =  isset($latestReceiept["transaction_id"]) ? $latestReceiept["transaction_id"] : md5(time());
+                $is_monthly =  $latestReceiept["product_id"];
+                
+                $new_datestamp = $latestReceiept["expires_date_ms"];
                 $new_date = date("Y-m-d", $new_datestamp);
                 
                 // Update user subscription
