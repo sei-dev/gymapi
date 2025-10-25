@@ -1393,11 +1393,10 @@ class Sdk extends Api
                 $callback_model = new PaymentCallbacks($this->dbAdapter);
                 
                 
-                $decodedResponse = json_decode($json, true);
-                $transactionId =  $decodedResponse["latest_receipt_info"]["transaction_id"];
-                $is_monthly =  $decodedResponse["latest_receipt_info"]["product_id"];
+                $transactionId =  $json["latest_receipt_info"]["transaction_id"];
+                $is_monthly =  $json["latest_receipt_info"]["product_id"];
                 
-                $new_datestamp = $decodedResponse["result"]["latest_receipt_info"]["expires_date_ms"];
+                $new_datestamp = $json["latest_receipt_info"]["expires_date_ms"];
                 $new_date = date("Y-m-d", $new_datestamp);
                 
                 $transactionId = isset($transactionId) ? $transactionId : md5(time());
