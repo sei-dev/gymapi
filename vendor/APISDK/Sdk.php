@@ -1352,6 +1352,8 @@ class Sdk extends Api
             'is_sendbox'
         ]);
         
+        $request["is_sendbox"] = "1";
+        
         $endpoint = (bool)$request["is_sendbox"]
         ? 'https://sandbox.itunes.apple.com/verifyReceipt'
             : 'https://buy.itunes.apple.com/verifyReceipt';
