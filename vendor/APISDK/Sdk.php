@@ -1400,7 +1400,7 @@ class Sdk extends Api
                 $new_datestamp = $decodedResponse["result"]["latest_receipt_info"]["expires_date_ms"];
                 $new_date = date("Y-m-d", $new_datestamp);
                 
-                $transactionId = ($transactionId = null) ? "0" : $transactionId;
+                $transactionId = isset($transactionId) ? $transactionId : md5(time());
                 
                 // Update user subscription
                 $user_model->updateSub($this->user_id, $new_date);
