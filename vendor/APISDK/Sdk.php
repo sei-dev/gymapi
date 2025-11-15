@@ -1399,6 +1399,8 @@ class Sdk extends Api
             $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
         }
         
+        return $this->formatResponse(self::STATUS_SUCCESS, $connection, $users);
+        
         
         /**
          * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
