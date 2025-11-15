@@ -1384,25 +1384,20 @@ class Sdk extends Api
         $users_model = new Users($this->dbAdapter);
         $user = $users_model->getUserByEmail($request['email']);
         
-        /**
-         * OFFLINE FEATURE
-         */
-        $users[] = $user;
         
         //If user dont exist or not confirmed email, add connection
         $connection = ConnStatus::ACCEPTED;
         if ($user) {
+            $users[] = $user;
             //If user is using app, return -1, send request
             if ($user["email_confirmed"] == "1") {
                 $connection = ConnStatus::DEFAULT;
             }
+        }else{
+            $password = password_hash($request['password'], PASSWORD_BCRYPT);
+            $hash = md5(time());
+            $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
         }
-        
-        
-        $password = password_hash($request['password'], PASSWORD_BCRYPT);
-        $hash = md5(time());
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
-        
         
         
         /**
