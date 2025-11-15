@@ -427,14 +427,28 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
 
-    public function makeConnection(string $client_id, string $trainer_id)
+    public function makeAcceptedConnection(string $client_id, string $trainer_id)
     {
-        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`) VALUES ('{$trainer_id}','{$client_id}')
+        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`, `accepted`) VALUES ('{$trainer_id}','{$client_id}', '1')
                     ";
 
         $row = $this->getDbAdapter()
             ->query($sQuery)
             ->fetchAll(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        return false;
+    }
+    
+    public function makeConnection(string $client_id, string $trainer_id)
+    {
+        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`) VALUES ('{$trainer_id}','{$client_id}')
+                    ";
+        
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetchAll(\PDO::FETCH_ASSOC);
         if (isset($row)) {
             return $row;
         }

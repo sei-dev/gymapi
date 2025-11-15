@@ -9,6 +9,7 @@ use APISDK\Models\Trainings;
 use APISDK\Models\Cities;
 use APISDK\Models\Measurements;
 use APISDK\Models\Gyms;
+use \APISDK\ConnStatus;
 use phpFCMv1\Client;
 use phpFCMv1\Notification;
 use phpFCMv1\Recipient;
@@ -1266,25 +1267,29 @@ class Sdk extends Api
 //             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
 //         }
 
+        //Add random mail if is "-1"
         $request['email'] = $request['email'] == "-1" ? $this->randomOfflineEmail() : $request['email'];
         
 
         $users_model = new Users($this->dbAdapter);
-        
-        
         $user = $users_model->getUserByEmail($request['email']);
-            
         
+        /**
+         * OFFLINE FEATURE
+         */
+        $users[] = $user;
+        $connection = ConnStatus::NO_CONN;
+        //Check if its new client register by trainer
         if(isset($this->request["offline"]))
         {
+            //If user dont exist or not confirmed email, add connection
+            $connection = ConnStatus::ACCEPTED;
             if ($user) {
+                //If user is using app, return -1, send request
                 if ($user["email_confirmed"] == "1") {
-                    return $this->formatResponse(self::STATUS_FAILED, "-1");
-                }else{
-                    $request['email'] = null;
+                    $connection = ConnStatus::DEFAULT;
                 }
             }
-            
         }else{
             $this->request["offline"] = "0";
             if ($user) {
@@ -1293,11 +1298,32 @@ class Sdk extends Api
         }
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
-
         $hash = md5(time());
-
         $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $this->request["offline"]);
 
+        
+        
+        /**
+         * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
+         */
+        if ($connection == ConnStatus::ACCEPTED)
+        {
+            $users_model = new Users($this->dbAdapter);
+            $users = $users_model->makeAcceptedConnection($users[0]['id'], $this->user_id);
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+        }
+        if ($connection == ConnStatus::DEFAULT)
+        {
+            $this->request["trainer_id"] = $this->user_id;
+            $this->request["client_id"] = $users[0]['id'];
+            $this->sendRequestClient();
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+        }
+        /**
+         * END OFFLINE FEATURE
+         */
+        
+        
         $mail = new PHPMailer();
 
         $mail->isSMTP();
@@ -3800,4 +3826,9 @@ class Sdk extends Api
      * ];
      * }
      */
+}
+final class ConnStatus {
+    public const ACCEPTED  = '1';
+    public const NO_CONN = 'no_conn';
+    public const DEFAULT  = '0';
 }
