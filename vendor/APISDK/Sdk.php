@@ -659,6 +659,27 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
+    
+    private function createFitnessCenter()
+    {
+        $request = $this->filterParams([
+            'name',
+            'address',
+            'city_id',
+            'phone',
+            'city'
+        ]);
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        
+        $request["created_on"] = date("now");
+        
+        $gym_id = $gyms_model->getDbAdapter()->insert($request);
+        
+        $gyms = $gyms_model->addFitnessCenter($this->user_id, $gym_id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
 
     private function removeFitnessCenter()
     {
@@ -1224,6 +1245,7 @@ class Sdk extends Api
             'nationality',
             'country_id'
         ]);
+        
 
         if ($request['en'] == "1") {
             $lang = "en";
@@ -1244,12 +1266,29 @@ class Sdk extends Api
 //             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
 //         }
 
+        $request['email'] = $request['email'] == "-1" ? null : $request['email'];
+        
+
         $users_model = new Users($this->dbAdapter);
-
-        $user = $users_model->getUserByEmail($request['email']);
-
-        if ($user) {
-            return $this->formatResponse(self::STATUS_FAILED, "-1");
+        
+        if (!is_null($request['email'])){
+            $user = $users_model->getUserByEmail($request['email']);
+        }
+        
+        if(isset($this->request["offline"]))
+        {
+            if ($user) {
+                if ($user["email_confirmed"] == "1") {
+                    return $this->formatResponse(self::STATUS_FAILED, "-1");
+                }else{
+                    $request['email'] = null;
+                }
+            }
+            
+        }else{
+            if ($user) {
+                return $this->formatResponse(self::STATUS_FAILED, "-1");
+            }
         }
 
         $password = password_hash($request['password'], PASSWORD_BCRYPT);
