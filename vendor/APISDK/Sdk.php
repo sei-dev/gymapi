@@ -1286,6 +1286,7 @@ class Sdk extends Api
             }
             
         }else{
+            $this->request["offline"] = "0";
             if ($user) {
                 return $this->formatResponse(self::STATUS_FAILED, "-1");
             }
@@ -1295,7 +1296,7 @@ class Sdk extends Api
 
         $hash = md5(time());
 
-        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash);
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $this->request["offline"]);
 
         $mail = new PHPMailer();
 
