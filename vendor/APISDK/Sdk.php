@@ -1266,14 +1266,14 @@ class Sdk extends Api
 //             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
 //         }
 
-        $request['email'] = $request['email'] == "-1" ? null : $request['email'];
+        $request['email'] = $request['email'] == "-1" ? $this->randomOfflineEmail() : $request['email'];
         
 
         $users_model = new Users($this->dbAdapter);
         
-        if (!is_null($request['email'])){
-            $user = $users_model->getUserByEmail($request['email']);
-        }
+        
+        $user = $users_model->getUserByEmail($request['email']);
+            
         
         if(isset($this->request["offline"]))
         {
@@ -1320,6 +1320,17 @@ class Sdk extends Api
         $mail->send();
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
+    }
+    
+    private function randomOfflineEmail($length = 16) {
+        $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        $localPart = '';
+        
+        for ($i = 0; $i < $length; $i++) {
+            $localPart .= $characters[random_int(0, strlen($characters) - 1)];
+        }
+        
+        return $localPart . '@offline.usr';
     }
 
     private function searchMyClients()
