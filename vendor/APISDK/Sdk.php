@@ -1348,6 +1348,109 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
     }
     
+    private function registerClient()
+    {
+        $request = $this->filterParams([
+            'name',
+            'surname',
+            'email',
+            'phone',
+            'deadline',
+            'age',
+            'city_id',
+            'gender',
+            'password',
+            'en',
+            'rs',
+            'ru',
+            'is_trainer',
+            'nationality',
+            'country_id',
+            'offline'
+        ]);
+        
+        
+        $request['email'] = preg_replace('/\s/', '+', trim($request['email']));
+        
+        //         if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
+        
+        //             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
+        //         }
+        
+        //Add random mail if is "-1"
+        $request['email'] = $request['email'] == "-1" ? $this->randomOfflineEmail() : $request['email'];
+        
+        
+        $users_model = new Users($this->dbAdapter);
+        $user = $users_model->getUserByEmail($request['email']);
+        
+        /**
+         * OFFLINE FEATURE
+         */
+        $users[] = $user;
+        
+        //If user dont exist or not confirmed email, add connection
+        $connection = ConnStatus::ACCEPTED;
+        if ($user) {
+            //If user is using app, return -1, send request
+            if ($user["email_confirmed"] == "1") {
+                $connection = ConnStatus::DEFAULT;
+            }
+        }
+        
+        
+        $password = password_hash($request['password'], PASSWORD_BCRYPT);
+        $hash = md5(time());
+        $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
+        
+        
+        
+        /**
+         * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
+         */
+        if ($connection == ConnStatus::ACCEPTED)
+        {
+            $users_model = new Users($this->dbAdapter);
+            $users = $users_model->makeAcceptedConnection($users[0]['id'], $this->user_id);
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+        }
+        if ($connection == ConnStatus::DEFAULT)
+        {
+            $this->request["trainer_id"] = $this->user_id;
+            $this->request["client_id"] = $users[0]['id'];
+            $this->sendRequestClient();
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+        }
+        /**
+         * END OFFLINE FEATURE
+         */
+        
+        /**
+        $mail = new PHPMailer();
+        
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'ptrenersrb@gmail.com';
+        $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        
+        $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
+        $mail->addAddress($request['email']);
+        $mail->addAddress('nikola.bojovic9@gmail.com');
+        $mail->addCC('arsen.leontijevic@gmail.com');
+        $mail->Subject = 'Potvrda naloga';
+        // Set HTML
+        $mail->isHTML(TRUE);
+        $mail->Body = $this->getRegisterMail($lang, $hash);
+        
+        $mail->send();
+        **/
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
+}
+    
     private function randomOfflineEmail($length = 16) {
         $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $localPart = '';
