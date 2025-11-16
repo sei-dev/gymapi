@@ -1393,6 +1393,10 @@ class Sdk extends Api
             $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
         }
         
+        //return $this->formatResponse(self::STATUS_SUCCESS, $connection, $users);
+        
+        $userObject = (object) $users[0];
+        
         
         /**
          * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
@@ -1400,15 +1404,15 @@ class Sdk extends Api
         if ($connection == ConnStatus::ACCEPTED)
         {
             $users_model = new Users($this->dbAdapter);
-            $users = $users_model->makeAcceptedConnection($users[0]['id'], $this->user_id);
-            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+            $users = $users_model->makeAcceptedConnection($userObject->id, $this->user_id);
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser((array)$userObject));
         }
         if ($connection == ConnStatus::DEFAULT)
         {
             $this->request["trainer_id"] = $this->user_id;
-            $this->request["client_id"] = $users[0]['id'];
+            $this->request["client_id"] = $userObject->id;
             $this->sendRequestClient();
-            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser($users[0]));
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $this->returnUser((array)$userObject));
         }
         /**
          * END OFFLINE FEATURE
