@@ -430,7 +430,7 @@ class Users extends ModelAbstract implements ModelInterface
 
     public function makeAcceptedConnection(string $client_id, string $trainer_id)
     {
-        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`, `accepted`) VALUES ('{$trainer_id}','{$client_id}', '1')
+        $sQuery = "INSERT IGNORE INTO `connections`(`trainer_id`, `client_id`, `accepted`) VALUES ('{$trainer_id}','{$client_id}', '1')
                     ";
 
         $row = $this->getDbAdapter()
@@ -444,7 +444,7 @@ class Users extends ModelAbstract implements ModelInterface
     
     public function makeConnection(string $client_id, string $trainer_id, string $sent_by)
     {
-        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`, `sent_by`) VALUES ('{$trainer_id}','{$client_id}','{$sent_by}')
+        $sQuery = "INSERT IGNORE INTO `connections`(`trainer_id`, `client_id`, `sent_by`) VALUES ('{$trainer_id}','{$client_id}','{$sent_by}')
                     ";
         
         $row = $this->getDbAdapter()
