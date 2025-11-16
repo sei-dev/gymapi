@@ -1171,13 +1171,6 @@ class Sdk extends Api
 
         $client = $users_model->getUserById($request['client_id']);
 
-        $dataPayload = [
-            'type' => 'new_request',
-            'date' => "",
-            'time' => "",
-            'user' => $client['first_name'] . " " . $client['last_name']
-        ];
-        
         
         if($trainer['id'] == $this->user_id){
             $sender = $trainer;
@@ -1188,6 +1181,13 @@ class Sdk extends Api
             $sender = $client;
             $receiver = $trainer;
         }
+        
+        $dataPayload = [
+            'type' => 'new_request',
+            'date' => "",
+            'time' => "",
+            'user' => $sender['first_name'] . " " . $sender['last_name']
+        ];
 
         $newRequestMessage = $this->getTranslatedMessage('new_request', $this->getAppLanguage() ?: 'en');
         $this->sendNotification($newRequestMessage, $sender['first_name'] . ' ' . $sender['last_name'], $receiver['device_token'], $dataPayload);
