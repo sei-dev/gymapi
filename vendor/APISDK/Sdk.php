@@ -1381,6 +1381,8 @@ class Sdk extends Api
         
         //If user dont exist or not confirmed email, add connection
         $connection = ConnStatus::ACCEPTED;
+        $users = [];
+        
         if ($user) {
             // User exists
             $users[] = $user;
