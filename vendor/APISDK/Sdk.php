@@ -1400,6 +1400,7 @@ class Sdk extends Api
         $userToReturn = $this->returnUser((array)$userObject);
         $userToReturn = (array)$userToReturn;
         $userToReturn['connection'] = $connection;
+        
         /**
          * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
          */
@@ -1407,14 +1408,14 @@ class Sdk extends Api
         {
             $users_model = new Users($this->dbAdapter);
             $users = $users_model->makeAcceptedConnection($userObject->id, $this->user_id);
-            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $userToReturn);
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, json_encode($userToReturn));
         }
         if ($connection == ConnStatus::DEFAULT)
         {
             $this->request["trainer_id"] = $this->user_id;
             $this->request["client_id"] = $userObject->id;
             $this->sendRequestClient();
-            return $this->formatResponse(self::STATUS_SUCCESS, $connection, $userToReturn);
+            return $this->formatResponse(self::STATUS_SUCCESS, $connection, json_encode($userToReturn));
         }
         /**
          * END OFFLINE FEATURE
