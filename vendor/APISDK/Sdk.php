@@ -1212,16 +1212,26 @@ class Sdk extends Api
 
         $client = $users_model->getClientByConnectionId($request['id']);
         $trainer = $users_model->getTrainerByConnectionId($request['id']);
+        
+        if($trainer['id'] == $this->user_id){
+            $sender = $trainer;
+            $receiver = $client;
+        }
+        
+        if($client['id'] == $this->user_id){
+            $sender = $client;
+            $receiver = $trainer;
+        }
 
         $dataPayload = [
             'type' => 'accepted_request',
             'date' => "",
             'time' => "",
-            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+            'user' => $sender['first_name'] . " " . $sender['last_name']
         ];
 
         $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $this->getAppLanguage() ?: 'en');
-        $this->sendNotification($requestAcceptedMessage, $client['first_name'] . ' ' . $client['last_name'], $client['device_token'], $dataPayload);
+        $this->sendNotification($requestAcceptedMessage, $sender['first_name'] . ' ' . $sender['last_name'], $receiver['device_token'], $dataPayload);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
