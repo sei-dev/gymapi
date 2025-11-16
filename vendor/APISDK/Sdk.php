@@ -1376,7 +1376,7 @@ class Sdk extends Api
         
         
         $users_model = new Users($this->dbAdapter);
-        $user = $users_model->getUserByEmail($request['email']);
+        $user = $users_model->getClientByEmail($request['email']);
         
         
         //If user dont exist or not confirmed email, add connection
