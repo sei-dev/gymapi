@@ -498,6 +498,21 @@ class Users extends ModelAbstract implements ModelInterface
         }
         return false;
     }
+    
+    public function getClientByEmail(string $email)
+    {
+        $sQuery = "SELECT *
+				FROM " . self::getTablePrefix() . "users
+				WHERE email = '{$email}'AND is_trainer = '0'
+				LIMIT 1";
+        $row = $this->getDbAdapter()
+        ->query($sQuery)
+        ->fetch(\PDO::FETCH_ASSOC);
+        if (isset($row)) {
+            return $row;
+        }
+        return false;
+    }
 
     public function getUserByHash(string $hash)
     {
