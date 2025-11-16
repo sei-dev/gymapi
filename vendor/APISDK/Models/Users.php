@@ -52,6 +52,7 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
     
+    
     public function getConnectionPriceByIds(string $trainer_id, string $client_id)
     {
         $sQuery = "SELECT price FROM connections WHERE
@@ -393,7 +394,7 @@ class Users extends ModelAbstract implements ModelInterface
 
     public function getRequestsTrainer(string $trainer_id)
     {
-        $sQuery = "SELECT users.*, connections.id as connection_id, connections.connected_since,
+        $sQuery = "SELECT users.*, connections.id as connection_id, connections.connected_since, connections.sent_by,
                    cities.city as location 
                    FROM connections LEFT JOIN users ON users.id = connections.client_id
                    LEFT JOIN cities ON users.city_id = cities.id
@@ -411,7 +412,7 @@ class Users extends ModelAbstract implements ModelInterface
 
     public function getRequestsClient(string $client_id)
     {
-        $sQuery = "SELECT users.*, connections.id as connection_id, connections.connected_since,
+        $sQuery = "SELECT users.*, connections.id as connection_id, connections.connected_since, connections.sent_by,
                    cities.city as location
                    FROM connections LEFT JOIN users ON users.id = connections.trainer_id
                    LEFT JOIN cities ON users.city_id = cities.id
@@ -441,9 +442,9 @@ class Users extends ModelAbstract implements ModelInterface
         return false;
     }
     
-    public function makeConnection(string $client_id, string $trainer_id)
+    public function makeConnection(string $client_id, string $trainer_id, string $sent_by)
     {
-        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`) VALUES ('{$trainer_id}','{$client_id}')
+        $sQuery = "INSERT INTO `connections`(`trainer_id`, `client_id`, `sent_by`) VALUES ('{$trainer_id}','{$client_id}','{$sent_by}')
                     ";
         
         $row = $this->getDbAdapter()

@@ -1164,7 +1164,7 @@ class Sdk extends Api
         ]);
 
         $users_model = new Users($this->dbAdapter);
-        $users = $users_model->makeConnection($request['client_id'], $request['trainer_id']);
+        $users = $users_model->makeConnection($request['client_id'], $request['trainer_id'], $this->user_id);
 
         // Send notification
         $trainer = $users_model->getUserById($request['trainer_id']);
