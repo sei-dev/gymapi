@@ -1395,8 +1395,13 @@ class Sdk extends Api
         
         //return $this->formatResponse(self::STATUS_SUCCESS, $connection, $users);
         
+        // normalize the first user into array
+        $users[0] = (array) $users[0];
+        
+        // convert array → object safely
         $userObject = (object) $users[0];
         
+        // now these work without errors
         $userToReturn = $this->returnUser((array)$userObject);
         $userToReturn['connection'] = $connection;
         
