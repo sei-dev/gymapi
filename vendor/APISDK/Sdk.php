@@ -1382,15 +1382,39 @@ class Sdk extends Api
         //If user dont exist or not confirmed email, add connection
         $connection = ConnStatus::ACCEPTED;
         if ($user) {
+            // User exists
             $users[] = $user;
-            //If user is using app, return -1, send request
-            if ($user["email_confirmed"] == "1") {
+            
+            if ($user['email_confirmed'] ?? $user->email_confirmed ?? 0 == "1") {
                 $connection = ConnStatus::DEFAULT;
             }
-        }else{
+        } else {
+            // Create new user
             $password = password_hash($request['password'], PASSWORD_BCRYPT);
             $hash = md5(time());
-            $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
+            
+            $newUser = $users_model->register(
+                $request['name'],
+                $request['surname'],
+                $request['age'],
+                $request['phone'],
+                $password,
+                $request['email'],
+                $request['deadline'],
+                $request['gender'],
+                $request['city_id'],
+                $request['en'],
+                $request['rs'],
+                $request['ru'],
+                $request['is_trainer'],
+                $request['country_id'],
+                $request['nationality'],
+                $hash,
+                $request['offline']
+                );
+            
+            // CRITICAL: Ensure $newUser is an array or object we can work with
+            $users[] = is_array($newUser) ? $newUser : (array) $newUser;
         }
         
         //return $this->formatResponse(self::STATUS_SUCCESS, $connection, $users);
