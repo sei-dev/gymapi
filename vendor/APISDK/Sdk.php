@@ -1397,8 +1397,6 @@ class Sdk extends Api
         
         $userObject = (object) $users[0];
         
-        $userToReturn = $this->returnUser((array)$userObject);
-        $userToReturn['connection'] = $connection;
         
         /**
          * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
