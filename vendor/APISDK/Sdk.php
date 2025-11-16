@@ -1194,9 +1194,9 @@ class Sdk extends Api
         
         //$this->logError($message, $logFile);
         
-        return $result;
+        //return $result;
 
-        // return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $result);
     }
 
     private function acceptConnectionTrainer()
