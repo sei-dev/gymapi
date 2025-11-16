@@ -603,10 +603,10 @@ class Sdk extends Api
         ];
 
         if($request['notification'] == "1"){
-            $clientCancelMessage = $this->getTranslatedMessage('training_canceled_by_client', $language, [
+            $clientCancelMessage = $this->getTranslatedMessage('training_canceled_by_client', $this->getAppLanguage() ?: 'en', [
                 'first_name' => $client['first_name'],
             ]);
-            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $language, [
+            $cancelInfo = $this->getTranslatedMessage('canceled_training_info', $this->getAppLanguage() ?: 'en', [
                 'date' => $date,
                 'time' => $time,
             ]);
@@ -1209,7 +1209,7 @@ class Sdk extends Api
             'user' => $trainer['first_name'] . " " . $trainer['last_name']
         ];
 
-        $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $ti);
+        $requestAcceptedMessage = $this->getTranslatedMessage('request_accepted', $this->getAppLanguage() ?: 'en');
         $this->sendNotification($requestAcceptedMessage, $client['first_name'] . ' ' . $client['last_name'], $client['device_token'], $dataPayload);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
@@ -1372,12 +1372,6 @@ class Sdk extends Api
         
         $request['email'] = preg_replace('/\s/', '+', trim($request['email']));
         
-        //         if (!filter_var($request['email'], FILTER_VALIDATE_EMAIL)) {
-        
-        //             return $this->formatResponse(self::STATUS_FAILED, "INVALID");
-        //         }
-        
-        //Add random mail if is "-1"
         $request['email'] = $request['email'] == "-1" ? $this->randomOfflineEmail() : $request['email'];
         
         
@@ -1420,31 +1414,8 @@ class Sdk extends Api
          * END OFFLINE FEATURE
          */
         
-        /**
-        $mail = new PHPMailer();
-        
-        $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';
-        $mail->SMTPAuth = true;
-        $mail->Username = 'ptrenersrb@gmail.com';
-        $mail->Password = 'dlvw rdak ejtk yqlm'; // use the App Password
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = 587;
-        
-        $mail->setFrom('ptrenersrb@gmail.com', 'Personalni Trener');
-        $mail->addAddress($request['email']);
-        $mail->addAddress('nikola.bojovic9@gmail.com');
-        $mail->addCC('arsen.leontijevic@gmail.com');
-        $mail->Subject = 'Potvrda naloga';
-        // Set HTML
-        $mail->isHTML(TRUE);
-        $mail->Body = $this->getRegisterMail($lang, $hash);
-        
-        $mail->send();
-        **/
-        
         return $this->formatResponse(self::STATUS_SUCCESS, "", $this->returnUser($users[0]));
-}
+    }
     
     private function randomOfflineEmail($length = 16) {
         $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
