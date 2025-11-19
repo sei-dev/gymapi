@@ -855,6 +855,9 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
     }
     
+    /**
+     * Nova metoda
+     */
     private function getMeasurementsByIdsNew()
     {
         $request = $this->filterParams([

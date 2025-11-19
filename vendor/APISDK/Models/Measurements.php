@@ -45,6 +45,11 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	/**
+	 * 
+	 * COALESCE obezbedjuje da se uvek vrati array
+	 * 
+	 */
 	public function getMeasurementsByIdsNew(string $trainer_id, string $client_id){
 	    $sQuery = "
         SELECT
