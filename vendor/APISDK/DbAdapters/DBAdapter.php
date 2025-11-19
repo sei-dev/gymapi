@@ -12,7 +12,7 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	 * 
 	 * @var unknown
 	 */
-	private $db = null;
+	public $db = null;
 	
 	/**
 	 *
@@ -60,6 +60,18 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	public function quote($value)
 	{
 	    return $this->db->getConnection()->quote($value);
+	}
+	
+	/**
+	 * Prepare an SQL statement for execution.
+	 *
+	 * @param string $statement
+	 * @return \PDOStatement
+	 */
+	public function prepare($statement)
+	{
+	    // the prepare method is emulated by PDO, so no point in detected disconnection
+	    return $this->db->prepare($statement);
 	}
 		
 	/**

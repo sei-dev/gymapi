@@ -50,6 +50,18 @@ class CIAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	{
 		return $this->db->escape($sql);
 	}
+	
+	/**
+	 * Prepare an SQL statement for execution.
+	 *
+	 * @param string $statement
+	 * @return \PDOStatement
+	 */
+	public function prepare($statement)
+	{
+	    // the prepare method is emulated by PDO, so no point in detected disconnection
+	    return $this->db->prepare($statement);
+	}
 		
 	/**
 	* Query
