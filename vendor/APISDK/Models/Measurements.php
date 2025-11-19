@@ -45,6 +45,77 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function getMeasurementsByIdsNew(string $trainer_id, string $client_id){
+	    $sQuery = "
+        SELECT
+            m.*,
+            COALESCE(
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'id', e.id,
+                        'exercise', e.exercise,
+                        'repetitions', e.repetitions,
+                        'kilograms', e.kilograms,
+                        'measurement_id', e.measurement_id,
+                        'created_on', e.created_on
+                    )
+                ), JSON_ARRAY()
+            ) AS exercises
+        FROM measurements m
+        LEFT JOIN exercises e ON e.measurement_id = m.id
+        WHERE m.trainer_id = :trainer_id
+          AND m.client_id = :client_id
+        GROUP BY m.id
+    ";
+	    
+	    $stmt = $this->getDbAdapter()->prepare($sQuery);
+	    $stmt->execute([
+	        ':trainer_id' => $trainer_id,
+	        ':client_id'  => $client_id
+	    ]);
+	    
+	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	    
+	    return !empty($rows) ? $rows : false;
+	}
+	
+	
+	
+	
+	public function getMeasurementsByClientIdNew(string $client_id){
+	    $sQuery = "
+        SELECT
+            m.*,
+            u.first_name AS trainer_name,
+            u.last_name AS trainer_last_name,
+            COALESCE(
+                JSON_ARRAYAGG(
+                    JSON_OBJECT(
+                        'id', e.id,
+                        'exercise', e.exercise,
+                        'repetitions', e.repetitions,
+                        'kilograms', e.kilograms,
+                        'measurement_id', e.measurement_id,
+                        'created_on', e.created_on
+                    )
+                ), JSON_ARRAY()
+            ) AS exercises
+        FROM measurements m
+        LEFT JOIN exercises e ON e.measurement_id = m.id
+        LEFT JOIN users u ON u.id = m.trainer_id
+        WHERE m.client_id = :client_id
+        GROUP BY m.id
+    ";
+	    
+	    $stmt = $this->getDbAdapter()->prepare($sQuery);
+	    $stmt->execute([
+	        ':client_id' => $client_id
+	    ]);
+	    
+	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	    
+	    return !empty($rows) ? $rows : false;
+	}
 	
 	
 	public function addMeasurement(string $trainer_id, string $client_id, string $height, string $weight, string $neck,

@@ -854,6 +854,20 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
     }
+    
+    private function getMeasurementsByIdsNew()
+    {
+        $request = $this->filterParams([
+            'trainer_id',
+            'client_id'
+        ]);
+        
+        $mes_model = new Measurements($this->dbAdapter);
+        
+        $measurements = $mes_model->getMeasurementsByIdsNew($request['trainer_id'], $request['client_id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
+    }
 
     private function getMeasurementsByClientId()
     {
