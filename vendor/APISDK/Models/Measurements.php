@@ -140,6 +140,40 @@ class Measurements extends ModelAbstract implements ModelInterface
 		}
 		return false;
 	}
+	
+	public function addMeasurementNew(array $request) {
+	    
+	    $request["measured_at"] = $request["date"];
+	    $exercises = $request["exercises"];
+	    unset($request["date"]);
+	    unset($request["date"]);
+	    
+	    $lastInsertId = $this->getDbAdapter()->insert($request);
+	    if (isset($lastInsertId)) {
+	        $this->addExercisesFromJson($exercises, $lastInsertId);
+	        return $lastInsertId;
+        }
+        return false;
+	}
+	
+	public function addExercisesFromJson(string $json, string $measurementId)
+	{
+	    // Decode JSON u asocijativni niz
+	    $clean = json_encode(json_decode($json, true));
+	    $exercises = json_decode($clean, true);
+	    
+	    if (!is_array($exercises)) {
+	        return false;
+	    }
+	    
+	    foreach ($exercises as $ex) {
+	        $ex["measurement_id"] = $measurementId;
+	        $this->getDbAdapter()->insert($ex);
+	    }
+	    
+	    return true;
+	}
+	
 
 	
 	/**
