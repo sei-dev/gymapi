@@ -175,7 +175,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	public function getClientTrainingsByDate(string $id, string $date) {
 	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, users.phone, training.trainer_id as trainer_id,
-                   gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group, training.cancelled, training.finished,
+                   gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group, training.cancelled, training.finished, training.duration,
                    training.time, training_clients.cancelled as one_cancelled,
                 	    GROUP_CONCAT(DISTINCT client.client_id) AS client_ids FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
