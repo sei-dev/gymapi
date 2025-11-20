@@ -143,10 +143,12 @@ class Measurements extends ModelAbstract implements ModelInterface
 	
 	public function addMeasurementNew(array $request) {
 	    
-	    $request["measured_at"] = $request["date"];
+	    $request["measured_at"] = $this->replaceParam($request, "date");
+	    $request["quadriceps"] = $this->replaceParam($request, "quad");
+	    $request["lower_leg"] = $this->replaceParam($request, "leg");
+	    
 	    $exercises = $request["exercises"];
-	    unset($request["date"]);
-	    unset($request["date"]);
+	    unset($request["exercises"]);
 	    
 	    $lastInsertId = $this->getDbAdapter()->insert($request);
 	    if (isset($lastInsertId)) {
@@ -159,6 +161,7 @@ class Measurements extends ModelAbstract implements ModelInterface
 	public function addExercisesFromJson(string $json, string $measurementId)
 	{
 	    // Decode JSON u asocijativni niz
+	    $json = urldecode($json ?? '[]');
 	    $clean = json_encode(json_decode($json, true));
 	    $exercises = json_decode($clean, true);
 	    
@@ -167,6 +170,7 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    }
 	    
 	    foreach ($exercises as $ex) {
+	        unset($ex["id"]);
 	        $ex["measurement_id"] = $measurementId;
 	        $this->getDbAdapter()->insert($ex);
 	    }

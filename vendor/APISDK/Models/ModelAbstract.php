@@ -41,6 +41,13 @@ protected function getDbAdapter()
 {
 	return $this->dbAdapter;
 }
+
+protected function replaceParam(&$request, $key)
+{
+    $val = $request[$key];
+    unset($request[$key]);
+    return $val;
+}
 	
 
 
