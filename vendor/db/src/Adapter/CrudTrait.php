@@ -102,8 +102,6 @@ trait CrudTrait
      */
     public function upsert($table, array $data, array $updateFields)
     {
-        var_dump($data);
-        var_dump($updateFields);
         $table  = $this->quote()->identifier($table);
         $fields = implode(', ', array_map([$this->quote(), 'identifier'], array_keys($data)));
         $placeHolders = implode(', ', array_fill(0, count($data), '?'));
