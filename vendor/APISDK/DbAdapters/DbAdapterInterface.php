@@ -14,6 +14,9 @@ interface DbAdapterInterface {
 	 * @param string $dbTable
 	 */
 	public function setDbTable(string $dbTable);
+	public function getDbTable();
+	public function getLastInsertId($table);
+	public function upsert($table, array $data, array $updateFields);
 
 	/**
 	 * Execute sql query

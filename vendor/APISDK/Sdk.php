@@ -841,9 +841,14 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
     }
     
-    private function addMeasurementNew()
+    
+    /**
+     * FOR NEW MEASUREMENT ID SHOULD BE "0"
+     */
+    private function saveMeasurement()
     {
         $request = $this->filterParams([
+            'id',
             'trainer_id',
             'client_id',
             'height',
@@ -861,7 +866,7 @@ class Sdk extends Api
         
         $mes_model = new Measurements($this->dbAdapter);
         
-        $lastInsertId = $mes_model->addMeasurementNew($request);
+        $lastInsertId = $mes_model->saveMeasurement($request);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", array("lastInsertId"=>$lastInsertId));
     }

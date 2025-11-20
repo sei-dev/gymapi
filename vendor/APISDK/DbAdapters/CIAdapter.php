@@ -40,6 +40,11 @@ class CIAdapter extends DbAdapterAbstract implements DbAdapterInterface
 		return $this;
 	}
 	
+	public function getDbTable()
+	{
+	    return $this->dbTable;
+	}
+	
 	/**
 	 * Query
 	 *
@@ -107,5 +112,21 @@ class CIAdapter extends DbAdapterAbstract implements DbAdapterInterface
 		unset($data['id']);
 		$this->db->update($this->dbTable, $data);
 		return $this->db->affected_rows();  
+	}
+	/**
+	 * Insert (on duplicate key update) data in table.
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @param array $updateFields
+	 * @return int Number of affected rows
+	 */
+	public function upsert($table, array $data, array $updateFields)
+	{
+	    return $this->db->upsert($table, $data, $updateFields);
+	}
+	
+	public function getLastInsertId($table) {
+	    return $this->db->lastInsertId($table);
 	}
 }

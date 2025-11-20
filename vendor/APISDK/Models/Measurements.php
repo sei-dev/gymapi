@@ -142,21 +142,43 @@ class Measurements extends ModelAbstract implements ModelInterface
 		return false;
 	}
 	
-	public function addMeasurementNew(array $request) {
-	    
+	/**
+	 * 
+	 * @param array $request
+	 * @return int
+	 */
+	public function saveMeasurement(array $request) {
+	    //Rename params
 	    $request["measured_at"] = $this->replaceParam($request, "date");
 	    $request["quadriceps"] = $this->replaceParam($request, "quad");
 	    $request["lower_leg"] = $this->replaceParam($request, "leg");
 	    
 	    $exercises = $request["exercises"];
+	    //Remove exercises, that doesn't exists
 	    unset($request["exercises"]);
 	    
-	    $lastInsertId = $this->getDbAdapter()->insert($request);
-	    if (isset($lastInsertId)) {
+	    //Fields to update on dxuplicate
+	    $toUpdate = $request;
+	    
+	    //measured_at shouldn't be updated
+	    unset($toUpdate["measured_at"]);
+	    
+	    $tbl = $this->getDbAdapter()->getDbTable();
+	    
+	    $result = $this->getDbAdapter()->upsert($tbl, $request, $toUpdate);
+	    
+	    if ($result === 1) {
+	        //insert, result is lastInsertId
+	        $lastInsertId = $this->getDbAdapter()->getLastInsertId($tbl);
 	        $this->addExercisesFromJson($exercises, $lastInsertId);
-	        return $lastInsertId;
-        }
-        return false;
+	    } else {
+	        if(isset($request["id"]) && intval($request["id"]) > 0){
+	            $this->deleteExercise($request["id"]);
+	            $this->addExercisesFromJson($exercises, $request["id"]);
+	        }
+	        
+	    }
+	    return $result;
 	}
 	
 	public function addExercisesFromJson(string $json, string $measurementId)
@@ -177,6 +199,19 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    }
 	    
 	    return true;
+	}
+	
+	public function deleteExercise(string $measurementId)
+	{
+	    if(empty($measurementId))
+	    {
+	        return false;
+	    }
+	    
+	    $sql = "DELETE FROM exercises WHERE measurement_id = ?";
+	    $stmt = $this->getDbAdapter()->query($sql, [$measurementId]);
+	    
+	    return $stmt->rowCount(); // broj obrisanih redova
 	}
 	
 

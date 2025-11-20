@@ -41,6 +41,16 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	}
 	
 	/**
+	 * Set Db Table
+	 *
+	 * @param DbAdapterInterface $db
+	 */
+	public function getDbTable()
+	{
+	    return $this->dbTable;
+	}
+	
+	/**
 	 * Query
 	 *
 	 * @param string $sql
@@ -80,9 +90,9 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	* @param string $sql
 	* @return array
 	*/
-	public function query(string $sql)
+	public function query(string $sql, array $bind = [])
 	{
-		return $this->db->query($sql);
+	    return $this->db->query($sql, $bind);
 	}
 	
 	/**
@@ -113,7 +123,7 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	    $res = $this->db->insert($table, $data);
 	    if($res)
 	    {
-	        return $this->db->lastInsertId();
+	        return $this->db->lastInsertId($this->dbTable);
 	    }else{
 	        return false;
 	    }
@@ -136,5 +146,27 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 		unset($data['id']);
 		$this->db->update($this->dbTable, $data);
 		return $this->db->affected_rows();  
+	}
+	
+	/**
+	 * Insert (on duplicate key update) data in table.
+	 *
+	 * @param string $table
+	 * @param array $data
+	 * @param array $updateFields
+	 * @return int Number of affected rows
+	 */
+	public function upsert($table, array $data, array $updateFields)
+	{
+	    if(isset($updateFields["id"])) unset($updateFields["id"]);
+	    //Remove id if its 0
+	    if(isset($data["id"]) && ($data["id"] === "0" || empty($data["id"]))) unset($data["id"]);
+	    
+	    return $this->db->upsert($table, $data, $updateFields);
+	}
+	
+	
+	public function getLastInsertId($table) {
+	    return $this->db->lastInsertId($table);
 	}
 }
