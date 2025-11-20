@@ -269,9 +269,9 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function insertTraining(string $trainer_id, string $gym_id, string $is_group, string $date, string $time, string $training_plan){
-	    $sQuery = "INSERT INTO `training`(`trainer_id`, `gym_id`, `is_group`, `date`, `time`, `training_plan`
-                  ) VALUES ('{$trainer_id}','{$gym_id}','{$is_group}','{$date}','{$time}', '{$training_plan}');
+	public function insertTraining(string $trainer_id, string $gym_id, string $is_group, string $date, string $time, string $training_plan, string $duration){
+	    $sQuery = "INSERT INTO `training`(`trainer_id`, `gym_id`, `is_group`, `date`, `time`, `training_plan`, `duration`
+                  ) VALUES ('{$trainer_id}','{$gym_id}','{$is_group}','{$date}','{$time}', '{$training_plan}', '{$training_plan}', '{$duration}');
 				    ";
 	    
 	    $sQuery2 = "SELECT * 
