@@ -172,7 +172,7 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    foreach ($exercises as $ex) {
 	        unset($ex["id"]);
 	        $ex["measurement_id"] = $measurementId;
-	        $this->getDbAdapter()->insert($ex);
+	        $this->getDbAdapter()->insert("exercises", $ex);
 	    }
 	    
 	    return true;
