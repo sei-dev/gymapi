@@ -96,7 +96,7 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 		$res = $this->db->insert($this->dbTable, $data);
 		if($res)
 		{
-			return $this->db->insert_id();
+		    return $this->db->lastInsertId();
 		}else{
 			return false;
 		}
