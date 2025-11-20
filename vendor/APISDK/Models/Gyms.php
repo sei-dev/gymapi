@@ -50,7 +50,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function addFitnessCenter(string $user_id, string $gym_id){
+	public function addFitnessCenterIds(string $user_id, string $gym_id){
 	    $sQuery = "INSERT INTO `trainer_gyms`(`user_id`, `gym_id`) VALUES ('{$user_id}','{$gym_id}');";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
@@ -59,9 +59,31 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function addFitnessCenter(string $name, string $address, string $city, string $phone){
+	    $sQuery = "INSERT INTO `gyms`(`name`, `address`, `city`, `phone`) VALUES ('{$name}','{$address}','{$city}','{$phone}');";
+	    
+	    $sQuery2 = "SELECT * FROM `gyms` WHERE name = '{$name}' AND address = '{$address}' AND city = '{$city}' AND phone = '{$phone}';";
+	    
+	    $this->getDbAdapter()->query($sQuery);
+	    
+	    return $this->getDbAdapter()
+	    ->query($sQuery2)
+	    ->fetchAll(\PDO::FETCH_ASSOC);
+	}
+	
 	
 	public function removeFitnessCenter(string $user_id, string $gym_id){
 	    $sQuery = "DELETE FROM `trainer_gyms` WHERE user_id = '{$user_id}' and gym_id = '{$gym_id}';";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
+	
+	
+	public function removeFitnessCenterMain(string $gym_id){
+	    $sQuery = "DELETE FROM `gyms` WHERE gym_id = '{$gym_id}';";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
 	        return $row;

@@ -652,36 +652,20 @@ class Sdk extends Api
     private function addFitnessCenter()
     {
         $request = $this->filterParams([
-            'user_id',
-            'gym_id'
+            'gym_name',
+            'gym_address',
+            'gym_city',
+            'gym_phone'
         ]);
 
         $gyms_model = new Gyms($this->dbAdapter);
-        $gyms = $gyms_model->addFitnessCenter($request['user_id'], $request['gym_id']);
+        
+        $gym = $gyms_model->addFitnessCenter($request['gym_name'], $request['gym_address'], $request['gym_city'], $request['gym_phone']);
+        $gyms = $gyms_model->addFitnessCenterIds($this->user_id, $gym['id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
     
-    private function createFitnessCenter()
-    {
-        $request = $this->filterParams([
-            'name',
-            'address',
-            'city_id',
-            'phone',
-            'city'
-        ]);
-        
-        $gyms_model = new Gyms($this->dbAdapter);
-        
-        $request["created_on"] = date("now");
-        
-        $gym_id = $gyms_model->getDbAdapter()->insert($request);
-        
-        $gyms = $gyms_model->addFitnessCenter($this->user_id, $gym_id);
-        
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
-    }
 
     private function removeFitnessCenter()
     {
@@ -692,6 +676,7 @@ class Sdk extends Api
 
         $gyms_model = new Gyms($this->dbAdapter);
         $gyms = $gyms_model->removeFitnessCenter($request['user_id'], $request['gym_id']);
+        $gyms_model->removeFitnessCenterMain($request['gym_id']);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
