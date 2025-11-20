@@ -861,9 +861,9 @@ class Sdk extends Api
         
         $mes_model = new Measurements($this->dbAdapter);
         
-        $measurements = $mes_model->addMeasurementNew($request);
+        $lastInsertId = $mes_model->addMeasurementNew($request);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $measurements);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", array("lastInsertId"=>$lastInsertId));
     }
 
     private function getMeasurementsByIds()
