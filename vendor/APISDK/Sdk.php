@@ -855,7 +855,8 @@ class Sdk extends Api
             'leg',
             'waist',
             'biceps',
-            'date'
+            'date',
+            'exercises'
         ]);
         
         $mes_model = new Measurements($this->dbAdapter);
