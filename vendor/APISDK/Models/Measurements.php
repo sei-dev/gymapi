@@ -62,6 +62,7 @@ class Measurements extends ModelAbstract implements ModelInterface
                         'repetitions', e.repetitions,
                         'kilograms', e.kilograms,
                         'measurement_id', e.measurement_id,
+                        'image_name', e.image_name,
                         'created_on', e.created_on
                     )
                 ), JSON_ARRAY()
