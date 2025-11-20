@@ -162,6 +162,8 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	    //Remove id if its 0
 	    if(isset($data["id"]) && ($data["id"] === "0" || empty($data["id"]))) unset($data["id"]);
 	    
+	    $updateFields = array_keys($updateFields);
+	    
 	    return $this->db->upsert($table, $data, $updateFields);
 	}
 	
