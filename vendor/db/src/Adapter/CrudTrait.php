@@ -112,7 +112,6 @@ trait CrudTrait
         }
         $updates = implode(', ', $updateValues);
         $sql = "INSERT INTO $table ($fields) VALUES ($placeHolders) ON DUPLICATE KEY UPDATE $updates";
-        die($sql);
         $stmt = $this->query($sql, array_values($data));
        
         return $stmt->rowCount();
