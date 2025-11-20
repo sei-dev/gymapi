@@ -101,6 +101,23 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 			return false;
 		}
 	}
+		
+	/**
+	*
+	* @param string $table
+	* @param array $data
+	* @see \APISDK\DbAdapterInterface::insert()
+	*/
+	public function insertIntoTable($table, array $data)
+	{
+	    $res = $this->db->insert($table, $data);
+	    if($res)
+	    {
+	        return $this->db->lastInsertId();
+	    }else{
+	        return false;
+	    }
+	}
 	
 	/**
 	 *
