@@ -66,7 +66,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    
 	    $this->getDbAdapter()->query($sQuery);
 	    
-	    $new_id = $this->getDbAdapter()->getLastInsertId();
+	    $new_id = $this->getDbAdapter()->getLastInsertId("gyms");
 	    
 	    return $new_id;
 	}
