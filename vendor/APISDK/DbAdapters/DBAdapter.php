@@ -169,8 +169,8 @@ class DBAdapter extends DbAdapterAbstract implements DbAdapterInterface
 	
 	
 	
-	public function getLastInsertId($table = $this->dbTable) {
-	    
+	public function getLastInsertId($table = null) {
+	    $table = is_null($table) ? $this->dbTable : $table;
 	    return $this->db->lastInsertId($table);
 	}
 }
