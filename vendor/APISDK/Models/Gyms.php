@@ -59,12 +59,16 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function addFitnessCenter(array $request){
-	    //$sQuery = "INSERT INTO `gyms`(`name`, `address`, `city`, `phone`) VALUES ('{$name}','{$address}','{$city}','{$phone}');";
+	public function addFitnessCenter(string $name, string $address, string $city, string $phone){
+	    $sQuery = "INSERT INTO `gyms`(`name`, `address`, `city`, `phone`) VALUES ('{$name}','{$address}','{$city}','{$phone}');";
 	    
 	    //$sQuery2 = "SELECT * FROM `gyms` WHERE name = '{$name}' AND address = '{$address}' AND city = '{$city}' AND phone = '{$phone}';";
 	    
-	    return $this->getDbAdapter()->insert($request);
+	    $this->getDbAdapter()->query($sQuery);
+	    
+	    $new_id = $this->getDbAdapter()->getLastInsertId();
+	    
+	    return $new_id;
 	}
 	
 	
