@@ -62,13 +62,13 @@ class Gyms extends ModelAbstract implements ModelInterface
 	public function addFitnessCenter(string $name, string $address, string $city, string $phone){
 	    $sQuery = "INSERT INTO `gyms`(`name`, `address`, `city`, `phone`) VALUES ('{$name}','{$address}','{$city}','{$phone}');";
 	    
-	    $sQuery2 = "SELECT * FROM `gyms` WHERE name = '{$name}' AND address = '{$address}' AND city = '{$city}' AND phone = '{$phone}';";
+	    //$sQuery2 = "SELECT * FROM `gyms` WHERE name = '{$name}' AND address = '{$address}' AND city = '{$city}' AND phone = '{$phone}';";
 	    
 	    $this->getDbAdapter()->query($sQuery);
 	    
-	    return $this->getDbAdapter()
-	    ->query($sQuery2)
-	    ->fetchAll(\PDO::FETCH_ASSOC);
+	    $new_id = $this->getDbAdapter()->getLastInsertId();
+	    
+	    return $new_id;
 	}
 	
 	
