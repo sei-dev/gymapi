@@ -661,7 +661,7 @@ class Sdk extends Api
         $gyms_model = new Gyms($this->dbAdapter);
         
         $gym_id = $gyms_model->addFitnessCenter($request['gym_name'], $request['gym_address'], $request['gym_city'], $request['gym_phone']);
-        $gyms = $gyms_model->addFitnessCenterIds($this->user_id, $gym_id);
+        //$gyms = $gyms_model->addFitnessCenterIds($this->user_id, $gym_id);
 
         return $this->formatResponse(self::STATUS_SUCCESS, "msg {$gym_id}", $gyms);
     }
