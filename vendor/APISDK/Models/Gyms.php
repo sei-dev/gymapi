@@ -38,10 +38,10 @@ class Gyms extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getGymsByUserId(string $user_id){
-	    $sQuery = "SELECT gyms.*, cities.city FROM trainer_gyms 
+	    $sQuery = "SELECT gyms.* FROM trainer_gyms 
                     LEFT JOIN users ON trainer_gyms.user_id = users.id 
                     LEFT JOIN gyms ON trainer_gyms.gym_id = gyms.id 
-                    LEFT JOIN cities ON gyms.city_id = cities.id 
+                    #LEFT JOIN cities ON gyms.city_id = cities.id 
                     WHERE trainer_gyms.user_id = '{$user_id}';";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
