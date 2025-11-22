@@ -559,6 +559,18 @@ class Users extends ModelAbstract implements ModelInterface
 
         return $this->getDbAdapter()->query($sQuery);
     }
+    
+    
+    
+    public function setCurrency(String $id, String $currency)
+    {
+        $sQuery = "UPDATE " . self::getTablePrefix() . "users
+                   SET currency = '{$currency}'
+				   WHERE id = '{$id}'
+				";
+        
+        return $this->getDbAdapter()->query($sQuery);
+    }
 
     /**
      *

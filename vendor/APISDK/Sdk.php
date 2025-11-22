@@ -2770,6 +2770,17 @@ class Sdk extends Api
         $model->setDeviceToken($this->user_id, $request['device_token']);
         return $this->formatResponse(self::STATUS_SUCCESS, $this->returnUser($user));
     }
+    
+    private function setCurrency()
+    {
+        $request = $this->filterParams([
+            'currency'
+        ]);
+        $model = new Users($this->dbAdapter);
+        
+        $model->setCurrency($this->user_id, $request['currency']);
+        return $this->formatResponse(self::STATUS_SUCCESS, []);
+    }
 
     /*
      * private function test(){
