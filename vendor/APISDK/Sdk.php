@@ -2779,7 +2779,10 @@ class Sdk extends Api
         $model = new Users($this->dbAdapter);
         
         $model->setCurrency($this->user_id, $request['currency']);
-        return $this->formatResponse(self::STATUS_SUCCESS, []);
+        
+        $updated = $model->getUserById($this->user_id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, $this->populateUserModel($updated));
     }
 
     /*
