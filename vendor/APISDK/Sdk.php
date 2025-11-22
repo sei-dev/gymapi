@@ -2782,7 +2782,7 @@ class Sdk extends Api
         
         $updated = $model->getUserById($this->user_id);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, $this->populateUserModel($updated));
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $this->populateUserModel($updated));
     }
 
     /*
