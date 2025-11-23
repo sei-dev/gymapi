@@ -83,7 +83,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	
 	
 	public function removeFitnessCenterMain(string $gym_id){
-	    $sQuery = "DELETE FROM `gyms` WHERE gym_id = '{$gym_id}';";
+	    $sQuery = "DELETE FROM `gyms` WHERE id = '{$gym_id}';";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($row)) {
 	        return $row;
