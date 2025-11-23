@@ -87,7 +87,7 @@ class Sdk extends Api
             'getCitiesByCountryId',
             'getCountries',
             'getGymsByCityId',
-            //'addFitnessCenter',
+            'registerAddFitnessCenter',
             'removeFitnessCenter',
             'saveServicesTrainer',
             'removeInactive',
@@ -666,6 +666,23 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
     
+    private function registerAddFitnessCenter()
+    {
+        $request = $this->filterParams([
+            'id',
+            'gym_name',
+            'gym_address',
+            'gym_city',
+            'gym_phone'
+        ]);
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        
+        $gym_id = $gyms_model->addFitnessCenter($request['gym_name'], $request['gym_address'], $request['gym_city'], $request['gym_phone']);
+        $gyms = $gyms_model->addFitnessCenterIds($this->user_id, $gym_id);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
+    }
 
     private function removeFitnessCenter()
     {
