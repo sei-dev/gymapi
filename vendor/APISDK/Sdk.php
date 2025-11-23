@@ -2776,6 +2776,8 @@ class Sdk extends Api
         $request = $this->filterParams([
             'currency'
         ]);
+        
+        
         $model = new Users($this->dbAdapter);
         
         $model->setCurrency($this->user_id, $request['currency']);
