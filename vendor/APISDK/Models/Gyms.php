@@ -50,6 +50,19 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function getGymByUserId(string $user_id){
+	    $sQuery = "SELECT gyms.* FROM trainer_gyms
+                    LEFT JOIN users ON trainer_gyms.user_id = users.id
+                    LEFT JOIN gyms ON trainer_gyms.gym_id = gyms.id
+                    #LEFT JOIN cities ON gyms.city_id = cities.id
+                    WHERE trainer_gyms.user_id = '{$user_id}' LIMIT 1;";
+	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
+	    if (isset($row)) {
+	        return $row;
+	    }
+	    return false;
+	}
+	
 	public function addFitnessCenterIds(string $user_id, string $gym_id){
 	    $sQuery = "INSERT INTO `trainer_gyms`(`user_id`, `gym_id`) VALUES ('{$user_id}','{$gym_id}');";
 	    $row = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);

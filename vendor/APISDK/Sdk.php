@@ -649,6 +649,17 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
+    
+    private function getGymByUserId()
+    {
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        $gyms = $gyms_model->getGymsByUserId($this->user_id);
+        
+        $gym = $gyms[0];
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gym);
+    }
 
     private function addFitnessCenter()
     {
