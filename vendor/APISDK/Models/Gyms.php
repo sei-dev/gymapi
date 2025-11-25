@@ -74,26 +74,29 @@ class Gyms extends ModelAbstract implements ModelInterface
 	
 	public function upsertFitnessCenter(string $userId, string $id, string $name, string $address, string $city, string $phone): int
 	{
+	    $userId = (int)$userId;
 	    $gymId = (int)$id;
-	    $isNew = ($gymId <= 0);
 	    
 	    $data = [
-	        'id'      => $isNew ? null : $gymId,
+	        'id'      => $gymId,
 	        'name'    => trim($name),
 	        'address' => trim($address),
 	        'city'    => trim($city),
 	        'phone'   => trim($phone),
 	    ];
 	    
-	    $updateFields = ['name', 'address', 'city', 'phone'];
-	    
-	    $this->getDbAdapter()->upsert('gyms', $data, $updateFields);
-	    
-	    if ($isNew) {
-	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
+	    if (empty($data['id']) || $data['id'] <= 0) {
+	        unset($data['id']);
 	    }
 	    
-	    $userId = (int)$userId;
+	    $toUpdate = $data;
+	    unset($toUpdate['id']);
+	    
+	    $this->getDbAdapter()->upsert('gyms', $data, array_keys($toUpdate));
+	    
+	    if (!isset($data['id']) || $data['id'] <= 0) {
+	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
+	    }
 	    
 	    $this->getDbAdapter()->query(
 	        "DELETE FROM trainer_gyms WHERE user_id = ?",
@@ -101,7 +104,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	        );
 	    
 	    if ($gymId > 0) {
-	        $this->addFitnessCenterIds($userId, $gymId);
+	        $this->addFitnessCenterIds($userId, [$gymId]);
 	    }
 	    
 	    return $gymId;
