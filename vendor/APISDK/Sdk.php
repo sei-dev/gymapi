@@ -666,6 +666,26 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $gyms);
     }
     
+    private function upsertFitnessCenter()
+    {
+        $request = $this->filterParams([
+            'user_id',
+            'id',
+            'gym_name',
+            'gym_address',
+            'gym_city',
+            'gym_phone'
+        ]);
+        
+        $gyms_model = new Gyms($this->dbAdapter);
+        
+        $gym_id = $gyms_model->upsertFitnessCenter($request['user_id'], $request['id'], $request['gym_name'], $request['gym_address'],
+                                                    $request['gym_city'], $request['gym_phone']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $gym_id);
+    }
+    
+    
     private function registerAddFitnessCenter()
     {
         $request = $this->filterParams([

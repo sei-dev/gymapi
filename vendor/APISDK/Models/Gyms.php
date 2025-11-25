@@ -59,7 +59,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function addFitnessCenter(string $name, string $address, string $city, string $phone){
+	public function addFitnessCenter(string $id, string $name, string $address, string $city, string $phone){
 	    $sQuery = "INSERT INTO `gyms`(`name`, `address`, `city`, `phone`) VALUES ('{$name}','{$address}','{$city}','{$phone}');";
 	    
 	    //$sQuery2 = "SELECT * FROM `gyms` WHERE name = '{$name}' AND address = '{$address}' AND city = '{$city}' AND phone = '{$phone}';";
@@ -71,6 +71,42 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    return $new_id;
 	}
 	
+	
+	public function upsertFitnessCenter(string $userId, string $id, string $name, string $address, string $city, string $phone): int
+	{
+	    $gymId = (int)$id;
+	    $isNew = ($gymId <= 0);
+	    
+	    $data = [
+	        'name'    => trim($name),
+	        'address' => trim($address),
+	        'city'    => trim($city),
+	        'phone'   => trim($phone),
+	    ];
+	    
+	    if (!$isNew) {
+	        $data['id'] = $gymId;
+	    }
+	    
+	    $forUpdate = $data;
+	    if (!$isNew) {
+	        unset($forUpdate['id']);
+	    }
+	    
+	    $this->upsert('gyms', $data, array_keys($forUpdate));
+	    
+	    if ($isNew) {
+	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
+	    }
+	 
+	    $this->getDbAdapter()->query("DELETE FROM trainer_gyms WHERE user_id = ?", [$userId]);
+	    
+	    if ($gymId > 0) {
+	        $this->addFitnessCenterIds($userId, $gymId);
+	    }
+	    
+	    return $gymId;
+	}
 	
 	public function removeFitnessCenter(string $user_id, string $gym_id){
 	    $sQuery = "DELETE FROM `trainer_gyms` WHERE user_id = '{$user_id}' and gym_id = '{$gym_id}';";
