@@ -78,28 +78,27 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    $isNew = ($gymId <= 0);
 	    
 	    $data = [
+	        'id'      => $isNew ? null : $gymId,
 	        'name'    => trim($name),
 	        'address' => trim($address),
 	        'city'    => trim($city),
 	        'phone'   => trim($phone),
 	    ];
 	    
-	    if (!$isNew) {
-	        $data['id'] = $gymId;
-	    }
+	    $updateFields = ['name', 'address', 'city', 'phone'];
 	    
-	    $forUpdate = $data;
-	    if (!$isNew) {
-	        unset($forUpdate['id']);
-	    }
-	    
-	    $this->getDbAdapter()->upsert('gyms', $data, array_keys($forUpdate));
+	    $this->getDbAdapter()->upsert('gyms', $data, $updateFields);
 	    
 	    if ($isNew) {
 	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
 	    }
-	 
-	    $this->getDbAdapter()->query("DELETE FROM trainer_gyms WHERE user_id = ?", [$userId]);
+	    
+	    $userId = (int)$userId;
+	    
+	    $this->getDbAdapter()->query(
+	        "DELETE FROM trainer_gyms WHERE user_id = ?",
+	        [$userId]
+	        );
 	    
 	    if ($gymId > 0) {
 	        $this->addFitnessCenterIds($userId, $gymId);
