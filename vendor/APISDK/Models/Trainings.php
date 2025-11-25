@@ -40,13 +40,12 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    users.last_name AS trainer_last_name,
                 	    gyms.name AS gym_name,
                 	    gyms.address AS gym_address,
-                	    cities.city AS gym_city,
+                	    gyms.city AS gym_city,
                 	    GROUP_CONCAT(client.id) AS client_ids,
                 	    GROUP_CONCAT(CONCAT(client.first_name, ' ', client.last_name)) AS client_names
                 	    FROM training
                 	    LEFT JOIN users ON training.trainer_id = users.id
                 	    LEFT JOIN gyms ON training.gym_id = gyms.id
-                	    LEFT JOIN cities ON cities.id = gyms.city_id
                 	    LEFT JOIN training_clients ON training_clients.training_id = training.id
                 	    LEFT JOIN users client ON training_clients.client_id = client.id
                 	    WHERE training.trainer_id = '{$id}'
@@ -91,13 +90,12 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    users.last_name AS trainer_last_name,
                 	    gyms.name AS gym_name,
                 	    gyms.address AS gym_address,
-                	    cities.city AS gym_city,
+                	    gym.city AS gym_city,
                 	    GROUP_CONCAT(client.id) AS client_ids,
                 	    GROUP_CONCAT(CONCAT(client.first_name, ' ', client.last_name)) AS client_names
                 	    FROM training
                 	    LEFT JOIN users ON training.trainer_id = users.id
                 	    LEFT JOIN gyms ON training.gym_id = gyms.id
-                	    LEFT JOIN cities ON cities.id = gyms.city_id
                 	    LEFT JOIN training_clients ON (training_clients.training_id = training.id ) #AND training_clients.cancelled = 0
                 	    LEFT JOIN users client ON training_clients.client_id = client.id
                 	    WHERE trainer_id = '{$id}'  AND training.date = '{$date}'
@@ -175,12 +173,11 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	public function getClientTrainingsByDate(string $id, string $date) {
 	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, users.phone, training.trainer_id as trainer_id,
-                   gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group, training.cancelled, training.finished, training.duration,
+                   gyms.name as gym_name, gyms.address as gym_address, gyms.city as gym_city, training.date, training.is_group, training.cancelled, training.finished, training.duration,
                    training.time, training_clients.cancelled as one_cancelled,
                 	    GROUP_CONCAT(DISTINCT client.client_id) AS client_ids FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN gyms ON training.gym_id = gyms.id
-                   LEFT JOIN cities ON gyms.city_id = cities.id
                    LEFT JOIN training_clients ON training.id = training_clients.training_id 
                     LEFT JOIN training_clients client ON (training.id = client.training_id and client.cancelled = 0)
 				   WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}';
@@ -279,11 +276,10 @@ AND training_clients.cancelled != 1 AND  training.trainer_id = '{$trainer_id}';"
 	
 	public function getTrainingById(string $id) {
 	    $sQuery = "SELECT training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
-                   gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city, training.date, training.is_group,
+                   gyms.name as gym_name, gyms.address as gym_address, gyms.city as gym_city, training.date, training.is_group,
                    training.time FROM training
                    LEFT JOIN users ON training.trainer_id = users.id
                    LEFT JOIN gyms ON training.gym_id = gyms.id 
-                   LEFT JOIN cities ON cities.id = gyms.city_id
 				   WHERE training.id = '{$id}';
 				    ";
 	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
