@@ -75,17 +75,16 @@ class Gyms extends ModelAbstract implements ModelInterface
 	public function upsertFitnessCenter(string $userId, string $id, string $name, string $address, string $city, string $phone): int
 	{
 	    $userId = (int)$userId;
-	    $gymId = (int)$id;
 	    
 	    $data = [
-	        'id'      => $gymId,
+	        'id'      => $id,
 	        'name'    => trim($name),
 	        'address' => trim($address),
 	        'city'    => trim($city),
 	        'phone'   => trim($phone),
 	    ];
 	    
-	    if (empty($data['id']) || $data['id'] <= 0) {
+	    if (isset($data['id']) && (empty($data['id']) || $data['id'] === '0' || $data['id'] === 0)) {
 	        unset($data['id']);
 	    }
 	    
@@ -94,8 +93,10 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    
 	    $this->getDbAdapter()->upsert('gyms', $data, array_keys($toUpdate));
 	    
-	    if (!isset($data['id']) || $data['id'] <= 0) {
+	    if (!isset($data['id'])) {
 	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
+	    } else {
+	        $gymId = (int)$id;
 	    }
 	    
 	    $this->getDbAdapter()->query(
@@ -104,7 +105,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	        );
 	    
 	    if ($gymId > 0) {
-	        $this->addFitnessCenterIds($userId, [$gymId]);
+	        $this->addFitnessCenterIds($userId, $gymId);
 	    }
 	    
 	    return $gymId;
