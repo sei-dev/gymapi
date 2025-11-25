@@ -1063,7 +1063,7 @@ class Sdk extends Api
         $user['active_trainers'] = $users_model->getActiveTrainers($user["id"]);
         $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($user["id"]);
         $user['total_trainings_client'] = $training_model->getTrainingsClient($user["id"]);
-        $user['inSystem'] = $training_model->clientIsInSystem($user["id"]);
+        $user['in_system'] = $training_model->clientIsInSystem($user["id"]);
         if ($user['is_trainer'] == '1') {
             $user['profit'] = $users_model->getProfitProfileTrainer($user["id"]);
             $user['debt'] = "0";
