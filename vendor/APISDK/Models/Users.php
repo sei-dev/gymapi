@@ -391,7 +391,7 @@ class Users extends ModelAbstract implements ModelInterface
 
     public function getConnectedUsersByClientId(string $client_id)
     {
-        $sQuery = "SELECT users.id, connections.id as connection_id, users.first_name, users.last_name, users.phone, users.email,
+        $sQuery = "SELECT users.id, connections.id as connection_id, users.first_name, users.last_name, users.phone, users.email, users.currency,
                    cities.city as location, connections.training_no, connections.price, connections.connected_since
                    FROM connections LEFT JOIN users ON users.id = connections.trainer_id
                    LEFT JOIN cities ON users.city_id = cities.id
