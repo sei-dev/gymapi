@@ -91,7 +91,7 @@ class Gyms extends ModelAbstract implements ModelInterface
 	    $toUpdate = $data;
 	    unset($toUpdate['id']);
 	    
-	    $this->getDbAdapter()->upsert('gyms', $data, array_keys($toUpdate));
+	    $this->getDbAdapter()->upsert('gyms', $data, $toUpdate);
 	    
 	    if (!isset($data['id'])) {
 	        $gymId = (int)$this->getDbAdapter()->getLastInsertId('gyms');
