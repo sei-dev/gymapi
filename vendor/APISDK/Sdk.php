@@ -1063,6 +1063,7 @@ class Sdk extends Api
         $user['active_trainers'] = $users_model->getActiveTrainers($user["id"]);
         $user['total_trainings_trainer'] = $training_model->getTrainingsTrainer($user["id"]);
         $user['total_trainings_client'] = $training_model->getTrainingsClient($user["id"]);
+        $user['inSystem'] = $training_model->clientIsInSystem($user["id"]);
         if ($user['is_trainer'] == '1') {
             $user['profit'] = $users_model->getProfitProfileTrainer($user["id"]);
             $user['debt'] = "0";
@@ -1437,7 +1438,8 @@ class Sdk extends Api
             'is_trainer',
             'nationality',
             'country_id',
-            'offline'
+            'offline',
+            'price'
         ]);
         
         
@@ -1464,9 +1466,12 @@ class Sdk extends Api
             $users = $users_model->register($request['name'], $request['surname'], $request['age'], $request['phone'], $password, $request['email'], $request['deadline'], $request['gender'], $request['city_id'], $request['en'], $request['rs'], $request['ru'], $request['is_trainer'], $request['country_id'], $request['nationality'], $hash, $request["offline"]);
         }
         
-        //return $this->formatResponse(self::STATUS_SUCCESS, $connection, $users);
-        
         $userObject = (object) $users[0];
+        
+        //Update connection price
+        if(intval($request['price']) > 0){
+            $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
+        }
         
         $userToReturn[0] = $users[0];
         $userToReturn[0]['connection'] = $connection;

@@ -119,6 +119,20 @@ class Users extends ModelAbstract implements ModelInterface
         }
         return false;
     }
+    
+    
+    
+    public function changeConnectionPriceByIds(string $trainer_id, string $client_id, string $price)
+    {
+        $bind["trainer_id"] = $trainer_id;
+        $bind["client_id"] = $client_id;
+        $bind["price"] = $price;
+        
+        $sQuery = "UPDATE `connections` SET `price`= :price
+        WHERE trainer_id = :trainer_id and client_id = :client_id;
+                ";
+        return $this->getDbAdapter()->prepare($sQuery)->execute($bind);
+    }
 
     public function acceptConnection(string $id)
     {

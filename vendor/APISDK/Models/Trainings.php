@@ -239,6 +239,28 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function clientIsInSystem(string $user_id)
+	{
+	    $bind["user_id"] = $user_id;
+	    $sQuery = "SELECT 
+            CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END AS inSystem
+        FROM training_clients 
+        JOIN training ON training.id = training_clients.training_id
+        WHERE training_clients.client_id = :user_id
+        AND training.date >= CURDATE()
+        AND training_clients.cancelled != 1;
+";
+	    
+	    $row = $this->getDbAdapter()
+	    ->query($sQuery, $bind)
+	    ->fetch(\PDO::FETCH_ASSOC);
+	    
+	    if (isset($row["inSystem"])) {
+	        return (string)$row["inSystem"];
+	    }
+	    return "0";
+	}
+	
 	public function getTrainingsClientTrainer(string $trainer_id, string $client_id){
 	    $sQuery = "SELECT COUNT(*) AS total_trainings FROM training_clients LEFT JOIN training ON training.id = training_clients.training_id WHERE training_clients.client_id = '{$client_id}'
  #AND training.finished = 1 
