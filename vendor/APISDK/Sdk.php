@@ -694,7 +694,7 @@ class Sdk extends Api
         $gym_id = $gyms_model->upsertFitnessCenter($request['user_id'], $request['id'], $request['gym_name'], $request['gym_address'],
                                                     $request['gym_city'], $request['gym_phone']);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $gym_id);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
     
     
