@@ -100,7 +100,8 @@ class Sdk extends Api
             'testPing',
             'testTaxLabels',
             'testInvoiceCheck',
-            'testDateTime'
+            'testDateTime',
+            'upsertFitnessCenter'
         ])) {
             $at = null;
             if (! is_null($this->getBearerToken())) {
