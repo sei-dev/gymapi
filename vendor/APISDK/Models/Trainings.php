@@ -90,7 +90,7 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    users.last_name AS trainer_last_name,
                 	    gyms.name AS gym_name,
                 	    gyms.address AS gym_address,
-                	    gym.city AS gym_city,
+                	    gyms.city AS gym_city,
                 	    GROUP_CONCAT(client.id) AS client_ids,
                 	    GROUP_CONCAT(CONCAT(client.first_name, ' ', client.last_name)) AS client_names
                 	    FROM training
