@@ -1513,6 +1513,9 @@ class Sdk extends Api
         {
             $users_model = new Users($this->dbAdapter);
             $users = $users_model->makeAcceptedConnection($userObject->id, $this->user_id);
+            if(intval($request['price']) > 0){
+                $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
+            }
             return $this->formatResponse(self::STATUS_SUCCESS, $connection, $userToReturn);
         }
         if ($connection == ConnStatus::DEFAULT)
@@ -1520,12 +1523,10 @@ class Sdk extends Api
             $this->request["trainer_id"] = $this->user_id;
             $this->request["client_id"] = $userObject->id;
             $this->sendRequestClient();
+            if(intval($request['price']) > 0){
+                $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
+            }
             return $this->formatResponse(self::STATUS_SUCCESS, $connection, $userToReturn);
-        }
-        
-        //Update connection price
-        if(intval($request['price']) > 0){
-            $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
         }
         /**
          * END OFFLINE FEATURE
