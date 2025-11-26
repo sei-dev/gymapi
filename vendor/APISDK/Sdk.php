@@ -1501,10 +1501,7 @@ class Sdk extends Api
         
         $userObject = (object) $users[0];
         
-        //Update connection price
-        if(intval($request['price']) > 0){
-            $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
-        }
+        
         
         $userToReturn[0] = $users[0];
         $userToReturn[0]['connection'] = $connection;
@@ -1524,6 +1521,11 @@ class Sdk extends Api
             $this->request["client_id"] = $userObject->id;
             $this->sendRequestClient();
             return $this->formatResponse(self::STATUS_SUCCESS, $connection, $userToReturn);
+        }
+        
+        //Update connection price
+        if(intval($request['price']) > 0){
+            $users_model->changeConnectionPriceByIds($this->user_id, $userObject->id, $request['price']);
         }
         /**
          * END OFFLINE FEATURE
