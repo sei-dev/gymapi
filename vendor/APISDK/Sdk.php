@@ -553,12 +553,25 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
-
+    
     private function setTrainingsFinished()
     {
         $training_model = new Trainings($this->dbAdapter);
         $training_model->setTrainingsFinished();
 
+        return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
+    }
+    
+    private function updateTrainingPlan()
+    {
+        $request = $this->filterParams([
+            'id',
+            'training_plan'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $training_model->updateTrainingPlan($request);
+        
         return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
     }
 
