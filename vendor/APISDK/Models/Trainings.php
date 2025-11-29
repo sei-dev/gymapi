@@ -108,7 +108,8 @@ class Trainings extends ModelAbstract implements ModelInterface
                 	    FROM training
                 	    LEFT JOIN users ON training.trainer_id = users.id
                 	    LEFT JOIN gyms ON training.gym_id = gyms.id
-                	    LEFT JOIN training_clients ON (training_clients.training_id = training.id ) #AND training_clients.cancelled = 0
+                	    LEFT JOIN training_clients ON (training_clients.training_id = training.id ) 
+                        #AND training_clients.cancelled = 0
                 	    LEFT JOIN users client ON training_clients.client_id = client.id
                 	    WHERE trainer_id = '{$id}'  AND training.date = '{$date}'
                 	    GROUP BY training.id;
