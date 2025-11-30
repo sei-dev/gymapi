@@ -572,7 +572,7 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         $training_model->updateTrainingPlan($request);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", "[]");
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
     private function removeInactive()
