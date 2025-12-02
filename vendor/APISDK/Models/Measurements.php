@@ -82,7 +82,7 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    
 	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	    
-	    return !empty($rows) ? $rows : false;
+	    return !empty($rows) ? $rows : [];
 	}
 	
 	
