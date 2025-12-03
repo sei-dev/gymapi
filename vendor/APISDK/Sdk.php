@@ -1516,8 +1516,8 @@ class Sdk extends Api
         
         
         
-        $userToReturn[0] = $users[0];
-        $userToReturn[0]['connection'] = $connection;
+        $userToReturn = $users[0];
+        $userToReturn['connection'] = $connection;
         
         /**
          * MAKE AUTO CONNECTION IF TRAINER IS ADDING CLIENT
