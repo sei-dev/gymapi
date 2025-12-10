@@ -447,7 +447,7 @@ class Sdk extends Api
 
                 $i ++;
                 $start_date = $start_date->modify('+1 day');
-            } while ($end_date != $start_date);
+            } while ($start_date <= $end_date);
 
             // die(var_dump($trainings));
 
