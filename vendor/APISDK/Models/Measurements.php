@@ -194,6 +194,7 @@ class Measurements extends ModelAbstract implements ModelInterface
 	    
 	    foreach ($exercises as $ex) {
 	        unset($ex["id"]);
+	        $ex["created_on"] = date("Y-m-d");
 	        $ex["measurement_id"] = $measurementId;
 	        $this->getDbAdapter()->insertIntoTable("exercises", $ex);
 	    }
