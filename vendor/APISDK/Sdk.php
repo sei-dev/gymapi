@@ -211,6 +211,18 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
+    
+    private function removeTrainings()
+    {
+        $request = $this->filterParams([
+            'id'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $count = $training_model->removeTrainings($request['id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", ["removed"=>$count]);
+    }
 
     private function getTrainingsByDate()
     {

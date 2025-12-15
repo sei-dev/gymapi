@@ -249,6 +249,40 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function removeTrainings(string $id)
+	{
+	    if(empty($id))
+	    {
+	        return false;
+	    }
+	    
+	    $bind["client_id"] = $id;
+	    
+	    $sql = "START TRANSACTION;
+            
+            -- GROUP treninzi
+            DELETE tc
+            FROM training_clients tc
+            JOIN training t ON t.id = tc.training_id
+            WHERE tc.client_id = :client_id
+              AND t.is_group = 1
+              AND t.date > CURDATE();
+            
+            -- INDIVIDUAL treninzi
+            DELETE t
+            FROM training t
+            JOIN training_clients tc ON tc.training_id = t.id
+            WHERE tc.client_id = :client_id
+              AND t.is_group = 0
+              AND t.date > CURDATE();
+            
+            COMMIT;";
+	    
+	    $stmt = $this->getDbAdapter()->query($sql, $bind);
+	    
+	    return $stmt->rowCount(); // broj obrisanih redova
+	}
+	
 	public function clientIsInSystem(string $user_id)
 	{
 	    $bind["user_id"] = $user_id;
