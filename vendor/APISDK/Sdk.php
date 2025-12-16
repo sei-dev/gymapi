@@ -643,6 +643,24 @@ class Sdk extends Api
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
+    
+    private function deleteClientsByClientId()
+    {
+        $request = $this->filterParams([
+            'training_id',
+            'client_id',
+            'trainer_id',
+            'notification'
+        ]);
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $res = $training_model->deleteClientsByClientId($request['training_id'], $request['client_id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", [$res]);
+    }
+    
+    
+    
 
     private function getUsersByTrainingId()
     {

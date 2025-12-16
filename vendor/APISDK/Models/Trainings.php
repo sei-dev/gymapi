@@ -184,6 +184,37 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function deleteClientsByClientId(string $training_id, string $client_id){
+	
+	    $updateClientQuery = "
+            DELETE FROM training_clients
+            WHERE training_id = :training_id
+              AND client_id   = :client_id
+        ";
+	    
+	    $rowCount = $this->getDbAdapter()->query($updateClientQuery,[
+	        'training_id' => $training_id,
+	        'client_id'   => $client_id
+	    ])->rowCount();
+	    
+	    $sql = "
+            UPDATE training t
+            SET t.cancelled = 1
+            WHERE t.id = :training_id
+              AND NOT EXISTS (
+                    SELECT 1
+                    FROM training_clients tc
+                    WHERE tc.training_id = t.id
+                      AND tc.cancelled = 0
+              )
+        ";
+	
+	    $this->getDbAdapter()->query($sql,['training_id' => $training_id])->rowCount();
+	    
+	    return $rowCount === 0 ? false : true;
+	
+	}
+	
 	public function getClientTrainingsByDate(string $id, string $date) {
 	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, users.phone, training.trainer_id as trainer_id,
                    gyms.name as gym_name, gyms.address as gym_address, gyms.city as gym_city, training.date, training.is_group, training.cancelled, training.finished, training.duration,
