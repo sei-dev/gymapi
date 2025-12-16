@@ -385,6 +385,7 @@ class Sdk extends Api
             foreach ($clients as $one) {
                 $user_model = new Users($this->dbAdapter);
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
+                $price = intval($price);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
             }
 
