@@ -644,13 +644,15 @@ class Sdk extends Api
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
     
+    
+    /**
+     * 
+     */
     private function deleteClientsByClientId()
     {
         $request = $this->filterParams([
             'training_id',
             'client_id',
-            'trainer_id',
-            'notification'
         ]);
         
         $training_model = new Trainings($this->dbAdapter);
