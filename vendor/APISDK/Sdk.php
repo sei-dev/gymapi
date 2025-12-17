@@ -517,6 +517,48 @@ class Sdk extends Api
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
+    
+    private function addUserToTraining()
+    {
+        
+          $request = $this->filterParams([
+          'training_id',
+          'client_id',
+          'trainer_id'
+          ]);
+         
+        $training_model = new Trainings($this->dbAdapter);
+        
+        $user_model = new Users($this->dbAdapter);
+        $price = (int)$user_model->getConnectionPriceByIds($request['trainer_id'], $request["client_id"]);
+        $trainings = $training_model->insertClientToTraining($request["training_id"], $request["client_id"], $price);
+        
+        $training_info = $training_model->getTrainingById($request["training_id"]);
+        
+        $user_model = new Users($this->dbAdapter);
+        $client = $user_model->getUserById($request["client_id"]);
+        $trainer = $user_model->getUserById($request["trainer_id"]);
+        
+        $date = $training_info[0]['date'];
+        $date = date('d.m.Y', strtotime($date));
+        
+        $time = $training_info[0]['time'];
+        $time = date('H:i', strtotime($time));
+        
+        $dataPayload = [
+            'type' => 'new_training',
+            'date' => $date,
+            'time' => $time,
+            'user' => $trainer['first_name'] . " " . $trainer['last_name']
+        ];
+        
+        $newTrainingMessage = $this->getTranslatedMessage('new_training', $this->getAppLanguage() ?: 'en', [
+            'first_name' => $trainer['first_name'],
+        ]);
+        $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+    }
 
     private function setTrainingCancelledTrainer()
     {
