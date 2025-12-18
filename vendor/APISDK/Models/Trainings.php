@@ -297,7 +297,7 @@ class Trainings extends ModelAbstract implements ModelInterface
             JOIN training t ON t.id = tc.training_id
             WHERE tc.client_id = :client_id
               AND t.is_group = 1
-              AND t.date > CURDATE();
+              AND t.date >= CURDATE();
             
             -- INDIVIDUAL treninzi
             DELETE t
@@ -305,7 +305,7 @@ class Trainings extends ModelAbstract implements ModelInterface
             JOIN training_clients tc ON tc.training_id = t.id
             WHERE tc.client_id = :client_id
               AND t.is_group = 0
-              AND t.date > CURDATE();
+              AND t.date >= CURDATE();
             
             COMMIT;";
 	    
