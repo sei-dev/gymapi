@@ -700,7 +700,7 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         $res = $training_model->deleteClientsByClientId($request['training_id'], $request['client_id']);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", [$res]);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $res);
     }
     
     
