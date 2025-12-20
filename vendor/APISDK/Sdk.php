@@ -716,18 +716,15 @@ class Sdk extends Api
         $users_model = new Users($this->dbAdapter);
         $users = $users_model->getUsersByTrainingId($request['id']);
 
-        array_walk($users, function (&$a) {
+        array_walk($users, function (&$a) use ($users_model, $request) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
                 $a['image'] = $this->domain . "/images/users/" . $a["id"] . ".png?r=" . rand(0, 100000);
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
+            $a['price'] = "1111" . $users_model->getConnectionPriceByIds($request['id'], $a['id'])??"--" . "22";
         });
         
-            foreach ($users as &$one) {
-                $one['price'] = $users_model->getConnectionPriceByIds($request['id'], $one['id']);
-            }
-            
 
         return $this->formatResponse(self::STATUS_SUCCESS, "", $users);
     }
