@@ -722,7 +722,8 @@ class Sdk extends Api
             } else {
                 $a['image'] = $this->domain . "/images/users/logo.png";
             }
-            $a['price'] = "1111" . $users_model->getConnectionPriceByIds($request['id'], $a['id'])??"--" . "22";
+            $price = $users_model->getConnectionPriceByIds($request['id'], $a['id']) ?? "9";
+            $a['price'] = $price ."_1111_" . $request['id'] ."_". $a['id'] . "_22";
         });
         
 
