@@ -303,7 +303,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	        $values = [];
 	        foreach ($chunk as $conn) {
 	            $values[] = sprintf(
-	                "(%d, %d, %d, %d)",
+	                "(%d, %d, %d)",
 	                $conn['training_id'],
 	                $conn['client_id'],
 	                $conn['price']
