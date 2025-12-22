@@ -535,7 +535,7 @@ class Sdk extends Api
                 $request['duration']
                 );
             
-            //$this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+            $this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
             
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
