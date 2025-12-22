@@ -316,7 +316,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	        
 	        $sql = "INSERT INTO training_clients (training_id, client_id, price, trainer_id) VALUES " . implode(',', $values);
 	        
-	        $this->dbAdapter->query($sql);
+	        $this->getDbAdapter()->query($sql);
 	    }
 	}
 	

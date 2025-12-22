@@ -76,7 +76,7 @@ class Users extends ModelAbstract implements ModelInterface
             FROM connections
             WHERE trainer_id = ? AND client_id IN ($placeholders)";
         
-        $stmt = $this->dbAdapter->prepare($sql);
+        $stmt = $this->getDbAdapter()->prepare($sql);
         $params = array_merge([$trainer_id], $client_ids);
         $stmt->execute($params);
         
