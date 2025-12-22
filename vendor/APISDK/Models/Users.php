@@ -66,6 +66,27 @@ class Users extends ModelAbstract implements ModelInterface
         }
         return false;
     }
+    
+    public function getConnectionPricesByTrainerAndClients($trainer_id, $client_ids)
+    {
+        if (empty($client_ids)) return [];
+        
+        $placeholders = implode(',', array_fill(0, count($client_ids), '?'));
+        $sql = "SELECT client_id, price
+            FROM connections
+            WHERE trainer_id = ? AND client_id IN ($placeholders)";
+        
+        $stmt = $this->dbAdapter->prepare($sql);
+        $params = array_merge([$trainer_id], $client_ids);
+        $stmt->execute($params);
+        
+        $result = [];
+        while ($row = $stmt->fetch()) {
+            $result[$row['client_id']] = $row['price'];
+        }
+        
+        return $result;
+    }
 
     public function getTrainerByConnectionId(string $id)
     {

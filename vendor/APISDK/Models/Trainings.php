@@ -280,6 +280,46 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	private function addClientsToTrainingsBatch($trainings, $clients, $prices, $trainer_id)
+	{
+	    if (empty($trainings) || empty($clients)) {
+	        return;
+	    }
+	    
+	    $connections = [];
+	    foreach ($trainings as $training) {
+	        foreach ($clients as $client_id) {
+	            $price = isset($prices[$client_id]) ? intval($prices[$client_id]) : 0;
+	            
+	            $connections[] = [
+	                'training_id' => $training['id'],
+	                'client_id'   => $client_id,
+	                'price'       => $price,
+	                'trainer_id'  => $trainer_id
+	            ];
+	        }
+	    }
+	    
+	    // Batch INSERT po 1000 redova
+	    $chunks = array_chunk($connections, 1000);
+	    foreach ($chunks as $chunk) {
+	        $values = [];
+	        foreach ($chunk as $conn) {
+	            $values[] = sprintf(
+	                "(%d, %d, %d, %d)",
+	                $conn['training_id'],
+	                $conn['client_id'],
+	                $conn['price'],
+	                $conn['trainer_id']
+	                );
+	        }
+	        
+	        $sql = "INSERT INTO training_clients (training_id, client_id, price, trainer_id) VALUES " . implode(',', $values);
+	        
+	        $this->dbAdapter->query($sql);
+	    }
+	}
+	
 	public function removeTrainings(string $id)
 	{
 	    if(empty($id))

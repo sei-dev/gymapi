@@ -378,12 +378,14 @@ class Sdk extends Api
 
         $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
 
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $user_model = new Users($this->dbAdapter);
+        
         if ($request['repeated'] == '0') {
-            $training_model = new Trainings($this->dbAdapter);
             $trainings = $training_model->insertTraining($request['trainer_id'], $request['gym_id'], $request['is_group'], $request['date'], $request['time'], $request['training_plan'], $request['duration']);
 
             foreach ($clients as $one) {
-                $user_model = new Users($this->dbAdapter);
                 $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $one);
                 $price = intval($price);
                 $this->addClientToTraining($trainings[0]['id'], $one, $price, $request['trainer_id']);
@@ -394,7 +396,6 @@ class Sdk extends Api
 
             $start_date = new \DateTimeImmutable($request['date']);
             $end_date = new \DateTimeImmutable($request['end_date']);
-            $training_model = new Trainings($this->dbAdapter);
 
             $trainings = [];
 
@@ -466,7 +467,6 @@ class Sdk extends Api
 
             foreach ($trainings as $training) {
                 foreach ($clients as $client_id) {
-                    $user_model = new Users($this->dbAdapter);
                     $price = $user_model->getConnectionPriceByIds($request['trainer_id'], $client_id);
                     $this->addClientToTraining($training['id'], $client_id, $price, $request['trainer_id']);
                 }
@@ -475,6 +475,107 @@ class Sdk extends Api
         }
 
         return $this->formatResponse(self::STATUS_FAILED, "-1", $trainings);
+    }
+    
+    private function insertTrainingFix()
+    {
+        $request = $this->filterParams([
+            'trainer_id',
+            'gym_id',
+            'date',
+            'time',
+            'is_group',
+            'training_plan',
+            'repeated',
+            'clients',
+            'duration'
+        ], [
+            'mon',
+            'tue',
+            'wed',
+            'thu',
+            'fri',
+            'sat',
+            'sun',
+            'end_date'
+        ]);
+        
+        $clients = isset($request['clients']) ? json_decode($request['clients'], true) : [];
+        
+        $training_model = new Trainings($this->dbAdapter);
+        $user_model = new Users($this->dbAdapter);
+        
+        // Definisanje koji dani su selektovani (1=ponedeljak ... 7=nedelja)
+        $selected_days = [];
+        $day_map = ['mon' => 1, 'tue' => 2, 'wed' => 3, 'thu' => 4, 'fri' => 5, 'sat' => 6, 'sun' => 7];
+        foreach ($day_map as $key => $num) {
+            if (!empty($request[$key])) {
+                $selected_days[] = $num;
+            }
+        }
+        
+        // Preuzmi sve cene odjednom za trenera i sve klijente (ključno za brzinu!)
+        $prices = [];
+        if (!empty($clients)) {
+            $prices = $user_model->getConnectionPricesByTrainerAndClients($request['trainer_id'], $clients);
+            // Očekujem da ova metoda vrati niz: [client_id => price]
+        }
+        
+        $trainings = [];
+        
+        if ($request['repeated'] == '0') {
+            // Jednokratni trening
+            $trainings = $training_model->insertTraining(
+                $request['trainer_id'],
+                $request['gym_id'],
+                $request['is_group'],
+                $request['date'],
+                $request['time'],
+                $request['training_plan'],
+                $request['duration']
+                );
+            
+            //$this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+            
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        }
+        
+        // Ponavljajući trening
+        if ($request['repeated'] != '1') {
+            return $this->formatResponse(self::STATUS_FAILED, "Invalid repeated value.", []);
+        }
+        
+        $start_date = new \DateTimeImmutable($request['date']);
+        $end_date = new \DateTimeImmutable($request['end_date']);
+        
+        if ($end_date < $start_date) {
+            return $this->formatResponse(self::STATUS_FAILED, "End date before start date.", []);
+        }
+        
+        $current_date = $start_date;
+        while ($current_date <= $end_date) {
+            $day_of_week = (int)$current_date->format('N'); // 1=pon, 7=ned
+            
+            if (in_array($day_of_week, $selected_days)) {
+                $new_trainings = $training_model->insertTraining(
+                    $request['trainer_id'],
+                    $request['gym_id'],
+                    $request['is_group'],
+                    $current_date->format('Y-m-d'),
+                    $request['time'],
+                    $request['training_plan'],
+                    $request['duration']
+                    );
+                $trainings = array_merge($trainings, $new_trainings);
+            }
+            
+            $current_date = $current_date->modify('+1 day');
+        }
+        
+        // Batch dodavanje svih klijenata u sve treninge
+        $this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+        
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
     private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)
