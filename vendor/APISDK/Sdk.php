@@ -518,14 +518,12 @@ class Sdk extends Api
         $prices = [];
         if (!empty($clients)) {
             $prices = $user_model->getConnectionPricesByTrainerAndClients($request['trainer_id'], $clients);
-            // Očekujem da ova metoda vrati niz: [client_id => price]
         }
         
-        $trainings = [];
         
         if ($request['repeated'] == '0') {
             // Jednokratni trening
-            $trainings = $training_model->insertTraining(
+            $trainer_ids[] = $training_model->insertTrainingFix(
                 $request['trainer_id'],
                 $request['gym_id'],
                 $request['is_group'],
@@ -535,7 +533,7 @@ class Sdk extends Api
                 $request['duration']
                 );
             
-            $training_model->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+            $training_model->addClientsToTrainingsBatch($clients, $prices, $trainer_ids);
             
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
@@ -557,7 +555,7 @@ class Sdk extends Api
             $day_of_week = (int)$current_date->format('N'); // 1=pon, 7=ned
             
             if (in_array($day_of_week, $selected_days)) {
-                $new_trainings = $training_model->insertTraining(
+                $trainer_id = $training_model->insertTrainingFix(
                     $request['trainer_id'],
                     $request['gym_id'],
                     $request['is_group'],
@@ -566,16 +564,16 @@ class Sdk extends Api
                     $request['training_plan'],
                     $request['duration']
                     );
-                $trainings = array_merge($trainings, $new_trainings);
+                
+                // Batch dodavanje svih klijenata u sve treninge
+                $training_model->addClientsToTrainingsBatch($clients, $prices, $trainer_id);
             }
             
             $current_date = $current_date->modify('+1 day');
         }
         
-        // Batch dodavanje svih klijenata u sve treninge
-        $training_model->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
 
     private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)

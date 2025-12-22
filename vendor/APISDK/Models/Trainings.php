@@ -280,24 +280,22 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	function addClientsToTrainingsBatch($trainings, $clients, $prices, $trainer_id)
+	function addClientsToTrainingsBatch($clients, $prices, $trainer_id)
 	{
-	    if (empty($trainings) || empty($clients)) {
+	    if (empty($trainer_id) || empty($clients)) {
 	        return;
 	    }
 	    
 	    $connections = [];
-	    foreach ($trainings as $training) {
 	        foreach ($clients as $client_id) {
 	            $price = isset($prices[$client_id]) ? intval($prices[$client_id]) : 0;
 	            
 	            $connections[] = [
-	                'training_id' => $training['id'],
+	                'training_id' => $trainer_id,
 	                'client_id'   => $client_id,
 	                'price'       => $price
 	            ];
 	        }
-	    }
 	    
 	    // Batch INSERT po 1000 redova
 	    $chunks = array_chunk($connections, 1000);
@@ -421,6 +419,19 @@ AND training_clients.cancelled != 1 AND  training.trainer_id = '{$trainer_id}';"
 	    $rows = $this->getDbAdapter()->query($sQuery2)->fetchAll(\PDO::FETCH_ASSOC);
 	    if (isset($rows)) {
 	        return $rows;
+	    }
+	    return false;
+	}
+	
+	public function insertTrainingFix(string $trainer_id, string $gym_id, string $is_group, string $date, string $time, string $training_plan, string $duration){
+	    $sQuery = "INSERT INTO `training`(`trainer_id`, `gym_id`, `is_group`, `date`, `time`, `training_plan`, `duration`
+                  ) VALUES ('{$trainer_id}','{$gym_id}','{$is_group}','{$date}','{$time}', '{$training_plan}', '{$duration}');
+				    ";
+	    
+	    $r = $this->getDbAdapter()->query($sQuery);
+	    
+	    if (isset($r)) {
+	        return $this->getDbAdapter()->getLastInsertId("training");
 	    }
 	    return false;
 	}
