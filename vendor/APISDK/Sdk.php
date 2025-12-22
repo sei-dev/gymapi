@@ -535,7 +535,7 @@ class Sdk extends Api
                 $request['duration']
                 );
             
-            $this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+            $training_model->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
             
             return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
         }
@@ -573,7 +573,7 @@ class Sdk extends Api
         }
         
         // Batch dodavanje svih klijenata u sve treninge
-        $this->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
+        $training_model->addClientsToTrainingsBatch($trainings, $clients, $prices, $request['trainer_id']);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
