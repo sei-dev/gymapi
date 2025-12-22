@@ -294,8 +294,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	            $connections[] = [
 	                'training_id' => $training['id'],
 	                'client_id'   => $client_id,
-	                'price'       => $price,
-	                'trainer_id'  => $trainer_id
+	                'price'       => $price
 	            ];
 	        }
 	    }
@@ -309,12 +308,11 @@ class Trainings extends ModelAbstract implements ModelInterface
 	                "(%d, %d, %d, %d)",
 	                $conn['training_id'],
 	                $conn['client_id'],
-	                $conn['price'],
-	                $conn['trainer_id']
+	                $conn['price']
 	                );
 	        }
 	        
-	        $sql = "INSERT INTO training_clients (training_id, client_id, price, trainer_id) VALUES " . implode(',', $values);
+	        $sql = "INSERT INTO training_clients (training_id, client_id, price) VALUES " . implode(',', $values);
 	        
 	        $this->getDbAdapter()->query($sql);
 	    }
