@@ -280,7 +280,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	function addClientsToTrainingsBatch($clients, $prices, $trainer_id)
+	function addClientsToTrainingsBatch($clients, $prices, $training_id)
 	{
 	    if (empty($trainer_id) || empty($clients)) {
 	        return;
@@ -291,7 +291,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	            $price = isset($prices[$client_id]) ? intval($prices[$client_id]) : 0;
 	            
 	            $connections[] = [
-	                'training_id' => $trainer_id,
+	                'training_id' => $training_id,
 	                'client_id'   => $client_id,
 	                'price'       => $price
 	            ];
