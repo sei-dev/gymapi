@@ -280,7 +280,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	private function addClientsToTrainingsBatch($trainings, $clients, $prices, $trainer_id)
+	function addClientsToTrainingsBatch($trainings, $clients, $prices, $trainer_id)
 	{
 	    if (empty($trainings) || empty($clients)) {
 	        return;
