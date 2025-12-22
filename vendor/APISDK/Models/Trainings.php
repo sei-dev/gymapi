@@ -282,7 +282,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	function addClientsToTrainingsBatch($clients, $prices, $training_id)
 	{
-	    if (empty($trainer_id) || empty($clients)) {
+	    if (empty($training_id) || empty($clients)) {
 	        return;
 	    }
 	    

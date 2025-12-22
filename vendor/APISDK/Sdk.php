@@ -523,7 +523,7 @@ class Sdk extends Api
         
         if ($request['repeated'] == '0') {
             // Jednokratni trening
-            $trainer_ids[] = $training_model->insertTrainingFix(
+            $training_id = $training_model->insertTrainingFix(
                 $request['trainer_id'],
                 $request['gym_id'],
                 $request['is_group'],
@@ -533,9 +533,9 @@ class Sdk extends Api
                 $request['duration']
                 );
             
-            $training_model->addClientsToTrainingsBatch($clients, $prices, $trainer_ids);
+            $training_model->addClientsToTrainingsBatch($clients, $prices, $training_id);
             
-            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+            return $this->formatResponse(self::STATUS_SUCCESS, $training_id, []);
         }
         
         // Ponavljajući trening
@@ -555,7 +555,7 @@ class Sdk extends Api
             $day_of_week = (int)$current_date->format('N'); // 1=pon, 7=ned
             
             if (in_array($day_of_week, $selected_days)) {
-                $trainer_id = $training_model->insertTrainingFix(
+                $training_id = $training_model->insertTrainingFix(
                     $request['trainer_id'],
                     $request['gym_id'],
                     $request['is_group'],
@@ -566,14 +566,14 @@ class Sdk extends Api
                     );
                 
                 // Batch dodavanje svih klijenata u sve treninge
-                $training_model->addClientsToTrainingsBatch($clients, $prices, $trainer_id);
+                $training_model->addClientsToTrainingsBatch($clients, $prices, $training_id);
             }
             
             $current_date = $current_date->modify('+1 day');
         }
         
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", []);
+        return $this->formatResponse(self::STATUS_SUCCESS, $training_id, []);
     }
 
     private function addClientToTraining(string $training_id, string $client_id, string $price, string $trainer_id)
