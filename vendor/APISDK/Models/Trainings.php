@@ -87,7 +87,6 @@ class Trainings extends ModelAbstract implements ModelInterface
 	
 	public function updateTrainingGroup(array $request){
 	    $sQuery = "UPDATE `training` SET is_group = :is_group WHERE id = :id";
-	    return json_encode($request);
 	    return $this->getDbAdapter()->query($sQuery, $request)->rowCount();
 	}
 	
