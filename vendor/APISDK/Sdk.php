@@ -632,7 +632,7 @@ class Sdk extends Api
         $trainings = $training_model->insertClientToTraining($request["training_id"], $request["client_id"], $price);
         
         $training_info = $training_model->getTrainingById($request["training_id"]);
-        $this->updateTrainingGroup($request["training_id"]);
+        $clientsCount = $this->updateTrainingGroup($request["training_id"]);
         
         $user_model = new Users($this->dbAdapter);
         $client = $user_model->getUserById($request["client_id"]);
@@ -656,7 +656,7 @@ class Sdk extends Api
         ]);
         $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        return $this->formatResponse(self::STATUS_SUCCESS, "$clientsCount", $trainings);
     }
     
     
@@ -672,6 +672,8 @@ class Sdk extends Api
         $req["is_group"] = count($clients) > 1 ? "1" : "0";
         
         $training_model->updateTrainingGroup($req);
+        
+        return count($clients);
     }
 
     private function setTrainingCancelledTrainer()
