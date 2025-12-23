@@ -514,7 +514,6 @@ class Sdk extends Api
             }
         }
         
-        // Preuzmi sve cene odjednom za trenera i sve klijente (ključno za brzinu!)
         $prices = [];
         if (!empty($clients)) {
             $prices = $user_model->getConnectionPricesByTrainerAndClients($request['trainer_id'], $clients);
@@ -633,6 +632,7 @@ class Sdk extends Api
         $trainings = $training_model->insertClientToTraining($request["training_id"], $request["client_id"], $price);
         
         $training_info = $training_model->getTrainingById($request["training_id"]);
+        $this->updateTrainingGroup($request["training_id"]);
         
         $user_model = new Users($this->dbAdapter);
         $client = $user_model->getUserById($request["client_id"]);
@@ -657,6 +657,21 @@ class Sdk extends Api
         $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+    }
+    
+    
+    private function updateTrainingGroup(string $training_id){
+        
+        
+        $user_model = new Users($this->dbAdapter);
+        $training_model = new Trainings($this->dbAdapter);
+        
+        $clients = (array) $user_model->getUsersByTrainingId($training_id);
+        
+        $req["training_id"] = $training_id;
+        $req["is_group"] = count($clients) > 1 ? "1" : "0";
+        
+        $training_model->updateTrainingGroup($req);
     }
 
     private function setTrainingCancelledTrainer()

@@ -85,6 +85,18 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
+	public function updateTrainingGroup($request){
+	    $sQuery = "UPDATE `training` SET training_plan = :is_group
+ WHERE id = :id";
+	    
+	    $rows = $this->getDbAdapter()->query($sQuery, $request);
+	    
+	    if (isset($rows)) {
+	        return $rows;
+	    }
+	    return false;
+	}
+	
 	public function getTrainingsByDate(string $id, string $date) {
 	    /* $sQuery = "SELECT client.id as client_id, client.first_name as client_first_name, client.last_name as client_last_name, training.*, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
                    gyms.name as gym_name, gyms.address as gym_address, cities.city as gym_city FROM training
