@@ -28,6 +28,7 @@ use DateTime;
 use WdevRs\NetRacuniPhp\InvoiceResponse as NetRacunResponse;
 use WdevRs\NetRacuniPhp\NetRacuniClient as NetRacun;
 use APISDK\Models\PaymentCallbacks;
+use function GuzzleHttp\json_encode;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -669,7 +670,7 @@ class Sdk extends Api
         
         $req["id"] = $training_id;
         $req["is_group"] = count($clients) > 1 ? "1" : "0";
-        
+        return json_encode($req);
         return $training_model->updateTrainingGroup($req);
     }
 
