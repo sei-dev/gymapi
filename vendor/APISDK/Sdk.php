@@ -670,7 +670,6 @@ class Sdk extends Api
         
         $req["id"] = $training_id;
         $req["is_group"] = count($clients) > 1 ? "1" : "0";
-        return json_encode($req);
         return $training_model->updateTrainingGroup($req);
     }
 
@@ -813,6 +812,8 @@ class Sdk extends Api
         
         $training_model = new Trainings($this->dbAdapter);
         $res = $training_model->deleteClientsByClientId($request['training_id'], $request['client_id']);
+        
+        $this->updateTrainingGroup($request['training_id']);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
