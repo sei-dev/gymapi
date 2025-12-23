@@ -85,7 +85,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    return false;
 	}
 	
-	public function updateTrainingGroup($request){
+	public function updateTrainingGroup(array $request){
 	    $sQuery = "UPDATE `training` SET training_plan = :is_group
  WHERE id = :id";
 	    

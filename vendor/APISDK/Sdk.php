@@ -668,7 +668,7 @@ class Sdk extends Api
         
         $clients = (array) $user_model->getUsersByTrainingId($training_id);
         
-        $req["training_id"] = $training_id;
+        $req["id"] = $training_id;
         $req["is_group"] = count($clients) > 1 ? "1" : "0";
         
         $training_model->updateTrainingGroup($req);
