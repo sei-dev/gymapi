@@ -256,6 +256,10 @@ class Sdk extends Api
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
 
         $user_model = new Users($this->dbAdapter);
+        
+        if ($trainings == false) {
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        }
 
         foreach ($trainings as &$one) {
             $users = $user_model->getUsersByTrainingId($one['id']);
