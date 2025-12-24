@@ -245,7 +245,6 @@ class Trainings extends ModelAbstract implements ModelInterface
                 LEFT JOIN gyms ON training.gym_id = gyms.id
                 LEFT JOIN training_clients client ON (training.id = client.training_id AND client.cancelled = 0)
                 WHERE tc.client_id = ?
-                  AND tc.cancelled = 0  -- optional: only active bookings
                   AND training.date = ?
                 GROUP BY training.id
             ";
