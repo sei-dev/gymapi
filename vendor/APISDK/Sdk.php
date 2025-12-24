@@ -256,17 +256,11 @@ class Sdk extends Api
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
 
         $user_model = new Users($this->dbAdapter);
-        
-        if ($trainings == false) {
-            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
-        }
 
         foreach ($trainings as &$one) {
-            if($one['id']!=NULL){
-                $users = $user_model->getUsersByTrainingId($one['id']);
-                $count = sizeof($users);
-                $one['count'] = strval($count);
-            }
+            $users = $user_model->getUsersByTrainingId($one['id']);
+            $count = sizeof($users);
+            $one['count'] = strval($count);
         }
 
         array_walk($trainings, function (&$a) {
