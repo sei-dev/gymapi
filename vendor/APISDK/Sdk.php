@@ -814,6 +814,13 @@ class Sdk extends Api
         $training_model = new Trainings($this->dbAdapter);
         $users_model = new Users($this->dbAdapter);
         $users = $users_model->getUsersByTrainingId($request['id']);
+        
+        foreach ($users as &$one) {
+            $one['total_trainings_client'] = $training_model->getTrainingsClientTrainer($request['id'], $one['id']);
+            $one['profit'] = $users_model->getProfitConnection($request['id'], $one['id']);
+            $one['debt'] = $users_model->getDebtConnection($request['id'], $one['id']);
+            $one['in_system'] = $training_model->clientIsInSystem($one["id"]);
+        }
 
         array_walk($users, function (&$a) use ($users_model) {
             if ($this->isFileExists(self::DIR_USERS, $a["id"])) {
