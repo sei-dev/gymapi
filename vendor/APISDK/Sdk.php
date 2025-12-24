@@ -256,8 +256,6 @@ class Sdk extends Api
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
 
         $user_model = new Users($this->dbAdapter);
-        
-        die(var_dump($trainings));
 
         foreach ($trainings as &$one) {
             $users = $user_model->getUsersByTrainingId($one['id']);

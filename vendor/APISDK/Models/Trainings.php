@@ -221,41 +221,40 @@ class Trainings extends ModelAbstract implements ModelInterface
 	}
 	
 	public function getClientTrainingsByDate(string $id, string $date) {
-	    $sQuery = "SELECT users.id as trainer_id, training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name, users.phone, training.trainer_id as trainer_id,
-                   gyms.name as gym_name, gyms.address as gym_address, gyms.city as gym_city, training.date, training.is_group, training.cancelled, training.finished, training.duration,
-                   training.time, training_clients.cancelled as one_cancelled,
-                	    GROUP_CONCAT(DISTINCT client.client_id) AS client_ids FROM training
-                   LEFT JOIN users ON training.trainer_id = users.id
-                   LEFT JOIN gyms ON training.gym_id = gyms.id
-                   LEFT JOIN training_clients ON training.id = training_clients.training_id 
-                    LEFT JOIN training_clients client ON (training.id = client.training_id and client.cancelled = 0)
-				   WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}';
-				    ";
+	    $sQuery = "
+                SELECT
+                    users.id AS trainer_id,
+                    training.id,
+                    users.first_name AS trainer_first_name,
+                    users.last_name AS trainer_last_name,
+                    users.phone,
+                    gyms.name AS gym_name,
+                    gyms.address AS gym_address,
+                    gyms.city AS gym_city,
+                    training.date,
+                    training.is_group,
+                    training.cancelled,
+                    training.finished,
+                    training.duration,
+                    training.time,
+                    tc.cancelled AS one_cancelled,
+                    GROUP_CONCAT(DISTINCT client.client_id) AS client_ids
+                FROM training_clients tc
+                INNER JOIN training ON tc.training_id = training.id
+                LEFT JOIN users ON training.trainer_id = users.id
+                LEFT JOIN gyms ON training.gym_id = gyms.id
+                LEFT JOIN training_clients client ON (training.id = client.training_id AND client.cancelled = 0)
+                WHERE tc.client_id = ?
+                  AND tc.cancelled = 0  -- optional: only active bookings
+                  AND training.date = ?
+                GROUP BY training.id
+            ";
 	    
-	    /* $sQuery = "SELECT
-                	    training.*,
-                	    users.first_name AS trainer_first_name,
-                	    users.last_name AS trainer_last_name,
-                	    gyms.name AS gym_name,
-                	    gyms.address AS gym_address,
-                	    cities.city AS gym_city,
-                	    GROUP_CONCAT(client.id) AS client_ids,
-                	    GROUP_CONCAT(CONCAT(client.first_name, ' ', client.last_name)) AS client_names
-                	    FROM training
-                	    LEFT JOIN users ON training.trainer_id = users.id
-                	    LEFT JOIN gyms ON training.gym_id = gyms.id
-                	    LEFT JOIN cities ON cities.id = gyms.city_id
-                	    LEFT JOIN training_clients ON training_clients.training_id = training.id
-                	    LEFT JOIN users client ON training_clients.client_id = client.id
-                	    WHERE training_clients.client_id = '{$id}'  AND training.date = '{$date}'
-                	    GROUP BY training.id;
-				    "; */
+	    $stmt = $this->getDbAdapter()->prepare($sQuery);
+	    $stmt->execute([$id, $date]);
+	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	    
-	    $rows = $this->getDbAdapter()->query($sQuery)->fetchAll(\PDO::FETCH_ASSOC);
-	    if (isset($rows)) {
-	        return $rows;
-	    }
-	    return false;
+	    return empty($rows) ? false : $rows;
 	}
 	
 	
