@@ -820,7 +820,6 @@ class Sdk extends Api
             $one['profit'] = $users_model->getProfitConnection($this->user_id, $one['id']);
             $one['debt'] = $users_model->getDebtConnection($this->user_id, $one['id']);
             $one['in_system'] = $training_model->clientIsInSystem($one["id"]);
-            $one['connected_since'] = $training_model->getConnectedSinceClientTrainer($this->user_id, $one['id']);
         }
 
         array_walk($users, function (&$a) use ($users_model) {
