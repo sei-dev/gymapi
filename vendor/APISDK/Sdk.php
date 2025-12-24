@@ -262,9 +262,11 @@ class Sdk extends Api
         }
 
         foreach ($trainings as &$one) {
-            $users = $user_model->getUsersByTrainingId($one['id']);
-            $count = sizeof($users);
-            $one['count'] = strval($count);
+            if($one['id']!=NULL){
+                $users = $user_model->getUsersByTrainingId($one['id']);
+                $count = sizeof($users);
+                $one['count'] = strval($count);
+            }
         }
 
         array_walk($trainings, function (&$a) {
