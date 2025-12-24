@@ -254,7 +254,7 @@ class Trainings extends ModelAbstract implements ModelInterface
 	    $stmt->execute([$id, $date]);
 	    $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	    
-	    return empty($rows) ? false : $rows;
+	    return empty($rows) ? [] : $rows;
 	}
 	
 	
