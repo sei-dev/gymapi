@@ -390,6 +390,33 @@ AND training_clients.cancelled != 1 AND  training.trainer_id = '{$trainer_id}';"
 	
 	}
 	
+	public function getConnectedSinceClientTrainer(string $trainer_id, string $client_id)
+	{
+	    $sQuery = "SELECT connected_since
+               FROM training_clients
+               LEFT JOIN training ON training.id = training_clients.training_id
+               WHERE training_clients.client_id = ?
+                 AND training.trainer_id = ?
+                 AND training_clients.cancelled != 1
+               ORDER BY training_clients.connected_since ASC
+               LIMIT 1";
+	    
+	    try {
+	        $stmt = $this->getDbAdapter()->prepare($sQuery);
+	        $stmt->execute([$client_id, $trainer_id]);
+	        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+	        
+	        if ($row && isset($row['connected_since'])) {
+	            return $row['connected_since']; // Returns the date string (e.g., '2024-01-15')
+	        }
+	        
+	        return false; // No relationship found or no connected_since
+	    } catch (\Exception $e) {
+	        // Optional: log error
+	        return false;
+	    }
+	}
+	
 	
 	public function getTrainingById(string $id) {
 	    $sQuery = "SELECT training.id, users.first_name as trainer_first_name, users.last_name as trainer_last_name,
