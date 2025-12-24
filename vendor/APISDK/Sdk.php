@@ -28,7 +28,6 @@ use DateTime;
 use WdevRs\NetRacuniPhp\InvoiceResponse as NetRacunResponse;
 use WdevRs\NetRacuniPhp\NetRacuniClient as NetRacun;
 use APISDK\Models\PaymentCallbacks;
-use function GuzzleHttp\json_encode;
 
 // const URL = "https://trpezaapi.lokalnipazar.rs";
 /**
@@ -257,6 +256,10 @@ class Sdk extends Api
         $trainings = $training_model->getClientTrainingsByDate($request['id'], $request['date']);
 
         $user_model = new Users($this->dbAdapter);
+        
+        if (empty($trainings)) {
+            return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
+        }
 
         foreach ($trainings as &$one) {
             $users = $user_model->getUsersByTrainingId($one['id']);
@@ -515,6 +518,7 @@ class Sdk extends Api
             }
         }
         
+        // Preuzmi sve cene odjednom za trenera i sve klijente (ključno za brzinu!)
         $prices = [];
         if (!empty($clients)) {
             $prices = $user_model->getConnectionPricesByTrainerAndClients($request['trainer_id'], $clients);
@@ -633,7 +637,6 @@ class Sdk extends Api
         $trainings = $training_model->insertClientToTraining($request["training_id"], $request["client_id"], $price);
         
         $training_info = $training_model->getTrainingById($request["training_id"]);
-        $affactedRowCount = $this->updateTrainingGroup($request["training_id"]);
         
         $user_model = new Users($this->dbAdapter);
         $client = $user_model->getUserById($request["client_id"]);
@@ -657,20 +660,7 @@ class Sdk extends Api
         ]);
         $this->sendNotification($newTrainingMessage, $date . ' ' . $time, $client['device_token'], $dataPayload);
         
-        return $this->formatResponse(self::STATUS_SUCCESS, $affactedRowCount, $trainings);
-    }
-    
-    
-    private function updateTrainingGroup(string $training_id){
-        
-        $user_model = new Users($this->dbAdapter);
-        $training_model = new Trainings($this->dbAdapter);
-        
-        $clients = (array) $user_model->getUsersByTrainingId($training_id);
-        
-        $req["id"] = $training_id;
-        $req["is_group"] = count($clients) > 1 ? "1" : "0";
-        return $training_model->updateTrainingGroup($req);
+        return $this->formatResponse(self::STATUS_SUCCESS, "", $trainings);
     }
 
     private function setTrainingCancelledTrainer()
@@ -812,8 +802,6 @@ class Sdk extends Api
         
         $training_model = new Trainings($this->dbAdapter);
         $res = $training_model->deleteClientsByClientId($request['training_id'], $request['client_id']);
-        
-        $this->updateTrainingGroup($request['training_id']);
         
         return $this->formatResponse(self::STATUS_SUCCESS, "", []);
     }
